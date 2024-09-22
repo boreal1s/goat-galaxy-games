@@ -7,9 +7,12 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public float rotationSpeed;
     public bool isRunning;
+    public GameObject fakeEnemy;
+    public float enemyAttachDistanceThreshold = 3.0f;
 
     private Animator animator;
     private Rigidbody rb;
+    private bool isAttacking = false;
 
     [SerializeField]
     private Transform cameraTransform;
@@ -66,6 +69,34 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         animator.SetBool("isRunning", isRunning);
+
+        // Enemy attack control
+        if (Input.GetKeyDown(KeyCode.Space) && !isAttacking)
+        {
+            attackEnemy();
+        }
+    }
+
+    void attackEnemy()
+    {
+        animator.Play("Attack01");
+        isAttacking = true;
+        if (fakeEnemy != null)
+        {
+            float enemyDistance = Vector3.Distance(transform.position, fakeEnemy.transform.position);
+            if (enemyDistance <= enemyAttachDistanceThreshold)
+            {
+                StartCoroutine(DestroyEnemyAfterAttack(true));
+            }
+            else
+            {
+                StartCoroutine(DestroyEnemyAfterAttack(false));
+            }
+        }
+        else
+        {
+            StartCoroutine(DestroyEnemyAfterAttack(false));
+        }
     }
 
     void OnApplicationFocus(bool focus)
@@ -77,5 +108,17 @@ public class PlayerController : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
         }
+    }
+
+    IEnumerator DestroyEnemyAfterAttack(bool destroyEnemy)
+    {
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        
+        if (fakeEnemy != null && destroyEnemy == true)
+        {
+            Destroy(fakeEnemy);
+        }
+
+        isAttacking = false; // Reset attacking state after the action is done
     }
 }
