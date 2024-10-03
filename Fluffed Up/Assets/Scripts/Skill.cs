@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerSkills : MonoBehaviour
+public class Skill : MonoBehaviour
 {
     public string skillName;            // Skill Name
     public string description;          // Description of the skill
