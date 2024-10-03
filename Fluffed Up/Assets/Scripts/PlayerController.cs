@@ -20,8 +20,8 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        animator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
+        rb = GetComponentInChildren<Rigidbody>();
 
         moveSpeed = 5f;
         rotationSpeed = 360f;
@@ -99,16 +99,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnApplicationFocus(bool focus)
-    {
-        if (focus)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-        } else
-        {
-            Cursor.lockState = CursorLockMode.None;
-        }
-    }
+
 
     IEnumerator DestroyEnemyAfterAttack(bool destroyEnemy)
     {
