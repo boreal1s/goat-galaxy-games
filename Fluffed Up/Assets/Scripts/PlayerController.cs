@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    // Player attributes
     public float moveSpeed;
     public float rotationSpeed;
     public bool isRunning;
-    public GameObject fakeEnemy;
-    public float enemyAttachDistanceThreshold = 3.0f;
+    private bool isAttacking = false;
 
+    // Interaction with enemy
+    public float enemyAttackDistanceThreshold = 1.5f;
+
+    // UI Health HUD
+    private HealthBar healthBar;
+
+    // Character animator and rigidbody
     private Animator animator;
     private Rigidbody rb;
-    private bool isAttacking = false;
 
     [SerializeField]
     private Transform cameraTransform;
@@ -26,6 +32,11 @@ public class PlayerController : MonoBehaviour
         moveSpeed = 5f;
         rotationSpeed = 360f;
 
+        healthBar = GetComponentInChildren<HealthBar>();
+        if (healthBar != null)
+        {
+            healthBar.SetMaxHealth(100f);
+        }
     }
 
     void FixedUpdate()
@@ -70,8 +81,9 @@ public class PlayerController : MonoBehaviour
     {
         animator.SetBool("isRunning", isRunning);
 
-        // Enemy attack control
-        if (Input.GetKeyDown(KeyCode.Space) && !isAttacking)
+        // Enemy attack control. Attack when clicking left click.
+        // TODO might need to update to input string name to account for controller.
+        if (Input.GetMouseButtonDown(0) && !isAttacking)
         {
             attackEnemy();
         }
@@ -81,35 +93,26 @@ public class PlayerController : MonoBehaviour
     {
         animator.Play("Attack01");
         isAttacking = true;
-        if (fakeEnemy != null)
+
+        // TODO Just a temporary solution to hitting enemies. Planning on using events.
+        // Find nearby enemies
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, enemyAttackDistanceThreshold);
+        foreach (var hitCollider in hitColliders)
         {
-            float enemyDistance = Vector3.Distance(transform.position, fakeEnemy.transform.position);
-            if (enemyDistance <= enemyAttachDistanceThreshold)
+            EnemyBase enemy = hitCollider.GetComponent<EnemyBase>();
+            if (enemy != null)
             {
-                StartCoroutine(DestroyEnemyAfterAttack(true));
-            }
-            else
-            {
-                StartCoroutine(DestroyEnemyAfterAttack(false));
+                float damage = 10f; // Specify the damage amount
+                enemy.TakeDamage(damage); // enemy damaged
             }
         }
-        else
-        {
-            StartCoroutine(DestroyEnemyAfterAttack(false));
-        }
+        // Reset the attacking state after the attack animation finishes
+        StartCoroutine(ResetAttackState());
     }
 
-
-
-    IEnumerator DestroyEnemyAfterAttack(bool destroyEnemy)
+    IEnumerator ResetAttackState()
     {
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
-        
-        if (fakeEnemy != null && destroyEnemy == true)
-        {
-            Destroy(fakeEnemy);
-        }
-
         isAttacking = false; // Reset attacking state after the action is done
     }
 }
