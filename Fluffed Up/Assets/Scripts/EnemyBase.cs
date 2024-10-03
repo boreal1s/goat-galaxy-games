@@ -11,6 +11,7 @@ public class EnemyBase : MonoBehaviour
 
     // Enemy Events
     public UnityEvent<float> AttackEvent;
+    public UnityAction OnEnemyDeath; // Trigger to remove event listner in player
 
     // Enemy Health UI
     private HealthBar healthBar;
@@ -79,7 +80,7 @@ public class EnemyBase : MonoBehaviour
         //    Instantiate(itemDropPrefabs[randomIndex], transform.position, Quaternion.identity);
         //    Debug.Log("Dropped item: " + itemDropPrefabs[randomIndex].name);
         //}
-
+        OnEnemyDeath?.Invoke();
         Destroy(gameObject);
     }
 
