@@ -17,7 +17,6 @@ public class EnemyBase : MonoBehaviour
     private HealthBar healthBar;
 
     // Enemy Drops
-    public GameObject itemDropPrefab;
     public List<GameObject> itemDropPrefabs;
 
     void Start()
@@ -66,20 +65,13 @@ public class EnemyBase : MonoBehaviour
 
     public virtual void Die()
     {
-        // Drop specific item before destroying the enemy
-        if (itemDropPrefab != null)
-        {
-            Instantiate(itemDropPrefab, transform.position, itemDropPrefab.transform.rotation);
-        }
-
-        // TODO uncomment for randomly drop prefabs
         // Randomly select an item to drop
-        //if (itemDropPrefabs.Count > 0)
-        //{
-        //    int randomIndex = Random.Range(0, itemDropPrefabs.Count);
-        //    Instantiate(itemDropPrefabs[randomIndex], transform.position, Quaternion.identity);
-        //    Debug.Log("Dropped item: " + itemDropPrefabs[randomIndex].name);
-        //}
+        if (itemDropPrefabs.Count > 0)
+        {
+            int randomIndex = Random.Range(0, itemDropPrefabs.Count);
+            Instantiate(itemDropPrefabs[randomIndex], transform.position, Quaternion.identity);
+            Debug.Log("Dropped item: " + itemDropPrefabs[randomIndex].name);
+        }
         OnEnemyDeath?.Invoke();
         Destroy(gameObject);
     }

@@ -607,8 +607,10 @@ MonoBehaviour:
   AttackEvent:
     m_PersistentCalls:
       m_Calls: []
-  itemDropPrefab: {fileID: 2465144028655041354, guid: 2ee01e3c47052e641b28a00b4c31f375, type: 3}
-  itemDropPrefabs: []
+  itemDropPrefabs:
+  - {fileID: 8059062218478941161, guid: e0bfc7479007bc1479a9f7d769c5056e, type: 3}
+  - {fileID: 378334508266577950, guid: e94711451283b5e4ea97dd9bec1c8506, type: 3}
+  - {fileID: 5923972992805410746, guid: 2c19505c3f3b0ce489bbc1852e94c484, type: 3}
 --- !u!1 &8786087990769798921
 GameObject:
   m_ObjectHideFlags: 0
