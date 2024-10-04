@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
 
         moveSpeed = 5f;
         rotationSpeed = 360f;
-        attackPower = 100f;
+        attackPower = 25f;
         health = 100f;
 
         healthBar = GetComponentInChildren<HealthBar>();
