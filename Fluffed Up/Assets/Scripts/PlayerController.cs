@@ -1,31 +1,52 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
+    // Player attributes
     public float moveSpeed;
     public float rotationSpeed;
     public bool isRunning;
-    public GameObject fakeEnemy;
-    public float enemyAttachDistanceThreshold = 3.0f;
+    public UnityEvent<float> AttackEvent;
+    public UnityEvent<float> DamageEvent;
+    private bool isAttacking = false;
+    private float health;
+    private float attackPower;
 
+    // Interaction with enemy
+    public float enemyAttackDistanceThreshold = 1.5f;
+
+    // UI Health HUD
+    private HealthBar healthBar;
+
+    // Character animator and rigidbody
     private Animator animator;
     private Rigidbody rb;
-    private bool isAttacking = false;
 
     [SerializeField]
     private Transform cameraTransform;
 
+
     // Start is called before the first frame update
     void Start()
     {
-        animator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
+        rb = GetComponentInChildren<Rigidbody>();
 
         moveSpeed = 5f;
         rotationSpeed = 360f;
+        attackPower = 25f;
+        health = 100f;
 
+        healthBar = GetComponentInChildren<HealthBar>();
+        if (healthBar != null)
+        {
+            healthBar.SetMaxHealth(health);
+        }
     }
 
     void FixedUpdate()
@@ -69,9 +90,11 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         animator.SetBool("isRunning", isRunning);
+        Debug.Log("isAttacking:" + isAttacking.ToString());
 
-        // Enemy attack control
-        if (Input.GetKeyDown(KeyCode.Space) && !isAttacking)
+        // Enemy attack control. Attack when clicking left click.
+        // TODO might need to update to input string name to account for controller.
+        if (Input.GetMouseButtonDown(0) && !isAttacking)
         {
             attackEnemy();
         }
@@ -81,44 +104,36 @@ public class PlayerController : MonoBehaviour
     {
         animator.Play("Attack01");
         isAttacking = true;
-        if (fakeEnemy != null)
-        {
-            float enemyDistance = Vector3.Distance(transform.position, fakeEnemy.transform.position);
-            if (enemyDistance <= enemyAttachDistanceThreshold)
-            {
-                StartCoroutine(DestroyEnemyAfterAttack(true));
-            }
-            else
-            {
-                StartCoroutine(DestroyEnemyAfterAttack(false));
-            }
-        }
-        else
-        {
-            StartCoroutine(DestroyEnemyAfterAttack(false));
-        }
+
+        // Reset the attacking state after the attack animation finishes
+        StartCoroutine(ResetAttackState());
+
+        // TODO Just a temporary solution to hitting enemies. Planning on using events.
+        // Find nearby enemies
+        AttackEvent?.Invoke(attackPower);
     }
 
-    void OnApplicationFocus(bool focus)
+    public void TakeDamage(float damage)
     {
-        if (focus)
+        health -= damage;
+
+        if (health < 0) health = 0; // Prevent negative health
+
+        // Update the health bar
+        if (healthBar != null)
         {
-            Cursor.lockState = CursorLockMode.Locked;
-        } else
+            healthBar.SetHealth(health);
+        }
+
+        if (health <= 0)
         {
-            Cursor.lockState = CursorLockMode.None;
+            // Character should die here
         }
     }
 
-    IEnumerator DestroyEnemyAfterAttack(bool destroyEnemy)
+    IEnumerator ResetAttackState()
     {
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
-        
-        if (fakeEnemy != null && destroyEnemy == true)
-        {
-            Destroy(fakeEnemy);
-        }
-
         isAttacking = false; // Reset attacking state after the action is done
     }
 }
