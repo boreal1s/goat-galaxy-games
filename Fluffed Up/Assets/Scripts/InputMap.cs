@@ -8,8 +8,17 @@ public class InputMap : MonoBehaviour
 {
     [Header("Player Input Values")]
     public bool aim;
+    public bool jump;
 
+    public void OnJump(InputValue value)
+    {
+        JumpInput(value.isPressed);
+    }
 
+    public void JumpInput(bool jumpState)
+    {
+        jump = jumpState;
+    }
 
     public void OnAim(InputValue value)
     {

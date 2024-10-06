@@ -20,17 +20,48 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private Rigidbody rb;
 
+    #region Grounded Attributes
+    [Header("Grounded Attributes")]
+    public bool isGrounded;
+    public LayerMask groundMask;
+    #endregion
+
+    #region Jump Attributes
+    [Header("Jump Attributes")]
+    public float jumpForce;
+    public float jumpCooldown;
+    public float jumpTime;
+    public float airSpeedMultiplier;
+    public float gravityMultiplier;
+    bool isJumping;
+    #endregion
+
+    [Header("Inputs")]
+    [SerializeField]
+    private InputMap inputs;
+
+    [Header("Camera")]
     [SerializeField]
     private Transform cameraTransform;
+
+    private void Awake()
+    {
+        groundMask = ~(1 << LayerMask.GetMask("Ground")); 
+        inputs = GetComponent<InputMap>();
+        animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
+        ResetJump();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        animator = GetComponentInChildren<Animator>();
-        rb = GetComponentInChildren<Rigidbody>();
-
-        moveSpeed = 5f;
+        moveSpeed = 10f;
         rotationSpeed = 360f;
+        jumpForce = 100f;
+        jumpTime = 3f;
+        jumpCooldown = 1.5f;
+        airSpeedMultiplier = 0.6f;
 
         healthBar = GetComponentInChildren<HealthBar>();
         if (healthBar != null)
@@ -44,7 +75,13 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        #region Camera Relative Movement
+        #region Grounded Check
+        isGrounded = Physics.CheckSphere(rb.transform.position, 0.2f, groundMask);
+        #endregion
+
+        #region Movement Control
+
+        #region Configure Camera Relative Movement
 
         Vector3 camForward = cameraTransform.forward;
         Vector3 camRight = cameraTransform.right;
@@ -60,20 +97,15 @@ public class PlayerController : MonoBehaviour
         #endregion
 
         Vector3 move = new Vector3(moveDir.x, 0f, moveDir.z);
-        move.Normalize();
 
-        transform.Translate(move * moveSpeed * Time.deltaTime, Space.World);
-
-        if (move != Vector3.zero)
-        {
-            isRunning = true;
-            //Quaternion toRotation = Quaternion.LookRotation(forwardRelative, Vector3.up);
-            //transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
-        }
+        if (isGrounded)
+            rb.MovePosition(transform.position + move * moveSpeed * Time.deltaTime);
         else
-        {
-            isRunning = false;
-        }
+            rb.MovePosition(transform.position + move * moveSpeed * airSpeedMultiplier * Time.deltaTime);
+
+        isRunning = move != Vector3.zero && isGrounded;
+        #endregion
+
     }
 
     // Update is called once per frame
@@ -87,6 +119,24 @@ public class PlayerController : MonoBehaviour
         {
             attackEnemy();
         }
+
+        if (inputs.jump && isGrounded && !isJumping)
+        {
+            isJumping = true;
+            Jump(1f);
+        } 
+    }
+
+    private void Jump(float modifier)
+    {
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.AddForce(rb.transform.up * jumpForce, ForceMode.Impulse);
+        Invoke("ResetJump", jumpCooldown * modifier);
+    }
+
+    private void ResetJump()
+    {
+        isJumping = false;
     }
 
     void attackEnemy()
