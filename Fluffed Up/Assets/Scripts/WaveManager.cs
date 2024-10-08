@@ -55,7 +55,7 @@ public class WaveManager : MonoBehaviour
             Debug.Log("HandlePlayerAttack called");
             float distance = Vector3.Distance(player.transform.position, enemy.transform.position);
 
-            if (distance <= player.enemyAttackDistanceThreshold)
+            if (distance <= player.attackDistanceThreshold)
             {
                 Debug.Log("Enemy got damage");
                 enemy.TakeDamage(damage);

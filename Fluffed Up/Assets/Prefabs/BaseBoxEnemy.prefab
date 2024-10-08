@@ -279,7 +279,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 1.5999756}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3103407954036836749
@@ -296,6 +296,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthSlider: {fileID: 7030248668103469683}
   easeHealthSlider: {fileID: 6825347803726627497}
+  character: {fileID: 5940085572476652901}
+  healthHeightOffset: 1.5
 --- !u!114 &7416724496665707518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -602,9 +604,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f795bbc2d3d69498dad3f290d94c300f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 0
+  rotationSpeed: 0
+  isRunning: 0
+  isAttacking: 0
   health: 100
+  maxHealth: 0
   attackPower: 1
+  attackSpeed: 0
+  defense: 0
+  attackDistanceThreshold: 0
+  currency: 0
+  healthPotions: 0
+  isGrounded: 0
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 0
+  jumpForce: 0
+  jumpCooldown: 0
+  jumpTime: 0
+  airSpeedMultiplier: 0
+  gravityMultiplier: 0
+  isJumping: 0
+  animator: {fileID: 0}
+  rb: {fileID: 0}
+  isBurning: 0
+  isFrozen: 0
+  burnDamage: 0
+  burnDuration: 0
+  freezeDuration: 0
+  healthBar: {fileID: 0}
   AttackEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  DamageEvent:
     m_PersistentCalls:
       m_Calls: []
   itemDropPrefabs:
