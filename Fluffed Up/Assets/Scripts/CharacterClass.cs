@@ -35,7 +35,7 @@ public class CharacterClass : MonoBehaviour
     public float freezeDuration;
     #endregion
 
-    #region Character Supplies
+    #region Character Collectables
     public float currency;
     public float healthPotions;
     #endregion
