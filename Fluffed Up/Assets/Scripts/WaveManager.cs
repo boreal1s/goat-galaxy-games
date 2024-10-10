@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class WaveManager : MonoBehaviour
 {
     public PlayerController player;
     public GameObject fakeBoxEnemyPrefab;
+    public UnityEvent waveEvent;
     private List<GameObject> currentEnemies = new List<GameObject>();
     private int currentWave = 0;
     private bool isSpawningWave = false; // Flag to prevent multiple waves from starting
@@ -14,6 +16,7 @@ public class WaveManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        waveEvent.AddListener(RequestNextWave);
         StartWave();
     }
 
@@ -68,6 +71,11 @@ public class WaveManager : MonoBehaviour
     {
         currentEnemies.RemoveAll(enemy => enemy == null);
 
+        waveEvent.Invoke();
+    }
+
+    private void RequestNextWave()
+    {
         if (currentEnemies.Count == 0 && !isSpawningWave)
         {
             StartCoroutine(StartNextWave());
