@@ -121,7 +121,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 4a9cc55bafdda48c2a8cc05772b5dc25, type: 2}
 --- !u!1 &48573144
 GameObject:
   m_ObjectHideFlags: 3
@@ -253,6 +253,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthSlider: {fileID: 120130463}
   easeHealthSlider: {fileID: 2086481355}
+  character: {fileID: 0}
+  healthHeightOffset: 1.5
 --- !u!1 &120130460
 GameObject:
   m_ObjectHideFlags: 0
@@ -1754,13 +1756,21 @@ MonoBehaviour:
   moveSpeed: 0
   rotationSpeed: 0
   isRunning: 0
-  AttackEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  DamageEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  enemyAttackDistanceThreshold: 3
+  healthBar: {fileID: 0}
+  health: 0
+  maxHealth: 0
+  attackPower: 0
+  attackSpeed: 0
+  attackDistanceThreshold: 0
+  isAttacking: 0
+  defense: 0
+  isBurning: 0
+  isFrozen: 0
+  burnDamage: 0
+  burnDuration: 0
+  freezeDuration: 0
+  currency: 0
+  healthPotions: 0
   isGrounded: 0
   groundMask:
     serializedVersion: 2
@@ -1770,6 +1780,15 @@ MonoBehaviour:
   jumpTime: 0
   airSpeedMultiplier: 0
   gravityMultiplier: 0
+  isJumping: 0
+  animator: {fileID: 0}
+  rb: {fileID: 0}
+  AttackEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  DamageEvent:
+    m_PersistentCalls:
+      m_Calls: []
   inputs: {fileID: 0}
   cameraTransform: {fileID: 489838433}
 --- !u!114 &1034330706
@@ -2523,7 +2542,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1034330705}
-  fakeBoxEnemyPrefab: {fileID: 8719852439240791450, guid: 49a2ef999b4f06e4e86f000a5656b01b, type: 3}
+  fakeBoxEnemyPrefab: {fileID: 9095522416803934105, guid: 653a465a5400a4f2f951a8d29e061783, type: 3}
+  waveEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &1322518338
 Transform:
   m_ObjectHideFlags: 0
@@ -2964,7 +2986,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!65 &1766439729
 BoxCollider:

@@ -41,6 +41,7 @@ public class WaveManager : MonoBehaviour
 
         enemyScript.AttackEvent.AddListener(player.TakeDamage);
         enemyScript.OnEnemyDeath += () => RemoveEnemyListener(onPlayerAttackAction, enemyScript);
+        enemyScript.player = player;
 
         currentEnemies.Add(newEnemy);
     }
