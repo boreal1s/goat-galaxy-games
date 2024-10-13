@@ -24,6 +24,12 @@ public class PlayerController : CharacterClass
     [SerializeField]
     private Transform cameraTransform;
 
+    [Header("UI")]
+    [SerializeField]
+    private GameObject deathScreen;
+
+
+
     private void Awake()
     {
         groundMask = ~(1 << LayerMask.GetMask("Ground"));
@@ -31,6 +37,11 @@ public class PlayerController : CharacterClass
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         ResetJump();
+
+          if (deathScreen != null)
+        {
+            deathScreen.SetActive(false);
+        }
     }
 
     // Start is called before the first frame update
@@ -163,9 +174,9 @@ public class PlayerController : CharacterClass
 
     public void showDeathScreen(bool show)
     {
-        if (show)
+        if (deathScreen != null)
         {
-            // show death screen here
+            deathScreen.SetActive(show); // Show or hide the death screen
         }
     }
 }
