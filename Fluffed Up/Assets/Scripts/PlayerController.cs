@@ -10,6 +10,11 @@ public class PlayerController : CharacterClass
     // Player attributes
     public UnityEvent<float> AttackEvent;
     public UnityEvent<float> DamageEvent;
+    [Header("Shooting")]
+    public GameObject projectilePrefab;       // The projectile prefab to instantiate
+    public Transform projectileSpawnPoint;    // Where the projectile will spawn
+    public float projectileSpeed = 20f;       // Speed of the projectile
+    public float projectileDamage = 10f;      // Damage dealt by the projectile
 
     [Header("Inputs")]
     [SerializeField]
@@ -21,7 +26,7 @@ public class PlayerController : CharacterClass
 
     private void Awake()
     {
-        groundMask = ~(1 << LayerMask.GetMask("Ground")); 
+        groundMask = ~(1 << LayerMask.GetMask("Ground"));
         inputs = GetComponent<InputMap>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
@@ -110,6 +115,39 @@ public class PlayerController : CharacterClass
         {
             showDeathScreen(true);
         }
+        if (Input.GetMouseButtonDown(1) && !isAttacking)
+        {
+            Debug.Log("Right mouse button clicked - calling Shoot()");
+            Shoot();
+        }
+    }
+    void Shoot()
+    {
+        Debug.Log("Shoot() method is being called");
+
+        // Trigger the shooting animation (if you have one)
+        animator.SetTrigger("Shoot");
+
+        // Instantiate the projectile at the spawn point
+        GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
+
+        // Ignore collision between the projectile and the player
+        Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
+
+        // Set the projectile's speed and damage
+        Projectile projScript = projectile.GetComponent<Projectile>();
+        if (projScript != null)
+        {
+            projScript.speed = projectileSpeed;
+            projScript.damage = projectileDamage;
+        }
+        else
+        {
+            Debug.LogError("Projectile script not found on the projectile prefab.");
+        }
+
+        // Set the projectile's direction
+        projectile.transform.forward = transform.forward;
     }
 
     void attackEnemy()
