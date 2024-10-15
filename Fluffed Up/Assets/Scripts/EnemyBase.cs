@@ -12,6 +12,13 @@ public class EnemyBase : CharacterClass
         Idle,
     };
 
+    [System.Serializable]
+    public class ItemDrop
+    {
+        public GameObject prefab;
+        public float dropChance; // Probability as a percentage (0 to 100)
+    }
+
     // Enemy Events
     public UnityEvent<float> AttackEvent;
     public UnityEvent<float> DamageEvent;
@@ -23,7 +30,8 @@ public class EnemyBase : CharacterClass
     public PlayerController player; // Player object to be set by WaveManager
 
     // Enemy Drops
-    public List<GameObject> itemDropPrefabs;
+    [SerializeField]
+    private List<ItemDrop> itemDrops; // List of item drops with chances
 
     void Start()
     {
@@ -85,13 +93,26 @@ public class EnemyBase : CharacterClass
 
     protected override void Die()
     {
-        // Randomly select an item to drop
-        if (itemDropPrefabs.Count > 0)
+        // Randomly select an item to drop based on drop chances
+        if (itemDrops.Count > 0)
         {
-            int randomIndex = Random.Range(0, itemDropPrefabs.Count);
-            Instantiate(itemDropPrefabs[randomIndex], transform.position, Quaternion.identity);
-            Debug.Log("Dropped item: " + itemDropPrefabs[randomIndex].name);
+            float randomValue = Random.Range(0f, 100f); // Random value between 0 and 100
+            float cumulativeChance = 0f;
+
+            foreach (var itemDrop in itemDrops)
+            {
+                cumulativeChance += itemDrop.dropChance;
+
+                if (randomValue <= cumulativeChance)
+                {
+                    Vector3 dropPosition = transform.position + new Vector3(0, 0.5f, 0);
+                    Instantiate(itemDrop.prefab, dropPosition, Quaternion.identity);
+                    Debug.Log("Dropped item: " + itemDrop.prefab.name);
+                    break; // Exit loop after dropping an item
+                }
+            }
         }
+
         OnEnemyDeath?.Invoke();
 
         // Destroy game object from parent CharacterClass

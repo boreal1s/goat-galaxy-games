@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 4153468957665211649}
   - component: {fileID: 2179989932510003659}
   - component: {fileID: -6702283275472970621}
+  - component: {fileID: 2786841885063632289}
+  - component: {fileID: 6066667722457134278}
   m_Layer: 0
   m_Name: Heal_Up
   m_TagString: Untagged
@@ -100,6 +102,33 @@ MonoBehaviour:
   bounceSpeed: 8
   bounceAmplitude: 0.05
   rotationSpeed: 90
+--- !u!114 &2786841885063632289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 378334508266577950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad81fca4b9212ef4f9a3457805553834, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: 
+  amount: 0
+--- !u!135 &6066667722457134278
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 378334508266577950}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 3.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &3084231291169256146
 PrefabInstance:
   m_ObjectHideFlags: 0
