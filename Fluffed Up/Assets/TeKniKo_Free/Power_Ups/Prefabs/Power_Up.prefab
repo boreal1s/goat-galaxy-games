@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 7155462594337050797}
   - component: {fileID: 6116614814480539400}
   - component: {fileID: 8288421625071791042}
+  - component: {fileID: -4696236534565297103}
+  - component: {fileID: -3875036757374282613}
+  - component: {fileID: -5658651638835806275}
   m_Layer: 0
   m_Name: Power_Up
   m_TagString: Untagged
@@ -84,6 +87,48 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-4696236534565297103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7495854542567655959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04c2aa4f86ca6384e9a9c6d234cdef24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bounceSpeed: 8
+  bounceAmplitude: 0.05
+  rotationSpeed: 90
+--- !u!135 &-3875036757374282613
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7495854542567655959}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 3.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-5658651638835806275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7495854542567655959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad81fca4b9212ef4f9a3457805553834, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: 
+  amount: 0
 --- !u!1001 &2860904348935685444
 PrefabInstance:
   m_ObjectHideFlags: 0

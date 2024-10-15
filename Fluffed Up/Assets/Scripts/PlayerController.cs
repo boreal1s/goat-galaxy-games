@@ -15,6 +15,7 @@ public class PlayerController : CharacterClass
     public Transform projectileSpawnPoint;    // Where the projectile will spawn
     public float projectileSpeed = 20f;       // Speed of the projectile
     public float projectileDamage = 10f;      // Damage dealt by the projectile
+    private List<CollectibleItem> inventory = new List<CollectibleItem>();
 
     [Header("Inputs")]
     [SerializeField]
@@ -23,6 +24,10 @@ public class PlayerController : CharacterClass
     [Header("Camera")]
     [SerializeField]
     private Transform cameraTransform;
+
+    [Header("UI")]
+    [SerializeField]
+    private GameObject deathScreen;
 
     private void Awake()
     {
@@ -50,6 +55,11 @@ public class PlayerController : CharacterClass
         if (healthBar != null)
         {
             healthBar.SetMaxHealth(health);
+        }
+
+        if (deathScreen != null)
+        {
+            showDeathScreen(false);
         }
     }
 
@@ -163,9 +173,16 @@ public class PlayerController : CharacterClass
 
     public void showDeathScreen(bool show)
     {
-        if (show)
+        if (deathScreen != null)
         {
-            // show death screen here
+            deathScreen.SetActive(show);
         }
+    }
+
+    public void CollectItem(CollectibleItem item)
+    {
+        // Add the item to the inventory
+        inventory.Add(item);
+        Debug.Log($"Collected: {item.itemName}");
     }
 }
