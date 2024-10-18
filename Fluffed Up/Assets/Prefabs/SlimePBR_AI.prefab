@@ -625,7 +625,7 @@ GameObject:
   - component: {fileID: 9097013908115513008}
   - component: {fileID: 9097013908115513015}
   - component: {fileID: 2645490114852217205}
-  - component: {fileID: 6229377834788426349}
+  - component: {fileID: 1104528646269988440}
   m_Layer: 0
   m_Name: SlimePBR_AI
   m_TagString: Untagged
@@ -723,7 +723,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &6229377834788426349
+--- !u!114 &1104528646269988440
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -732,7 +732,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9095522416803934105}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f795bbc2d3d69498dad3f290d94c300f, type: 3}
+  m_Script: {fileID: 11500000, guid: 07ac5b953b939475dbb69e29571a5765, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 0
@@ -774,17 +774,7 @@ MonoBehaviour:
   navMeshAgent: {fileID: 0}
   enemyState: 0
   player: {fileID: 0}
-  itemDrops:
-  - prefab: {fileID: 8059062218478941161, guid: e0bfc7479007bc1479a9f7d769c5056e, type: 3}
-    dropChance: 10
-  - prefab: {fileID: 378334508266577950, guid: e94711451283b5e4ea97dd9bec1c8506, type: 3}
-    dropChance: 10
-  - prefab: {fileID: 5381239183583933435, guid: 1396a2ea9f077044493cb2b01308fce0, type: 3}
-    dropChance: 10
-  - prefab: {fileID: 1609426563364382538, guid: 482a23eb854875b4ea0a9d1394443a6b, type: 3}
-    dropChance: 10
-  - prefab: {fileID: 7495854542567655959, guid: 77c2108e75a6da04b8a9c2d5f73fc910, type: 3}
-    dropChance: 10
+  itemDrops: []
 --- !u!1 &9095607449275565481
 GameObject:
   m_ObjectHideFlags: 0

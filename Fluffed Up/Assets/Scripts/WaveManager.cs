@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -48,7 +49,7 @@ public class WaveManager : MonoBehaviour
 
     Vector3 GetRandomPosition()
     {
-        Vector2 randomCircle = Random.insideUnitCircle * 6f;
+        Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * 6f;
         return new Vector3(randomCircle.x, 1f, randomCircle.y);
     }
 
@@ -59,7 +60,10 @@ public class WaveManager : MonoBehaviour
             Debug.Log("HandlePlayerAttack called");
             float distance = Vector3.Distance(player.transform.position, enemy.transform.position);
 
-            if (distance <= player.attackDistanceThreshold)
+            // Hit condition1: Distance smaller than threshold
+            bool withinDistance = distance <= player.attackDistanceThreshold;
+            bool withinAngle = math.abs(Vector3.Angle(player.transform.forward, enemy.transform.position - player.transform.position)) < 90 ;
+            if (withinDistance && withinAngle)
             {
                 Debug.Log("Enemy got damage");
                 enemy.TakeDamage(damage);
