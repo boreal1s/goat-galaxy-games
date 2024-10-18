@@ -10,6 +10,8 @@ public class EnemyBase : CharacterClass
     {
         ChasingPlayer,
         Idle,
+        InitiateAttack,
+        Attacking,
     };
 
     [System.Serializable]
@@ -28,6 +30,7 @@ public class EnemyBase : CharacterClass
     public NavMeshAgent navMeshAgent;
     public EnemyState enemyState;
     public PlayerController player; // Player object to be set by WaveManager
+    protected float distanceToPlayer;
 
     // Enemy Drops
     [SerializeField]
@@ -35,6 +38,7 @@ public class EnemyBase : CharacterClass
 
     void Start()
     {
+        animator = GetComponent<Animator>();
         enemyState = EnemyState.Idle;
         navMeshAgent = GetComponent<NavMeshAgent>();
         // Temporary initialization since this is the base.
@@ -49,26 +53,28 @@ public class EnemyBase : CharacterClass
 
     void Update()
     {
-        PlayerChaseStateMachine();
+        AIStateMachine();
     }
 
-    private void PlayerChaseStateMachine()
+    public virtual void AIStateMachine()
     {
-        float distance = (transform.position - player.transform.position).magnitude;
+        distanceToPlayer  = (transform.position - player.transform.position).magnitude;
         switch (enemyState)
         {
         case EnemyState.Idle:
-            if (distance > 1)
+            Debug.Log("EnemyState: Idle");
+            if (distanceToPlayer > 1)
                 enemyState = EnemyState.ChasingPlayer;
             break;
         case EnemyState.ChasingPlayer:
-            if (distance > 1)
+            Debug.Log("EnemyState: ChasingPlayer");
+            if (distanceToPlayer > 1)
             {
                 navMeshAgent.SetDestination(player.transform.position);
             }
-            else
+            else //TODO: if player is dead, enemy should go to idle. 
             {
-                enemyState = EnemyState.Idle;
+                enemyState = EnemyState.InitiateAttack;
             }
             break;
         default:
@@ -83,12 +89,9 @@ public class EnemyBase : CharacterClass
         this.attackPower = attackPower;
     }
 
-    public virtual void Attack(GameObject target)
+    public virtual void Attack()
     {
-        if (AttackEvent != null)
-        {
-            AttackEvent.Invoke(attackPower);
-        }
+        AttackEvent?.Invoke(attackPower);
     }
 
     protected override void Die()

@@ -127,7 +127,7 @@ public class CharacterClass : MonoBehaviour
         isFrozen = false; // Reset frozen state
     }
 
-    public void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage)
     {
         Debug.Log($"{gameObject.name} is taking {damage} damage.");
         health -= damage;

@@ -185,4 +185,11 @@ public class PlayerController : CharacterClass
         inventory.Add(item);
         Debug.Log($"Collected: {item.itemName}");
     }
+
+    public override void TakeDamage(float damage)
+    {
+        base.TakeDamage(damage);
+
+        animator.Play("GetHit");
+    }
 }
