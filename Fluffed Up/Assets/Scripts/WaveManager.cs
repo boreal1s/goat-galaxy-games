@@ -14,11 +14,18 @@ public class WaveManager : MonoBehaviour
     private bool isSpawningWave = false; // Flag to prevent multiple waves from starting
     private float waveSpawnDelay = 2f;
 
+    [SerializeField]
+    private GameObject shopComponent;
+    public bool shopIsOpen;
+
     // Start is called before the first frame update
     void Start()
     {
         waveEvent.AddListener(RequestNextWave);
         StartWave();
+
+        if (shopComponent == null)
+            Debug.Log("No shop component was assigned to the WaveManager");
     }
 
     void StartWave()
@@ -77,12 +84,17 @@ public class WaveManager : MonoBehaviour
         currentEnemies.RemoveAll(enemy => enemy == null);
 
         waveEvent.Invoke();
+
+        if (shopIsOpen)
+            Cursor.lockState = CursorLockMode.None;
     }
+
 
     private void RequestNextWave()
     {
         if (currentEnemies.Count == 0 && !isSpawningWave)
         {
+            OpenShop();
             StartCoroutine(StartNextWave());
         }
     }
@@ -90,7 +102,9 @@ public class WaveManager : MonoBehaviour
     IEnumerator StartNextWave()
     {
         isSpawningWave = true; // Set the flag to true to prevent multiple triggers
-        yield return new WaitForSeconds(waveSpawnDelay); // Delay before starting next wave
+        yield return new WaitWhile(() => shopIsOpen == true); // Don't start next wave until shop is closed
+        yield return new WaitForSeconds(waveSpawnDelay); // Delay before starting next wave. We don't want the wave to start immediately after the shop closes.
+
         StartWave();
         isSpawningWave = false; // Reset the flag after spawning the wave
     }
@@ -99,5 +113,21 @@ public class WaveManager : MonoBehaviour
     {
         player.AttackEvent.RemoveListener(action);
         currentEnemies.Remove(enemy.gameObject); // Safely remove the enemy from the list
+    }
+
+    public void OpenShop()
+    {
+        Debug.Log("Shop opened");
+        shopComponent.SetActive(true);
+        Time.timeScale = 0;
+        shopIsOpen = true;
+    }
+
+    public void CloseShop()
+    {
+        shopComponent.SetActive(false);
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
+        shopIsOpen = false;
     }
 }
