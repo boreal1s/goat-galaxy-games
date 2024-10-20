@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
 public class WaveManager : MonoBehaviour
 {
@@ -18,6 +19,10 @@ public class WaveManager : MonoBehaviour
     private GameObject shopComponent;
     public bool shopIsOpen;
 
+    [SerializeField] 
+    private TextMeshProUGUI waveCounterText; // For Unity UI Text
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,10 +35,17 @@ public class WaveManager : MonoBehaviour
 
     void StartWave()
     {
+        currentWave++; // update wave count
+        UpdateWaveCounter();
         for (int i = 0; i < 3; i++)
         {
             SpawnEnemy();
         }
+    }
+
+    void UpdateWaveCounter()
+    {
+        waveCounterText.text = "Wave: " + currentWave.ToString();
     }
 
     void SpawnEnemy()
