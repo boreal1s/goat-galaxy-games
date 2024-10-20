@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
 public class PlayerController : CharacterClass
 {
@@ -28,6 +29,7 @@ public class PlayerController : CharacterClass
     [Header("UI")]
     [SerializeField]
     private GameObject deathScreen;
+    public TextMeshProUGUI coinCounterText; // For Unity UI Text
 
     private void Awake()
     {
@@ -50,6 +52,7 @@ public class PlayerController : CharacterClass
         attackPower = 25f;
         health = 100f;
         attackDistanceThreshold = 3f;
+        currency = 0f;
 
         healthBar = GetComponentInChildren<HealthBar>();
         if (healthBar != null)
@@ -61,6 +64,8 @@ public class PlayerController : CharacterClass
         {
             showDeathScreen(false);
         }
+
+        UpdateAllCounters();
     }
 
     void FixedUpdate()
@@ -184,6 +189,15 @@ public class PlayerController : CharacterClass
         // Add the item to the inventory
         inventory.Add(item);
         Debug.Log($"Collected: {item.itemName}");
+        if(item.itemName == "Coin") {
+            currency += item.amount;            
+        }
+        UpdateAllCounters();
+    }
+
+    void UpdateAllCounters()
+    {
+        UpdateCoinCounter();
     }
 
     public override void TakeDamage(float damage)
@@ -191,5 +205,10 @@ public class PlayerController : CharacterClass
         base.TakeDamage(damage);
 
         animator.Play("GetHit");
+    }
+
+    void UpdateCoinCounter()
+    {
+        coinCounterText.text = "Coins: " + currency.ToString();
     }
 }
