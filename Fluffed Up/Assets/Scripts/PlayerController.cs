@@ -41,7 +41,7 @@ public class PlayerController : CharacterClass
     // Start is called before the first frame update
     void Start()
     {
-        moveSpeed = 10f;
+        moveSpeed = 5f;
         rotationSpeed = 360f;
         jumpForce = 100f;
         jumpTime = 3f;
@@ -83,18 +83,21 @@ public class PlayerController : CharacterClass
         camRight.y = 0;
 
         Vector3 forwardRelative = vertical * camForward;
-        Vector3 rightRelataive = horizontal * camRight;
+        Vector3 rightRelative = horizontal * camRight;
 
-        Vector3 moveDir = forwardRelative + rightRelataive;
+        Vector3 moveDir = forwardRelative + rightRelative;
 
         #endregion
 
         Vector3 move = new Vector3(moveDir.x, 0f, moveDir.z);
 
+        // Check if the Shift key is held down
+        float speedMultiplier = Input.GetKey(KeyCode.LeftShift) ? 3f : 1f; // Increase speed  when Shift is held
+
         if (isGrounded)
-            rb.MovePosition(transform.position + move * moveSpeed * Time.deltaTime);
+            rb.MovePosition(transform.position + move * moveSpeed * speedMultiplier * Time.deltaTime);
         else
-            rb.MovePosition(transform.position + move * moveSpeed * airSpeedMultiplier * Time.deltaTime);
+            rb.MovePosition(transform.position + move * moveSpeed * airSpeedMultiplier * speedMultiplier * Time.deltaTime);
 
         isRunning = move != Vector3.zero && isGrounded;
         #endregion
