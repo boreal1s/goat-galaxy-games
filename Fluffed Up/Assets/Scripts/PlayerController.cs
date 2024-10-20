@@ -53,6 +53,7 @@ public class PlayerController : CharacterClass
         health = 100f;
         attackDistanceThreshold = 3f;
         currency = 0f;
+        healthPotions = 0f;
 
         healthBar = GetComponentInChildren<HealthBar>();
         if (healthBar != null)
@@ -209,6 +210,6 @@ public class PlayerController : CharacterClass
 
     void UpdateCoinCounter()
     {
-        coinCounterText.text = "Coins: " + currency.ToString();
+        coinCounterText.text = currency.ToString();
     }
 }
