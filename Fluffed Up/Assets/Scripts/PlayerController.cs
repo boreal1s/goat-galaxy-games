@@ -213,8 +213,6 @@ public class PlayerController : CharacterClass
             // Debug.LogWarning("Adding new item to inventory");
             ItemProperties properties = new ItemProperties(item.quantity, item.value);
             inventory.Add(item.itemName, properties);
-            Debug.Log(inventory[item.itemName].quantity);
-            Debug.Log(inventory[item.itemName].value);
         }
         else
         {
@@ -317,14 +315,13 @@ public class PlayerController : CharacterClass
             if(properties.quantity != 0 && health < 100)
             {
                 Heal(properties.value);
-                properties.totalAmount -= amount;
+                properties.totalAmount -= properties.quantity * properties.value;
                 if (properties.totalAmount < 0) {
                     properties.totalAmount = 0;
                 }
                 properties.quantity--;
                 inventory["Health"] = properties;
                 Debug.Log("Healed");
-                Debug.Log(inventory["Health"].quantity);
                 UpdateHealthPackCounter();
             }
             else
