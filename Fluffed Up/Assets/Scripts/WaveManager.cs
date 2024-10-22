@@ -7,8 +7,24 @@ using TMPro;
 
 public class WaveManager : MonoBehaviour
 {
+    public struct EnemySpawnInfo
+    {
+        public GameObject enemyPrefab;
+        public int quantity;
+
+        public EnemySpawnInfo(GameObject go, int quantity)
+        {
+            this.enemyPrefab = go;
+            this.quantity = quantity;
+        }
+    }
+
     public PlayerController player;
-    public GameObject fakeBoxEnemyPrefab;
+
+    // List of enemies
+    public GameObject enemyPrefabSlime;
+    public GameObject enemyPrefabTurtle;
+
     public UnityEvent waveEvent;
     private List<GameObject> currentEnemies = new List<GameObject>();
     private int currentWave = 0;
@@ -22,26 +38,66 @@ public class WaveManager : MonoBehaviour
     [SerializeField] 
     private TextMeshProUGUI waveCounterText; // For Unity UI Text
 
+    private List<List<EnemySpawnInfo>> waveList;
 
     // Start is called before the first frame update
     void Start()
     {
         shopComponent.SetActive(false);
         waveEvent.AddListener(RequestNextWave);
+        PopulateWave();
         StartWave();
 
         if (shopComponent == null)
             Debug.Log("No shop component was assigned to the WaveManager");
     }
 
+    void PopulateWave()
+    {
+        waveList = new List<List<EnemySpawnInfo>>
+        {            
+            new(){// First wave
+                new(enemyPrefabSlime, 3)
+            },
+            new(){// Second wave
+                new(enemyPrefabTurtle, 2)
+            },
+            new(){// Third wave
+                new(enemyPrefabSlime, 2),
+                new(enemyPrefabTurtle, 2)
+            },
+            new(){// Fourth wave
+                new(enemyPrefabTurtle, 4)
+            },
+            new(){// Fifth wave
+                new(enemyPrefabSlime, 6)
+            },
+            new(){// Sixth wave
+                new(enemyPrefabSlime, 3),
+                new(enemyPrefabTurtle, 3)
+            },
+            new(){// Sixth wave
+                new(enemyPrefabSlime, 4),
+                new(enemyPrefabTurtle, 4)
+            },
+            new(){// Seventh wave
+                new(enemyPrefabSlime, 10)
+            },
+            new(){// Eigth wave
+                new(enemyPrefabTurtle, 9)
+            },
+            new(){// Ninth wave
+                new(enemyPrefabSlime, 7),
+                new(enemyPrefabTurtle, 5)
+            },
+        };
+    }
+
     void StartWave()
     {
         currentWave++; // update wave count
         UpdateWaveCounter();
-        for (int i = 0; i < 3; i++)
-        {
-            SpawnEnemy();
-        }
+        SpawnEnemy();
     }
 
     void UpdateWaveCounter()
@@ -51,25 +107,39 @@ public class WaveManager : MonoBehaviour
 
     void SpawnEnemy()
     {
-        Debug.Log("Spawning enemy");
-        Vector3 randomPosition = GetRandomPosition();
-        GameObject newEnemy = Instantiate(fakeBoxEnemyPrefab, randomPosition, Quaternion.identity);
-        EnemyBase enemyScript = newEnemy.GetComponent<EnemyBase>();
+        if (currentWave % 9 == 0)
+        {
+            currentWave = 0;
+        }
+        EnemyLoader(waveList[currentWave - 1]);
+    }
 
-        // Add event listener: player attack ---> enemy takes damage
-        UnityEngine.Events.UnityAction<float> onPlayerAttackAction = (float damage) => HandlePlayerAttack(enemyScript, damage);
-        player.AttackEvent.AddListener(onPlayerAttackAction);
+    private void EnemyLoader(List<EnemySpawnInfo> wave)
+    {
+        foreach (EnemySpawnInfo spawnInfo in wave)
+        {
+            for (int i = 0 ; i < spawnInfo.quantity ; i++)
+            {
+                Vector3 randomPosition = GetRandomPosition();
+                GameObject newEnemy = Instantiate(spawnInfo.enemyPrefab, randomPosition, Quaternion.identity);
+                EnemyBase enemyScript = newEnemy.GetComponent<EnemyBase>();
 
-        enemyScript.AttackEvent.AddListener(player.TakeDamage);
-        enemyScript.OnEnemyDeath += () => RemoveEnemyListener(onPlayerAttackAction, enemyScript);
-        enemyScript.player = player;
+                // Add event listener: player attack ---> enemy takes damage
+                void onPlayerAttackAction(float damage) => HandlePlayerAttack(enemyScript, damage);
+                player.AttackEvent.AddListener(onPlayerAttackAction);
 
-        currentEnemies.Add(newEnemy);
+                enemyScript.AttackEvent.AddListener(player.TakeDamage);
+                enemyScript.OnEnemyDeath += () => RemoveEnemyListener(onPlayerAttackAction, enemyScript);
+                enemyScript.player = player;
+
+                currentEnemies.Add(newEnemy);
+            }
+        }
     }
 
     Vector3 GetRandomPosition()
     {
-        Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * 6f;
+        Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * 18f;
         return new Vector3(randomCircle.x, 1f, randomCircle.y);
     }
 

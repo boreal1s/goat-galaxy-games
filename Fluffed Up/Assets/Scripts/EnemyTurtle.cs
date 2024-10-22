@@ -5,9 +5,9 @@ using UnityEngine.Events;
 using UnityEngine.AI;
 using JetBrains.Annotations;
 
-public class EnemySlime : EnemyBase
+public class EnemyTurtle : EnemyBase
 {
-    private const int ACTION_DELAY_DEFAULT = 2000;
+    private const int ACTION_DELAY_DEFAULT = 3000;
     private int actionDelay = ACTION_DELAY_DEFAULT; // give delay in action because slime is stupid!
     public override void AIStateMachine()
     {
