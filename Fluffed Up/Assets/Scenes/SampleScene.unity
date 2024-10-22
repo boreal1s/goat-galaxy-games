@@ -4885,7 +4885,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1034330705}
-  fakeBoxEnemyPrefab: {fileID: 9095522416803934105, guid: 653a465a5400a4f2f951a8d29e061783, type: 3}
+  enemyPrefabSlime: {fileID: 9095522416803934105, guid: 653a465a5400a4f2f951a8d29e061783, type: 3}
+  enemyPrefabTurtle: {fileID: 5232562413803862215, guid: 6f87a4e241e274fc5b9154af772ec7e1, type: 3}
   waveEvent:
     m_PersistentCalls:
       m_Calls: []

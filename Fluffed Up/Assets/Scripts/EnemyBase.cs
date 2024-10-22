@@ -94,6 +94,12 @@ public class EnemyBase : CharacterClass
         AttackEvent?.Invoke(attackPower);
     }
 
+    public override void TakeDamage(float damage)
+    {
+        navMeshAgent.SetDestination(transform.position);
+        base.TakeDamage(damage);
+    }
+
     protected override void Die()
     {
         // Randomly select an item to drop based on drop chances
