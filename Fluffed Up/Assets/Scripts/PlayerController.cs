@@ -146,7 +146,7 @@ public class PlayerController : CharacterClass
             showDeathScreen(true);
         }
         
-        if (Input.GetMouseButtonDown(1) && !isAttacking)
+        if (Input.GetKeyDown(KeyCode.A) && !isAttacking)
         {
             Debug.Log("Right mouse button clicked - calling Shoot()");
             Shoot();
@@ -163,6 +163,7 @@ public class PlayerController : CharacterClass
         Debug.Log("Shoot() method is being called");
 
         // Trigger the shooting animation (if you have one)
+        animator.Play("Defend");
         animator.SetTrigger("Shoot");
 
         // Instantiate the projectile at the spawn point
