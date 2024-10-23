@@ -44,9 +44,12 @@ public class PlayerController : CharacterClass
 
     [Header("UI")]
     [SerializeField]
-    private GameObject deathScreen;
     public TextMeshProUGUI coinCounterText; // For Unity UI Text
     public TextMeshProUGUI healthCounterText; // For Unity UI Text
+
+
+    [Header("SceneManagement")]
+    private string lastScene;
 
     private void Awake()
     {
@@ -76,10 +79,6 @@ public class PlayerController : CharacterClass
             healthBar.SetMaxHealth(health);
         }
 
-        if (deathScreen != null)
-        {
-            showDeathScreen(false);
-        }
 
         UpdateAllCounters();
     }
@@ -158,7 +157,12 @@ public class PlayerController : CharacterClass
 
         if (health <= 0)
         {
-            showDeathScreen(true);
+             lastScene = SceneManager.GetActiveScene().name;
+
+             PlayerPrefs.SetString("LastPlayedScene", lastScene);
+
+            
+             SceneManager.LoadScene("DeathScene");
         }
         
 
@@ -208,13 +212,6 @@ public class PlayerController : CharacterClass
         AttackEvent?.Invoke(attackPower);
     }
 
-    public void showDeathScreen(bool show)
-    {
-        if (deathScreen != null)
-        {
-            deathScreen.SetActive(show);
-        }
-    }
 
     public void CollectItem(CollectibleItem item)
     {
