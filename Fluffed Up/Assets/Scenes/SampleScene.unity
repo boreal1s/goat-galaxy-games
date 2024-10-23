@@ -3488,6 +3488,7 @@ MonoBehaviour:
   projectileSpawnPoint: {fileID: 724307456}
   projectileSpeed: 20
   projectileDamage: 10
+  attackSound: {fileID: 8300000, guid: a724102c28abd444b860219ba980c3ce, type: 3}
   inputs: {fileID: 0}
   cameraTransform: {fileID: 489838433}
   deathScreen: {fileID: 344715306}
@@ -4733,6 +4734,9 @@ MonoBehaviour:
   enemyPrefabSlime: {fileID: 9095522416803934105, guid: 653a465a5400a4f2f951a8d29e061783, type: 3}
   enemyPrefabTurtle: {fileID: 5232562413803862215, guid: 6f87a4e241e274fc5b9154af772ec7e1, type: 3}
   waveEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  playerSoundEvent:
     m_PersistentCalls:
       m_Calls: []
   shopComponent: {fileID: 1459348231}
@@ -6446,6 +6450,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1878145630}
   m_CullTransparentMesh: 1
+--- !u!1 &1897237294
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1897237296}
+  - component: {fileID: 1897237295}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1897237295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897237294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dfe132ea7efd4ce19b5fba1c9a06603, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound3DPrefab: {fileID: 1719587315714716692, guid: 58873906edcd842929a41e8353bb38b0, type: 3}
+  waveManagerScript: {fileID: 1322518337}
+--- !u!4 &1897237296
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897237294}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1944541177
 GameObject:
   m_ObjectHideFlags: 0

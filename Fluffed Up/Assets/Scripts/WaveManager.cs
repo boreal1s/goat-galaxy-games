@@ -31,6 +31,9 @@ public class WaveManager : MonoBehaviour
     private bool isSpawningWave = false; // Flag to prevent multiple waves from starting
     private float waveSpawnDelay = 2f;
 
+    // Sound Events
+    public UnityEvent<Vector3, AudioClip> playerSoundEvent;
+
     [SerializeField]
     private GameObject shopComponent;
     public bool shopIsOpen;
@@ -125,7 +128,7 @@ public class WaveManager : MonoBehaviour
                 EnemyBase enemyScript = newEnemy.GetComponent<EnemyBase>();
 
                 // Add event listener: player attack ---> enemy takes damage
-                void onPlayerAttackAction(float damage) => HandlePlayerAttack(enemyScript, damage);
+                void onPlayerAttackAction(float damage, int delayInMilli) => StartPlayerAttack(enemyScript, damage, delayInMilli);
                 player.AttackEvent.AddListener(onPlayerAttackAction);
 
                 enemyScript.AttackEvent.AddListener(player.TakeDamage);
@@ -141,6 +144,18 @@ public class WaveManager : MonoBehaviour
     {
         Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * 18f;
         return new Vector3(randomCircle.x, 1f, randomCircle.y);
+    }
+
+    void StartPlayerAttack(EnemyBase enemy, float damage, int delayInMilli)
+    {
+        playerSoundEvent.Invoke(player.transform.position, player.attackSound);
+        StartCoroutine(DelayedPlayerAttack(enemy, damage, delayInMilli));
+    }
+
+    IEnumerator DelayedPlayerAttack(EnemyBase enemy, float damage, int delayInMilli)
+    {
+        yield return new WaitForSeconds(delayInMilli/1000f);
+        HandlePlayerAttack(enemy, damage);
     }
 
     void HandlePlayerAttack(EnemyBase enemy, float damage)
@@ -192,7 +207,7 @@ public class WaveManager : MonoBehaviour
         isSpawningWave = false; // Reset the flag after spawning the wave
     }
 
-    void RemoveEnemyListener(UnityEngine.Events.UnityAction<float> action, EnemyBase enemy)
+    void RemoveEnemyListener(UnityEngine.Events.UnityAction<float, int> action, EnemyBase enemy)
     {
         player.AttackEvent.RemoveListener(action);
         currentEnemies.Remove(enemy.gameObject); // Safely remove the enemy from the list
