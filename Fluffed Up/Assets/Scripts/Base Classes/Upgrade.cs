@@ -2,15 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Upgrade
+public class Upgrade : MonoBehaviour
 {
     public enum UpgradeType
     {
         Skill = 0,
-        SkillUpgrade = 1,
-        StatUpgrade = 2,
-        PlayerModification = 3,
-        GameModification = 4,
+        StatUpgrade = 1,
+        PlayerModification = 2,
+        GameModification = 3,
     }
 
     public string name;
