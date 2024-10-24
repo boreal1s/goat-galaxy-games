@@ -1189,7 +1189,7 @@ MonoBehaviour:
   maxHealth: 0
   attackPower: 2
   attackSpeed: 0
-  attackDistanceThreshold: 0
+  attackDistanceThreshold: 2
   isAttacking: 0
   defense: 0
   isBurning: 0

@@ -10,13 +10,15 @@ using UnityEngine.SceneManagement;
 public class PlayerController : CharacterClass
 {
     // Player attributes
-    public UnityEvent<float> AttackEvent;
+    public UnityEvent<float, int> AttackEvent;
     public UnityEvent<float> DamageEvent;
     [Header("Shooting")]
     public GameObject projectilePrefab;       // The projectile prefab to instantiate
     public Transform projectileSpawnPoint;    // Where the projectile will spawn
     public float projectileSpeed = 20f;       // Speed of the projectile
     public float projectileDamage = 10f;      // Damage dealt by the projectile
+    public AudioClip attackSound;
+    public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not. 
 
     [System.Serializable]
     public class ItemProperties
@@ -209,7 +211,7 @@ public class PlayerController : CharacterClass
         StartCoroutine(ResetAttackState());
 
         // Find nearby enemies
-        AttackEvent?.Invoke(attackPower);
+        AttackEvent?.Invoke(attackPower, attackDelayInMilli);
     }
 
 
