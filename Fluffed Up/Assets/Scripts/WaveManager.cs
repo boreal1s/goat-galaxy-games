@@ -43,10 +43,16 @@ public class WaveManager : MonoBehaviour
 
     private List<List<EnemySpawnInfo>> waveList;
 
+    private ShopTrigger shopTrigger;
+
     // Start is called before the first frame update
     void Start()
     {
-        shopComponent.SetActive(false);
+        shopTrigger = FindObjectOfType<ShopTrigger>(); // Find the ShopManager in the scene
+        if (shopTrigger == null)
+        {
+            Debug.LogError("No shopTrigger found in the scene.");
+        }
         waveEvent.AddListener(RequestNextWave);
         PopulateWave();
         StartWave();
@@ -192,7 +198,7 @@ public class WaveManager : MonoBehaviour
     {
         if (currentEnemies.Count == 0 && !isSpawningWave)
         {
-            OpenShop();
+            shopTrigger.OpenShop();
             StartCoroutine(StartNextWave());
         }
     }
@@ -211,21 +217,5 @@ public class WaveManager : MonoBehaviour
     {
         player.AttackEvent.RemoveListener(action);
         currentEnemies.Remove(enemy.gameObject); // Safely remove the enemy from the list
-    }
-
-    public void OpenShop()
-    {
-        Debug.Log("Shop opened");
-        shopComponent.SetActive(true);
-        Time.timeScale = 0;
-        shopIsOpen = true;
-    }
-
-    public void CloseShop()
-    {
-        shopComponent.SetActive(false);
-        Time.timeScale = 1f;
-        Cursor.lockState = CursorLockMode.Locked;
-        shopIsOpen = false;
     }
 }
