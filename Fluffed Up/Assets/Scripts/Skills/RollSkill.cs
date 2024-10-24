@@ -6,7 +6,7 @@ public class RollSkill : Skill, ISkill
 {
     CharacterClass player;
 
-    public RollSkill(string name, string desc, ArrayList followingUpgrades, UpgradeType upgradeType, int cost, float rarity, float dmg, float cldwn, CharacterClass player, float dur = 0f) : base(name, desc, followingUpgrades, upgradeType, cost, rarity, dmg, cldwn, dur)
+    public RollSkill(string name, string desc, List<Upgrade> followingUpgrades, UpgradeType upgradeType, int cost, float dmg, float cldwn, CharacterClass player, float dur = 0f) : base(name, desc, followingUpgrades, upgradeType, cost, dmg, cldwn, dur)
     {
         this.player = player;
     }

@@ -10,23 +10,22 @@ public class Upgrade : MonoBehaviour
         StatUpgrade = 1,
         PlayerModification = 2,
         GameModification = 3,
+        Consumable = 4,
     }
 
-    public string name;
+    public string upgradeName;
     public string description;
-    public ArrayList followingUpgrades;
+    public List<Upgrade> followingUpgrades;
     public UpgradeType upgradeType;
     public int cost;
-    public float rarity; // lower value is more rare
 
-    public Upgrade(string name, string description, ArrayList followingUpgrades, UpgradeType upgradeType, int cost, float rarity)
+    public Upgrade(string name, string description, List<Upgrade> followingUpgrades, UpgradeType upgradeType, int cost)
     {
         this.cost = cost;
-        this.name = name;
+        this.upgradeName = name;
         this.description = description;
         this.followingUpgrades = followingUpgrades;
         this.upgradeType = upgradeType;
         this.cost = cost;
-        this.rarity = rarity;
     }
 }

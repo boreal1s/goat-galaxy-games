@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Skill : Upgrade
 {
-    public float damage;                // Damage dealt by the skill
+    public float power;                //  Quantitative effect of the skill
     public float cooldown;              // Cooldown time before the skill can be used again
     public float duration;              // How long the skill lasts (if applicable)
     protected float lastUsedTime;         // Tracks the last time the skill was used
 
-    public Skill(string name, string desc, ArrayList followingUpgrades, UpgradeType upgradeType, int cost, float rarity, float dmg, float cldwn, float dur = 0f) : base(name, desc, followingUpgrades, upgradeType, cost, rarity)
+    public Skill(string name, string desc, List<Upgrade> followingUpgrades, UpgradeType upgradeType, int cost, float pwr, float cldwn, float dur = 0f) : base(name, desc, followingUpgrades, upgradeType, cost)
     {
-        this.damage = dmg;
+        this.power = pwr;
         this.cooldown = cldwn;
         this.duration = dur;
         this.lastUsedTime = -cldwn; // Ensure the skill can be used immediately
