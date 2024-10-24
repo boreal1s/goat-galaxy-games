@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 public class EnemyTurtle : EnemyBase
 {
-    private const int ACTION_DELAY_DEFAULT = 3000;
+    private const int ACTION_DELAY_DEFAULT = 800;
     private int actionDelay = ACTION_DELAY_DEFAULT; // give delay in action because slime is stupid!
     public override void AIStateMachine()
     {
