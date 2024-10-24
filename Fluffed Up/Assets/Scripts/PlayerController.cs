@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : CharacterClass
 {
@@ -43,9 +44,12 @@ public class PlayerController : CharacterClass
 
     [Header("UI")]
     [SerializeField]
-    private GameObject deathScreen;
     public TextMeshProUGUI coinCounterText; // For Unity UI Text
     public TextMeshProUGUI healthCounterText; // For Unity UI Text
+
+
+    [Header("SceneManagement")]
+    private string lastScene;
 
     private void Awake()
     {
@@ -75,10 +79,6 @@ public class PlayerController : CharacterClass
             healthBar.SetMaxHealth(health);
         }
 
-        if (deathScreen != null)
-        {
-            showDeathScreen(false);
-        }
 
         UpdateAllCounters();
     }
@@ -127,12 +127,26 @@ public class PlayerController : CharacterClass
         animator.SetBool("isRunning", isRunning);
         // Debug.Log("isAttacking:" + isAttacking.ToString());
 
+        if (SceneManager.GetActiveScene().name == "OtherCharacter")
+        {
+            if (Input.GetMouseButtonDown(0) && !isAttacking)
+            {
+                Debug.Log("Right mouse button clicked - calling Shoot() in 'OtherCharacter' scene");
+                Shoot();
+            }
+        }
+
+        if (SceneManager.GetActiveScene().name == "SampleScene")
+        {
+            if (Input.GetMouseButtonDown(0) && !isAttacking)
+            {
+                Debug.Log("Right mouse button clicked - calling Shoot() in 'OtherCharacter' scene");
+                attackEnemy();
+            }
+        }
         // Enemy attack control. Attack when clicking left click.
         // TODO might need to update to input string name to account for controller.
-        if (Input.GetMouseButtonDown(0) && !isAttacking)
-        {
-            attackEnemy();
-        }
+        
 
         if (inputs.jump && isGrounded && !isJumping)
         {
@@ -143,14 +157,14 @@ public class PlayerController : CharacterClass
 
         if (health <= 0)
         {
-            showDeathScreen(true);
+             lastScene = SceneManager.GetActiveScene().name;
+
+             PlayerPrefs.SetString("LastPlayedScene", lastScene);
+
+            
+             SceneManager.LoadScene("DeathScene");
         }
         
-        if (Input.GetMouseButtonDown(1) && !isAttacking)
-        {
-            Debug.Log("Right mouse button clicked - calling Shoot()");
-            Shoot();
-        }
 
         if (Input.GetKeyDown(KeyCode.Alpha1) && !isAttacking)
         {
@@ -163,7 +177,7 @@ public class PlayerController : CharacterClass
         Debug.Log("Shoot() method is being called");
 
         // Trigger the shooting animation (if you have one)
-        animator.SetTrigger("Shoot");
+        animator.Play("Defend");
 
         // Instantiate the projectile at the spawn point
         GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
@@ -198,13 +212,6 @@ public class PlayerController : CharacterClass
         AttackEvent?.Invoke(attackPower);
     }
 
-    public void showDeathScreen(bool show)
-    {
-        if (deathScreen != null)
-        {
-            deathScreen.SetActive(show);
-        }
-    }
 
     public void CollectItem(CollectibleItem item)
     {
