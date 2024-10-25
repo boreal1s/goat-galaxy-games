@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Projectile
   - Shop
+  - BGM
   layers:
   - Default
   - TransparentFX

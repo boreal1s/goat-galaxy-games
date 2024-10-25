@@ -32,6 +32,8 @@ public class WaveManager : MonoBehaviour
 
     // Sound Events
     public UnityEvent<Vector3, AudioClip> playerSoundEvent;
+    private float waveSpawnDelay = 2f;
+    private BGMPlayer bgmPlayer;
 
     [SerializeField]
     private GameObject shopComponent;
@@ -55,6 +57,11 @@ public class WaveManager : MonoBehaviour
         {
             Debug.LogError("No shopTrigger found in the scene.");
         }
+        shopComponent.SetActive(false);
+        
+        GameObject bgmObject = GameObject.FindGameObjectWithTag("BGM");
+        bgmPlayer = bgmObject.GetComponent<BGMPlayer>();
+
         waveEvent.AddListener(RequestNextWave);
         PopulateWave();
         StartWave();
@@ -169,7 +176,6 @@ public class WaveManager : MonoBehaviour
 
     void StartPlayerAttack(EnemyBase enemy, float damage, int delayInMilli)
     {
-        playerSoundEvent.Invoke(player.transform.position, player.attackSound);
         StartCoroutine(DelayedPlayerAttack(enemy, damage, delayInMilli));
     }
 

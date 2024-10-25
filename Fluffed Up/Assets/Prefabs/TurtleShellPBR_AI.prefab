@@ -1209,6 +1209,9 @@ MonoBehaviour:
   isJumping: 0
   animator: {fileID: 0}
   rb: {fileID: 0}
+  sound3DPrefab: {fileID: 1719587315714716692, guid: 58873906edcd842929a41e8353bb38b0, type: 3}
+  hitSoundEffect: {fileID: 8300000, guid: 8ddf957b24c9445dc9811f11e3a16a76, type: 3}
+  hitSoundPitch: 1
   AttackEvent:
     m_PersistentCalls:
       m_Calls: []
