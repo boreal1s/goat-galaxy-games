@@ -8,7 +8,7 @@ public class ThirdPersonCameraController : MonoBehaviour
 {
     [Header("References")]
     public WaveManager waveManager;
-    public Transform player;
+    public GameObject playerGameObject;
 
     [SerializeField] 
     CinemachineFreeLook aimCamera;
@@ -21,7 +21,6 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     private void Awake()
     {
-        player = waveManager.player.transform;
         inputs = GetComponent<InputMap>();
     }
 
@@ -38,8 +37,9 @@ public class ThirdPersonCameraController : MonoBehaviour
         #endregion
 
         #region Rotate player with camera
+        Transform player = waveManager.playerGameObject.transform;
         Vector3 viewDirection = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
-        player.forward = viewDirection.normalized;
+        waveManager.playerGameObject.transform.forward = viewDirection.normalized;
         #endregion
     }
 

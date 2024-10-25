@@ -20,6 +20,7 @@ public class WaveManager : MonoBehaviour
     }
 
     // Player object
+    public GameObject playerGameObject;
     public PlayerController player;
     public GameObject[] playerPrefabs;
     public Transform cameraTransform;
@@ -44,11 +45,14 @@ public class WaveManager : MonoBehaviour
 
     private List<List<EnemySpawnInfo>> waveList;
 
+    void Awake()
+    {
+        SpawnPlayer();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        SpawnPlayer();
-        
         shopComponent.SetActive(false);
         
         GameObject bgmObject = GameObject.FindGameObjectWithTag("BGM");
@@ -64,7 +68,7 @@ public class WaveManager : MonoBehaviour
 
     void SpawnPlayer()
     {
-        GameObject playerGameObject = Instantiate(playerPrefabs[SelectChar.characterID], new Vector3(0, 0.052f, 0), Quaternion.identity);
+        playerGameObject = Instantiate(playerPrefabs[SelectChar.characterID], new Vector3(0, 0.052f, 0), Quaternion.identity);
         player = playerGameObject.GetComponent<PlayerController>();
         player.cameraTransform = cameraTransform;
     }
