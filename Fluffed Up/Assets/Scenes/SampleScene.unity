@@ -1889,7 +1889,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 60
+  field of view: 40
   orthographic: 0
   orthographic size: 10
   m_Depth: 0
@@ -1914,7 +1914,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 489838429}
-  m_LocalRotation: {x: 0.042100586, y: -0.0000000074439757, z: 3.1367384e-10, w: 0.9991134}
+  m_LocalRotation: {x: 0.05273359, y: -0.00000002976086, z: 0.0000000015715835, w: 0.99860865}
   m_LocalPosition: {x: 5.177, y: 3.152, z: -7.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5721,6 +5721,7 @@ MonoBehaviour:
   shopComponent: {fileID: 1459348231}
   shopIsOpen: 0
   waveCounterText: {fileID: 463771523}
+  countdownText: {fileID: 1704870861}
 --- !u!4 &1322518338
 Transform:
   m_ObjectHideFlags: 0
@@ -6898,8 +6899,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -175, y: -125}
-  m_SizeDelta: {x: 350, y: 50}
+  m_AnchoredPosition: {x: -250, y: -200}
+  m_SizeDelta: {x: 500, y: 50}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1704870861
 MonoBehaviour:

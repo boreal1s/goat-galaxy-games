@@ -219,7 +219,7 @@ public class WaveManager : MonoBehaviour
     {
         shopTrigger.canTriggerShop = true;
 
-        float countdownDuration = 30f; // Total countdown time
+        float countdownDuration = 10f; // Total countdown time
         float elapsed = 0f;
 
         while (elapsed < countdownDuration)

@@ -127,7 +127,7 @@ public class OtherPlayer : CharacterClass
         }
         if (Input.GetMouseButtonDown(1) && !isAttacking)
         {
-            Debug.Log("Right mouse button clicked - calling Shoot()");
+            // Debug.Log("Right mouse button clicked - calling Shoot()");
             Shoot();
         }
     }
