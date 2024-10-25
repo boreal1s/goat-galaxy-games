@@ -55,6 +55,11 @@ public class CharacterClass : MonoBehaviour
     // Character animator and rigidbody
     public Animator animator;
     public Rigidbody rb;
+    public Sound3D sound3DPrefab;
+
+    // Sound Effect Audio Clip
+    public AudioClip hitSoundEffect;
+    public float hitSoundPitch;
 
 
     private void Start()
@@ -141,6 +146,8 @@ public class CharacterClass : MonoBehaviour
 
     public virtual void TakeDamage(float damage)
     {
+        PlaySoundEffect(hitSoundEffect, hitSoundPitch);
+
         // Debug.Log($"{gameObject.name} is taking {damage} damage.");
         health -= damage;
         // Debug.Log($"{gameObject.name} health is now {health}");
@@ -160,5 +167,22 @@ public class CharacterClass : MonoBehaviour
     {
         Debug.Log($"{gameObject.name} has died.");
         Destroy(gameObject);
+    }
+
+    public void PlaySoundEffect(AudioClip audioClip, float pitch = 1.0f)
+    {
+        Debug.Log("CharacterClass PlaySoundEffect");
+        if (sound3DPrefab)
+        {
+            Debug.Log("CharacterClass PlaySoundEffect!!!!");
+            Sound3D sound3DObject = Instantiate(sound3DPrefab, transform.position, Quaternion.identity, null);
+            sound3DObject.audioSrc.clip = audioClip;
+
+            sound3DObject.audioSrc.minDistance = 5f;
+            sound3DObject.audioSrc.maxDistance = 100f;
+            sound3DObject.audioSrc.pitch = pitch;
+
+            sound3DObject.audioSrc.Play();
+        }
     }
 }
