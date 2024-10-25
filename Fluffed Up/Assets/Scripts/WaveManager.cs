@@ -19,7 +19,9 @@ public class WaveManager : MonoBehaviour
         }
     }
 
+    // Player object
     public PlayerController player;
+    public GameObject[] playerPrefabs;
 
     // List of enemies
     public GameObject enemyPrefabSlime;
@@ -44,17 +46,25 @@ public class WaveManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SpawnPlayer();
+        
         shopComponent.SetActive(false);
         
         GameObject bgmObject = GameObject.FindGameObjectWithTag("BGM");
         bgmPlayer = bgmObject.GetComponent<BGMPlayer>();
 
-        waveEvent.AddListener(RequestNextWave);
+        waveEvent.AddListener(RequestNextWave);        
         PopulateWave();
         StartWave();
 
         if (shopComponent == null)
             Debug.Log("No shop component was assigned to the WaveManager");
+    }
+
+    void SpawnPlayer()
+    {
+        GameObject playerGameObject = Instantiate(playerPrefabs[SelectChar.characterID], new Vector3(0, 0.052f, 0), Quaternion.identity);
+        player = playerGameObject.GetComponent<PlayerController>();
     }
 
     void PopulateWave()

@@ -7,6 +7,7 @@ using UnityEngine;
 public class ThirdPersonCameraController : MonoBehaviour
 {
     [Header("References")]
+    public WaveManager waveManager;
     public Transform player;
 
     [SerializeField] 
@@ -20,6 +21,7 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     private void Awake()
     {
+        player = waveManager.player.transform;
         inputs = GetComponent<InputMap>();
     }
 
