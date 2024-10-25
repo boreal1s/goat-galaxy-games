@@ -16,6 +16,7 @@ public class ShopTrigger : MonoBehaviour
     private PlayerController playerController;
     private CinemachineFreeLook freeLookCamera;
 
+    private BGMPlayer bgmPlayer;
 
 
     // Start is called before the first frame update
@@ -34,10 +35,13 @@ public class ShopTrigger : MonoBehaviour
         playerController = FindObjectOfType<PlayerController>();
         freeLookCamera = FindObjectOfType<CinemachineFreeLook>();
 
+        GameObject bgmObject = GameObject.FindGameObjectWithTag("BGM");
+        bgmPlayer = bgmObject.GetComponent<BGMPlayer>();
     }
 
     public void OpenShop()
     {
+        bgmPlayer.DimAndDull();
         shopUI.SetActive(true);
         // Time.timeScale = 0;
         Cursor.lockState = CursorLockMode.None;
@@ -57,6 +61,7 @@ public class ShopTrigger : MonoBehaviour
 
     public void CloseShop()
     {
+        bgmPlayer.LoudAndClear();
         shopUI.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
