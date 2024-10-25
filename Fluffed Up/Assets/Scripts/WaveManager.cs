@@ -30,9 +30,7 @@ public class WaveManager : MonoBehaviour
     private int currentWave = 0;
     private bool isSpawningWave = false; // Flag to prevent multiple waves from starting
     private float waveSpawnDelay = 2f;
-
-    // Sound Events
-    public UnityEvent<Vector3, AudioClip> playerSoundEvent;
+    private BGMPlayer bgmPlayer;
 
     [SerializeField]
     private GameObject shopComponent;
@@ -47,6 +45,10 @@ public class WaveManager : MonoBehaviour
     void Start()
     {
         shopComponent.SetActive(false);
+        
+        GameObject bgmObject = GameObject.FindGameObjectWithTag("BGM");
+        bgmPlayer = bgmObject.GetComponent<BGMPlayer>();
+
         waveEvent.AddListener(RequestNextWave);
         PopulateWave();
         StartWave();
@@ -148,7 +150,6 @@ public class WaveManager : MonoBehaviour
 
     void StartPlayerAttack(EnemyBase enemy, float damage, int delayInMilli)
     {
-        playerSoundEvent.Invoke(player.transform.position, player.attackSound);
         StartCoroutine(DelayedPlayerAttack(enemy, damage, delayInMilli));
     }
 
@@ -215,6 +216,8 @@ public class WaveManager : MonoBehaviour
 
     public void OpenShop()
     {
+        bgmPlayer.DimAndDull();
+
         Debug.Log("Shop opened");
         shopComponent.SetActive(true);
         Time.timeScale = 0;
@@ -223,6 +226,8 @@ public class WaveManager : MonoBehaviour
 
     public void CloseShop()
     {
+        bgmPlayer.LoudAndClear();
+
         shopComponent.SetActive(false);
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;

@@ -210,6 +210,9 @@ public class PlayerController : CharacterClass
         // Reset the attacking state after the attack animation finishes
         StartCoroutine(ResetAttackState());
 
+        // Play attack sound
+        PlaySoundEffect(attackSound);
+
         // Find nearby enemies
         AttackEvent?.Invoke(attackPower, attackDelayInMilli);
     }
