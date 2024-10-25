@@ -22,6 +22,7 @@ public class WaveManager : MonoBehaviour
     // Player object
     public PlayerController player;
     public GameObject[] playerPrefabs;
+    public Transform cameraTransform;
 
     // List of enemies
     public GameObject enemyPrefabSlime;
@@ -65,6 +66,7 @@ public class WaveManager : MonoBehaviour
     {
         GameObject playerGameObject = Instantiate(playerPrefabs[SelectChar.characterID], new Vector3(0, 0.052f, 0), Quaternion.identity);
         player = playerGameObject.GetComponent<PlayerController>();
+        player.cameraTransform = cameraTransform;
     }
 
     void PopulateWave()

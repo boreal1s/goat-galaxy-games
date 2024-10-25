@@ -2466,6 +2466,7 @@ MonoBehaviour:
   playerPrefabs:
   - {fileID: 890881449719876678, guid: 7336e8f1590474279ad5bd57e318ea7c, type: 3}
   - {fileID: 890881449719876678, guid: 7336e8f1590474279ad5bd57e318ea7c, type: 3}
+  cameraTransform: {fileID: 489838433}
   enemyPrefabSlime: {fileID: 9095522416803934105, guid: 653a465a5400a4f2f951a8d29e061783, type: 3}
   enemyPrefabTurtle: {fileID: 5232562413803862215, guid: 6f87a4e241e274fc5b9154af772ec7e1, type: 3}
   waveEvent:
