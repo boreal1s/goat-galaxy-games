@@ -47,12 +47,13 @@ public class WaveManager : MonoBehaviour
 
     void Awake()
     {
-        SpawnPlayer();
+        
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        SpawnPlayer();
         shopComponent.SetActive(false);
         
         GameObject bgmObject = GameObject.FindGameObjectWithTag("BGM");

@@ -8,7 +8,6 @@ public class ThirdPersonCameraController : MonoBehaviour
 {
     [Header("References")]
     public WaveManager waveManager;
-    public GameObject playerGameObject;
 
     [SerializeField] 
     CinemachineFreeLook aimCamera;
