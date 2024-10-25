@@ -5,9 +5,17 @@ using static Upgrade;
 
 public class GameModification : Upgrade
 {
-    public GameModification(Upgrade upgrade) : base(upgrade.name, upgrade.description, upgrade.followingUpgrades, upgrade.upgradeType, upgrade.cost)
-    { }
+    public List<GameModification> followingUpgrades;
+    public DropTables.Rarity rarity;
+    public GameModification(Upgrade upgrade, List<GameModification> followingUpgrades, DropTables.Rarity rarity) : base(upgrade.name, upgrade.description, upgrade.upgradeType, upgrade.cost, upgrade.shopArt, upgrade.toolbarArt)
+    {
+        this.followingUpgrades = followingUpgrades;
+        this.rarity = rarity;
+    }
 
-    public GameModification(string name, string description, List<Upgrade> followingUpgrades, UpgradeType upgradeType, int cost) : base(name, description, followingUpgrades, upgradeType, cost)
-    { }
+    public GameModification(string name, string description, List<GameModification> followingUpgrades, UpgradeType upgradeType, int cost, DropTables.Rarity rarity, Sprite shopArt, Sprite toolbarArt) : base(name, description, upgradeType, cost, shopArt, toolbarArt)
+    {
+        this.followingUpgrades = followingUpgrades;
+        this.rarity = rarity;
+    }
 }

@@ -8,6 +8,11 @@ public class ShopController : MonoBehaviour
     private GameObject shopComponent;
     public bool shopIsOpen;
 
+    public Upgrade shopOption1;
+    public Upgrade shopOption2;
+    public Upgrade shopOption3;
+    public Upgrade consumableOption;
+
     private void Start()
     {
     }
@@ -33,4 +38,6 @@ public class ShopController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         shopIsOpen = false;
     }
+
+    public void BuyOption() { }
 }

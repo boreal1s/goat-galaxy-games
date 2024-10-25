@@ -10,22 +10,23 @@ public class Upgrade : MonoBehaviour
         StatUpgrade = 1,
         PlayerModification = 2,
         GameModification = 3,
-        Consumable = 4,
     }
 
     public string upgradeName;
     public string description;
-    public List<Upgrade> followingUpgrades;
     public UpgradeType upgradeType;
     public int cost;
+    public Sprite shopArt;
+    public Sprite toolbarArt;
 
-    public Upgrade(string name, string description, List<Upgrade> followingUpgrades, UpgradeType upgradeType, int cost)
+    public Upgrade(string name, string description, UpgradeType upgradeType, int cost, Sprite shopArt, Sprite toolbarArt)
     {
         this.cost = cost;
         this.upgradeName = name;
         this.description = description;
-        this.followingUpgrades = followingUpgrades;
         this.upgradeType = upgradeType;
         this.cost = cost;
+        this.shopArt = shopArt;
+        this.toolbarArt = toolbarArt;
     }
 }

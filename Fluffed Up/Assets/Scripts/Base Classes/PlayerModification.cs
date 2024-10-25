@@ -4,9 +4,18 @@ using UnityEngine;
 
 public class PlayerModification : Upgrade
 {
-    public PlayerModification(Upgrade upgrade) : base(upgrade.name, upgrade.description, upgrade.followingUpgrades, upgrade.upgradeType, upgrade.cost)
-    {}
+    public List<PlayerModification> followingMods;
+    public DropTables.Rarity rarity;
 
-    public PlayerModification(string name, string description, List<Upgrade> followingUpgrades, UpgradeType upgradeType, int cost) : base(name, description, followingUpgrades, upgradeType, cost)
-    {}
+    public PlayerModification(Upgrade upgrade, List<PlayerModification> followingMods, DropTables.Rarity rarity) : base(upgrade.name, upgrade.description, upgrade.upgradeType, upgrade.cost, upgrade.shopArt, upgrade.toolbarArt)
+    {
+        this.followingMods = followingMods;
+        this.rarity = rarity;
+    }
+
+    public PlayerModification(string name, string description, List<PlayerModification> followingMods, UpgradeType upgradeType, int cost, DropTables.Rarity rarity, Sprite shopArt, Sprite toolbarArt) : base(name, description, upgradeType, cost, shopArt, toolbarArt)
+    {
+        this.followingMods = followingMods;
+        this.rarity = rarity;
+    }
 }
