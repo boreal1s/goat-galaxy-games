@@ -29,7 +29,6 @@ public class WaveManager : MonoBehaviour
     private List<GameObject> currentEnemies = new List<GameObject>();
     private int currentWave = 0;
     private bool isSpawningWave = false; // Flag to prevent multiple waves from starting
-    private float waveSpawnDelay = 2f;
 
     // Sound Events
     public UnityEvent<Vector3, AudioClip> playerSoundEvent;
@@ -40,6 +39,9 @@ public class WaveManager : MonoBehaviour
 
     [SerializeField] 
     private TextMeshProUGUI waveCounterText; // For Unity UI Text
+    public TextMeshProUGUI countdownText;
+
+    private Coroutine restTimerCoroutine;
 
     private List<List<EnemySpawnInfo>> waveList;
 
@@ -102,8 +104,21 @@ public class WaveManager : MonoBehaviour
         };
     }
 
-    void StartWave()
+    public void StartWave()
     {
+        // Stop the rest timer if it's running
+        if (restTimerCoroutine != null)
+        {
+            StopCoroutine(restTimerCoroutine);
+            restTimerCoroutine = null; // Clear the reference
+        }
+
+        shopTrigger.canTriggerShop = false;
+        shopTrigger.CloseShop();
+        Debug.Log("Times up. Disabling Shop");
+
+        // Clear the countdown text when finished
+        countdownText.text = "";
         currentWave++; // update wave count
         UpdateWaveCounter();
         SpawnEnemy();
@@ -189,8 +204,6 @@ public class WaveManager : MonoBehaviour
 
         waveEvent.Invoke();
 
-        if (shopIsOpen)
-            Cursor.lockState = CursorLockMode.None;
     }
 
 
@@ -198,19 +211,46 @@ public class WaveManager : MonoBehaviour
     {
         if (currentEnemies.Count == 0 && !isSpawningWave)
         {
-            shopTrigger.OpenShop();
             StartCoroutine(StartNextWave());
         }
+    }
+
+    private IEnumerator StartRestTimer()
+    {
+        shopTrigger.canTriggerShop = true;
+
+        float countdownDuration = 30f; // Total countdown time
+        float elapsed = 0f;
+
+        while (elapsed < countdownDuration)
+        {
+            elapsed += Time.deltaTime; // Increment elapsed time
+            float remainingTime = countdownDuration - elapsed; // Calculate remaining time
+
+            // Update the UI text
+            countdownText.text = "Monsters spawning in " + Mathf.Ceil(remainingTime).ToString() + " seconds"; // Show seconds remaining
+
+            yield return null; // Wait for the next frame
+        }
+
+        // Clear the countdown text when finished
+        countdownText.text = "";
     }
 
     IEnumerator StartNextWave()
     {
         isSpawningWave = true; // Set the flag to true to prevent multiple triggers
-        yield return new WaitWhile(() => shopIsOpen == true); // Don't start next wave until shop is closed
-        yield return new WaitForSeconds(waveSpawnDelay); // Delay before starting next wave. We don't want the wave to start immediately after the shop closes.
-
-        StartWave();
+        
+        // Start the rest timer and wait for it to finish
+        if (restTimerCoroutine != null)
+        {
+            StopCoroutine(restTimerCoroutine);
+        }
+        restTimerCoroutine = StartCoroutine(StartRestTimer());
+        
+        yield return restTimerCoroutine; // Wait for the timer to finish
         isSpawningWave = false; // Reset the flag after spawning the wave
+        StartWave();
     }
 
     void RemoveEnemyListener(UnityEngine.Events.UnityAction<float, int> action, EnemyBase enemy)
