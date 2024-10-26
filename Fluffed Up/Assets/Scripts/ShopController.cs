@@ -3,16 +3,35 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Remoting.Metadata;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ShopController : MonoBehaviour
 {
     [SerializeField] private GameObject shopComponent;
     [SerializeField] private GameObject dt;
+
     [SerializeField] private GameObject option1;
+    [SerializeField] private GameObject option1ShopImage;
+    [SerializeField] private GameObject option1Name;
+    [SerializeField] private GameObject option1Description;
+
     [SerializeField] private GameObject option2;
+    [SerializeField] private GameObject option2ShopImage;
+    [SerializeField] private GameObject option2Name;
+    [SerializeField] private GameObject option2Description;
+
     [SerializeField] private GameObject option3;
+    [SerializeField] private GameObject option3ShopImage;
+    [SerializeField] private GameObject option3Name;
+    [SerializeField] private GameObject option3Description;
+
     [SerializeField] private GameObject consumableOption;
+    [SerializeField] private GameObject consumableOptionShopImage;
+    [SerializeField] private GameObject consumableOptionName;
+    [SerializeField] private GameObject consumableOptionDescription;
 
     Upgrade upgrade1;
     Upgrade upgrade2;
@@ -25,6 +44,7 @@ public class ShopController : MonoBehaviour
 
     private void Start()
     {
+        shopComponent.SetActive(false);
         dropTables = dt.GetComponent<DropTables>();
         Debug.Log($"DropTable Found: {dropTables}");
         shopIsStocked = false;
@@ -59,10 +79,27 @@ public class ShopController : MonoBehaviour
     private void activateShop()
     {
         shopComponent.SetActive(true);
-        //option1.SetActive(true);
-        //option2.SetActive(true);
-        //option3.SetActive(true);
-        //consumableOption.SetActive(true);
+        option1.SetActive(true);
+        option2.SetActive(true);
+        option3.SetActive(true);
+        consumableOption.SetActive(true);
+
+        option1ShopImage.GetComponent<Image>().overrideSprite = upgrade1.shopArt;
+        option1Name.GetComponent<TextMeshProUGUI>().text = upgrade1.upgradeName;
+        option1Description.GetComponent<TextMeshProUGUI>().text = upgrade1.description;
+
+        option2ShopImage.GetComponent<Image>().overrideSprite = upgrade2.shopArt;
+        option2Name.GetComponent<TextMeshProUGUI>().text = upgrade2.upgradeName;
+        option2Description.GetComponent<TextMeshProUGUI>().text = upgrade2.description;
+
+        option3ShopImage.GetComponent<Image>().overrideSprite = upgrade3.shopArt;
+        option3Name.GetComponent<TextMeshProUGUI>().text = upgrade3.upgradeName;
+        option3Description.GetComponent<TextMeshProUGUI>().text = upgrade3.description;
+
+        consumableOptionShopImage.GetComponent<Image>().overrideSprite = consumable.shopArt;
+        consumableOptionName.GetComponent<TextMeshProUGUI>().text = consumable.upgradeName;
+        consumableOptionDescription.GetComponent<TextMeshProUGUI>().text = consumable.description;
+
         Debug.Log("Shop component activated");
     }
 
