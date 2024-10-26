@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 1
   m_FogColor: {r: 0.65080994, g: 0.666729, b: 0.7075472, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.05
+  m_FogDensity: 0.02
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -3441,7 +3441,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1836039897307064, guid: 37bf6b4eaddee8d448771b63238e03d1, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 4294967295
+      value: 127
       objectReference: {fileID: 0}
     - target: {fileID: 4731548797671380, guid: 37bf6b4eaddee8d448771b63238e03d1, type: 3}
       propertyPath: m_RootOrder
@@ -10552,6 +10552,7 @@ MonoBehaviour:
   enemyPrefabSlime: {fileID: 9095522416803934105, guid: 653a465a5400a4f2f951a8d29e061783, type: 3}
   enemyPrefabTurtle: {fileID: 5232562413803862215, guid: 6f87a4e241e274fc5b9154af772ec7e1, type: 3}
   enemySpawnArea: {fileID: 82029157}
+  enemySpawnBoxes: []
   waveEvent:
     m_PersistentCalls:
       m_Calls: []
