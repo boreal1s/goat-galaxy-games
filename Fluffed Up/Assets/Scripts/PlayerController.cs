@@ -42,7 +42,7 @@ public class PlayerController : CharacterClass
 
     [Header("Camera")]
     [SerializeField]
-    private Transform cameraTransform;
+    public Transform cameraTransform;
 
     [Header("UI")]
     [SerializeField]

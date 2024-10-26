@@ -4,6 +4,8 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using System.Linq.Expressions;
+using Cinemachine;
 
 public class WaveManager : MonoBehaviour
 {
@@ -20,6 +22,10 @@ public class WaveManager : MonoBehaviour
     }
 
     public PlayerController player;
+    public GameObject playerAimCamera;
+    public GameObject playerFollowCamera;
+    public GameObject[] playerPrefabs;
+    public Transform cameraTransform;
 
     // List of enemies
     public GameObject enemyPrefabSlime;
@@ -51,6 +57,8 @@ public class WaveManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SpawnPlayer();
+
         shopTrigger = FindObjectOfType<ShopTrigger>(); // Find the ShopManager in the scene
         if (shopTrigger == null)
         {
@@ -64,6 +72,22 @@ public class WaveManager : MonoBehaviour
 
         if (shopComponent == null)
             Debug.Log("No shop component was assigned to the WaveManager");
+    }
+
+    void SpawnPlayer()
+    {
+        GameObject playerGameObject = Instantiate(playerPrefabs[SelectChar.characterID], new Vector3(0, 0.052f, 0), Quaternion.identity);
+        player = playerGameObject.GetComponent<PlayerController>();
+        player.cameraTransform = cameraTransform;
+        Transform playerCameraRoot = playerGameObject.transform.Find("CameraRoot");
+        
+        CinemachineFreeLook aimCameraFreeLook = playerAimCamera.GetComponent<CinemachineFreeLook>();
+        aimCameraFreeLook.Follow = playerCameraRoot;
+        aimCameraFreeLook.LookAt = playerCameraRoot;
+
+        CinemachineFreeLook followCameraFreeLook = playerFollowCamera.GetComponent<CinemachineFreeLook>();
+        followCameraFreeLook.Follow = playerCameraRoot;
+        followCameraFreeLook.LookAt = playerCameraRoot;
     }
 
     void PopulateWave()
