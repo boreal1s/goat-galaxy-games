@@ -45,7 +45,7 @@ public class WaveManager : MonoBehaviour
     public bool shopIsOpen;
 
     [SerializeField] 
-    private TextMeshProUGUI waveCounterText; // For Unity UI Text
+    public TextMeshProUGUI waveCounterText; // For Unity UI Text
     public TextMeshProUGUI countdownText;
 
     private Coroutine restTimerCoroutine;
