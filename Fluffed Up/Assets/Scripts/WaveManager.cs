@@ -88,6 +88,9 @@ public class WaveManager : MonoBehaviour
         CinemachineFreeLook followCameraFreeLook = playerFollowCamera.GetComponent<CinemachineFreeLook>();
         followCameraFreeLook.Follow = playerCameraRoot;
         followCameraFreeLook.LookAt = playerCameraRoot;
+
+        waveCounterText = playerGameObject.transform.Find("PlayerUI/WaveCounter").GetComponent<TextMeshProUGUI>();
+        countdownText = playerGameObject.transform.Find("PlayerUI/TimerCountdown").GetComponent<TextMeshProUGUI>();
     }
 
     void PopulateWave()
@@ -221,7 +224,6 @@ public class WaveManager : MonoBehaviour
     {
         if (enemy != null)
         {
-            // Debug.Log("HandlePlayerAttack called");
             float distance = Vector3.Distance(player.transform.position, enemy.transform.position);
 
             // Hit condition1: Distance smaller than threshold
@@ -229,7 +231,6 @@ public class WaveManager : MonoBehaviour
             bool withinAngle = math.abs(Vector3.Angle(player.transform.forward, enemy.transform.position - player.transform.position)) < 90 ;
             if (withinDistance && withinAngle)
             {
-                // Debug.Log("Enemy got damage");
                 enemy.TakeDamage(damage);
             }
         }
