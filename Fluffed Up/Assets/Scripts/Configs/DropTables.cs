@@ -127,7 +127,7 @@ public class DropTables : MonoBehaviour
         };
 
         // Consumables
-        Upgrade healthPotion = new Upgrade("Flesh Wound", "Occassionally negate a small amount of damage.", UpgradeType.Consumable, 5, healthPotionShopSprite, healthPotionToolbarSprite, new Consumable(25f, ConsumableType.Health));
+        Upgrade healthPotion = new Upgrade("Health Potion", "Heal a small amount of missing health.", UpgradeType.Consumable, 5, healthPotionShopSprite, healthPotionToolbarSprite, new Consumable(25f, ConsumableType.Health));
         consumables = new WeightedList<Upgrade>()
         {
             {healthPotion, commonWeight},
@@ -163,22 +163,62 @@ public class DropTables : MonoBehaviour
         }
 
         Debug.Log($"Got random type: {type}");
+        Upgrade upgrade;
 
         switch (type)
         {
             case UpgradeType.StatUpgrade:
-                return statUpgrades.Next();
+                upgrade = statUpgrades.Next();
+                break;
             case UpgradeType.Skill:
-                return skills.Next();
+                upgrade = skills.Next();
+                skills.SetWeight(upgrade, 0);
+                availableUpgrades[UpgradeType.Skill] -= 1;
+                break;
             case UpgradeType.PlayerModification:
-                return playerModifications.Next();
+                upgrade = playerModifications.Next();
+                playerModifications.SetWeight(upgrade, 0);
+                availableUpgrades[UpgradeType.PlayerModification] -= 1;
+                break;
             case UpgradeType.GameModification:
-                return gameModifications.Next();
+                upgrade = gameModifications.Next();
+                gameModifications.SetWeight(upgrade, 0);
+                availableUpgrades[UpgradeType.GameModification] -= 1;
+                break;
             case UpgradeType.Consumable:
-                return consumables.Next();
+                upgrade = consumables.Next();
+                break;
             default:
                 Debug.Log("Uhm, this is awkward. getRandomWithReplacement was given an invalid argument.");
                 return null;
+        }
+
+        
+
+        return upgrade;
+    }
+
+    public void putBack(Upgrade upgrade)
+    {
+        switch (upgrade.upgradeType)
+        {
+            case UpgradeType.Skill:
+                upgrade = skills.Next();
+                skills.SetWeight(upgrade, weightMap[upgrade.skill.GetRarity()]);
+                availableUpgrades[UpgradeType.Skill] += 1;
+                break;
+            case UpgradeType.PlayerModification:
+                upgrade = playerModifications.Next();
+                playerModifications.SetWeight(upgrade, weightMap[upgrade.playerMod.rarity]);
+                availableUpgrades[UpgradeType.PlayerModification] -= 1;
+                break;
+            case UpgradeType.GameModification:
+                upgrade = gameModifications.Next();
+                gameModifications.SetWeight(upgrade, weightMap[upgrade.gameMod.rarity]);
+                availableUpgrades[UpgradeType.GameModification] -= 1;
+                break;
+            default:
+                break;
         }
     }
 
@@ -189,7 +229,6 @@ public class DropTables : MonoBehaviour
         {
             case UpgradeType.Skill:
                 followingUpgrades = upgrade.skill.GetFollowingUprages();
-                skills.SetWeight(upgrade, 0);
                 for (int i = 0; i < followingUpgrades.Count; i++)
                 {
                     skills.Add(followingUpgrades[i], weightMap[followingUpgrades[i].skill.GetRarity()]);
@@ -198,7 +237,6 @@ public class DropTables : MonoBehaviour
                 break;
             case UpgradeType.PlayerModification:
                 followingUpgrades = upgrade.playerMod.followingMods;
-                playerModifications.SetWeight(upgrade, 0);
                 for (int i = 0; i < followingUpgrades.Count; i++)
                 {
                     playerModifications.Add(followingUpgrades[i], weightMap[followingUpgrades[i].playerMod.rarity]);
@@ -207,7 +245,6 @@ public class DropTables : MonoBehaviour
                 break;
             case UpgradeType.GameModification:
                 followingUpgrades = upgrade.gameMod.followingMods;
-                gameModifications.SetWeight(upgrade, 0);
                 for (int i = 0; i < followingUpgrades.Count; i++)
                 {
                     gameModifications.Add(followingUpgrades[i], weightMap[followingUpgrades[i].gameMod.rarity]);

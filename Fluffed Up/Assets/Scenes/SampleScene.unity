@@ -8479,6 +8479,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shopComponent: {fileID: 1459348231}
   dt: {fileID: 1405632271}
+  player: {fileID: 1034330705}
   option1: {fileID: 95074818}
   option1ShopImage: {fileID: 1057746076}
   option1Name: {fileID: 172147554}
