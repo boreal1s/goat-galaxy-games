@@ -4,6 +4,8 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using System.Linq.Expressions;
+using Cinemachine;
 
 public class WaveManager : MonoBehaviour
 {
@@ -20,6 +22,10 @@ public class WaveManager : MonoBehaviour
     }
 
     public PlayerController player;
+    public GameObject playerAimCamera;
+    public GameObject playerFollowCamera;
+    public GameObject[] playerPrefabs;
+    public Transform cameraTransform;
 
     // List of enemies
     public GameObject enemyPrefabSlime;
@@ -39,7 +45,7 @@ public class WaveManager : MonoBehaviour
     public bool shopIsOpen;
 
     [SerializeField] 
-    private TextMeshProUGUI waveCounterText; // For Unity UI Text
+    public TextMeshProUGUI waveCounterText; // For Unity UI Text
     public TextMeshProUGUI countdownText;
 
     private Coroutine restTimerCoroutine;
@@ -51,6 +57,8 @@ public class WaveManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SpawnPlayer();
+
         shopTrigger = FindObjectOfType<ShopTrigger>(); // Find the ShopManager in the scene
         if (shopTrigger == null)
         {
@@ -64,6 +72,25 @@ public class WaveManager : MonoBehaviour
 
         if (shopComponent == null)
             Debug.Log("No shop component was assigned to the WaveManager");
+    }
+
+    void SpawnPlayer()
+    {
+        GameObject playerGameObject = Instantiate(playerPrefabs[SelectChar.characterID], new Vector3(0, 0.052f, 0), Quaternion.identity);
+        player = playerGameObject.GetComponent<PlayerController>();
+        player.cameraTransform = cameraTransform;
+        Transform playerCameraRoot = playerGameObject.transform.Find("CameraRoot");
+        
+        CinemachineFreeLook aimCameraFreeLook = playerAimCamera.GetComponent<CinemachineFreeLook>();
+        aimCameraFreeLook.Follow = playerCameraRoot;
+        aimCameraFreeLook.LookAt = playerCameraRoot;
+
+        CinemachineFreeLook followCameraFreeLook = playerFollowCamera.GetComponent<CinemachineFreeLook>();
+        followCameraFreeLook.Follow = playerCameraRoot;
+        followCameraFreeLook.LookAt = playerCameraRoot;
+
+        waveCounterText = playerGameObject.transform.Find("PlayerUI/WaveCounter").GetComponent<TextMeshProUGUI>();
+        countdownText = playerGameObject.transform.Find("PlayerUI/TimerCountdown").GetComponent<TextMeshProUGUI>();
     }
 
     void PopulateWave()
@@ -197,7 +224,6 @@ public class WaveManager : MonoBehaviour
     {
         if (enemy != null)
         {
-            // Debug.Log("HandlePlayerAttack called");
             float distance = Vector3.Distance(player.transform.position, enemy.transform.position);
 
             // Hit condition1: Distance smaller than threshold
@@ -205,7 +231,6 @@ public class WaveManager : MonoBehaviour
             bool withinAngle = math.abs(Vector3.Angle(player.transform.forward, enemy.transform.position - player.transform.position)) < 90 ;
             if (withinDistance && withinAngle)
             {
-                // Debug.Log("Enemy got damage");
                 enemy.TakeDamage(damage);
             }
         }

@@ -7,7 +7,7 @@ using UnityEngine;
 public class ThirdPersonCameraController : MonoBehaviour
 {
     [Header("References")]
-    public Transform player;
+    public WaveManager waveManager;
 
     [SerializeField] 
     CinemachineFreeLook aimCamera;
@@ -36,8 +36,9 @@ public class ThirdPersonCameraController : MonoBehaviour
         #endregion
 
         #region Rotate player with camera
+        Transform player = waveManager.player.transform;
         Vector3 viewDirection = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
-        player.forward = viewDirection.normalized;
+        waveManager.player.transform.forward = viewDirection.normalized;
         #endregion
     }
 
