@@ -168,7 +168,7 @@ public class WaveManager : MonoBehaviour
     {
         // Generate a random position on a circle with radius 18
         Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * 18f;
-        Vector3 spawnPosition = new Vector3(randomCircle.x, 100f, randomCircle.y); // Start high enough above ground
+        Vector3 spawnPosition = new Vector3(randomCircle.x, 1f, randomCircle.y); // Start high enough above ground
 
         // Raycast down to find the terrain level
         RaycastHit hit;
