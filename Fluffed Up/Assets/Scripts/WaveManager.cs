@@ -166,8 +166,20 @@ public class WaveManager : MonoBehaviour
 
     Vector3 GetRandomPosition()
     {
+        // Generate a random position on a circle with radius 18
         Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * 18f;
-        return new Vector3(randomCircle.x, 1f, randomCircle.y);
+        Vector3 spawnPosition = new Vector3(randomCircle.x, 1f, randomCircle.y); // Start high enough above ground
+
+        // Raycast down to find the terrain level
+        RaycastHit hit;
+        if (Physics.Raycast(spawnPosition, Vector3.down, out hit, Mathf.Infinity))
+        {
+            // Return the ground level plus a small offset to prevent sinking
+            return new Vector3(randomCircle.x, hit.point.y + 0.1f, randomCircle.y);
+        }
+
+        // Fallback if the raycast fails
+        return spawnPosition;
     }
 
     void StartPlayerAttack(EnemyBase enemy, float damage, int delayInMilli)
