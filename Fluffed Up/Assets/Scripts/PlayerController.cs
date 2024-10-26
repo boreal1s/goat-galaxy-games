@@ -254,7 +254,7 @@ public class PlayerController : CharacterClass
         animator.Play("GetHit");
     }
 
-    void UpdateCoinCounter()
+    public void UpdateCoinCounter()
     {
         ItemProperties properties = GetItemProperties("Coin");
         if(properties != null)

@@ -212,6 +212,8 @@ public class ShopController : MonoBehaviour
                 break;
         }
 
+        player.UpdateCoinCounter();
+
     }
 
     private void HandleUpgrade(Upgrade upgrade)
