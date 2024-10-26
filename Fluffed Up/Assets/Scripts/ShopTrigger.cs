@@ -9,6 +9,9 @@ public class ShopTrigger : MonoBehaviour
 
     [SerializeField]
     private GameObject shopUI;
+
+    [SerializeField]
+    private ShopController shopController;
     public bool shopIsOpen { get; private set; }
     public bool canTriggerShop = false;
 
@@ -23,9 +26,9 @@ public class ShopTrigger : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player") && canTriggerShop)
+        if(other.CompareTag("Player") && shopController.canTriggerShop)
         {
-           OpenShop();
+           shopController.OpenShop();
         }
     }
 

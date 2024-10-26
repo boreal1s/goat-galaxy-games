@@ -45,17 +45,9 @@ public class WaveManager : MonoBehaviour
 
     private List<List<EnemySpawnInfo>> waveList;
 
-    private ShopTrigger shopTrigger;
-
     // Start is called before the first frame update
     void Start()
     {
-        shopTrigger = FindObjectOfType<ShopTrigger>(); // Find the ShopManager in the scene
-        if (shopTrigger == null)
-        {
-            Debug.LogError("No shopTrigger found in the scene.");
-        }
-        
         waveEvent.AddListener(RequestNextWave);
         PopulateWave();
         StartWave();
@@ -114,8 +106,8 @@ public class WaveManager : MonoBehaviour
             restTimerCoroutine = null; // Clear the reference
         }
 
-        shopTrigger.canTriggerShop = false;
-        shopTrigger.CloseShop();
+        shopController.canTriggerShop = false;
+        shopController.CloseShop();
         Debug.Log("Times up. Disabling Shop");
 
         // Clear the countdown text when finished
@@ -229,7 +221,7 @@ public class WaveManager : MonoBehaviour
 
     private IEnumerator StartRestTimer()
     {
-        shopTrigger.canTriggerShop = true;
+        shopController.canTriggerShop = true;
 
         float countdownDuration = 10f; // Total countdown time
         float elapsed = 0f;

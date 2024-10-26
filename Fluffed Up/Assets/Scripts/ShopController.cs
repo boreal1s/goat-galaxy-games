@@ -1,3 +1,4 @@
+using Cinemachine;
 using JetBrains.Annotations;
 using System;
 using System.Collections;
@@ -13,6 +14,8 @@ public class ShopController : MonoBehaviour
     [SerializeField] private GameObject shopComponent;
     [SerializeField] private GameObject dt;
     [SerializeField] private PlayerController player;
+    private CinemachineFreeLook freeLookCamera;
+    private BGMPlayer bgmPlayer;
 
     [SerializeField] private GameObject option1;
     [SerializeField] private GameObject option1ShopImage;
@@ -46,6 +49,7 @@ public class ShopController : MonoBehaviour
 
     public bool shopIsOpen;
     public bool shopIsStocked;
+    public bool canTriggerShop = false;
     private DropTables dropTables;
 
     private void Start()
@@ -54,12 +58,20 @@ public class ShopController : MonoBehaviour
         dropTables = dt.GetComponent<DropTables>();
         Debug.Log($"DropTable Found: {dropTables}");
         shopIsStocked = false;
+
+        freeLookCamera = FindObjectOfType<CinemachineFreeLook>();
+
+        GameObject bgmObject = GameObject.FindGameObjectWithTag("BGM");
+        bgmPlayer = bgmObject.GetComponent<BGMPlayer>();
     }
 
     private void Update()
     {
         if (shopComponent.activeSelf)
+        {
             Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
         if (shopIsStocked == false)
             StockShop();
     }
@@ -71,6 +83,16 @@ public class ShopController : MonoBehaviour
         Debug.Log($"Shop component: {shopComponent}");
         Time.timeScale = 0;
         shopIsOpen = true;
+
+        if (player != null)
+        {
+            player.enabled = false; // Disable player movement
+        }
+
+        if (freeLookCamera != null)
+        {
+            freeLookCamera.enabled = false; // Disable the CinemachineFreeLook component
+        }
     }
 
     public void CloseShop()
@@ -78,28 +100,27 @@ public class ShopController : MonoBehaviour
         shopComponent.SetActive(false);
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         shopIsOpen = false;
         shopIsStocked = false;
 
         if (upgrade1Purchased == false)
-        {
             dropTables.putBack(upgrade1);
-        }
 
         if (upgrade2Purchased == false)
-        {
             dropTables.putBack(upgrade2);
-        }
 
         if (upgrade3Purchased == false)
-        {
             dropTables.putBack(upgrade3);
-        }
 
         if (consumablePurchased == false) // Should never actually do anything unless we make consumables limited in quantity
-        {
             dropTables.putBack(consumable);
-        }
+
+        if (player != null)
+            player.enabled = true; // Re-enable player movement
+
+        if (freeLookCamera != null)
+            freeLookCamera.enabled = true; // Re-enable the CinemachineFreeLook component
     }
 
     private void activateShop()
