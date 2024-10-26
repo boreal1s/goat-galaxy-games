@@ -7,4 +7,8 @@ public interface ISkill
     void UseSkill();
 
     bool CanUseSkill();
+
+    List<Upgrade> GetFollowingUprages();
+
+    DropTables.Rarity GetRarity();
 }

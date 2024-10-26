@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RollSkill : ISkill
+public class BlinkSkill : ISkill
 {
     public List<Upgrade> followingUpgrades;
     public DropTables.Rarity rarity;
     public float cooldown;
     private float lastUsedTime;
 
-    public RollSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn)
+    public BlinkSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn)
     {
         this.followingUpgrades = followingUpgrades;
         this.rarity = rarity;
@@ -23,11 +23,11 @@ public class RollSkill : ISkill
         {
             lastUsedTime = Time.time; // Update the last used time
             // Ex. Handle animations and do damage to target here.
-            Debug.Log("Roll used.");
+            Debug.Log("Blink used.");
         }
         else
         {
-            Debug.Log("Roll is on cooldown.");
+            Debug.Log("Blink is on cooldown.");
         }
     }
 
