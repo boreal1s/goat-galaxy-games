@@ -7,10 +7,6 @@ using Unity.VisualScripting;
 
 public class DropTables : MonoBehaviour
 {
-
-    [SerializeField]
-    PlayerController player;
-
     public enum Rarity
     {
         Common = 0,
@@ -82,9 +78,6 @@ public class DropTables : MonoBehaviour
         healthPotionShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
         healthPotionToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
         #endregion
-
-        if (player == null)
-            Debug.Log("DropTables instance is missing attached character class");
 
         upgradeTypeTable = new WeightedList<UpgradeType>
         {

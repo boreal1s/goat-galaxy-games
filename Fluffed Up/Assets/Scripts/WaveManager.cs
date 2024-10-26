@@ -51,16 +51,20 @@ public class WaveManager : MonoBehaviour
 
     private List<List<EnemySpawnInfo>> waveList;
 
+    private void Awake()
+    {
+        SpawnPlayer();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        SpawnPlayer();
         waveEvent.AddListener(RequestNextWave);
         PopulateWave();
         StartWave();
 
         if (shopController == null)
-            Debug.Log("No shop controller was assigned to the WaveManager");
+            Debug.LogWarning("No ShopController was assigned to WaveManager");
     }
 
     void SpawnPlayer()
@@ -238,7 +242,6 @@ public class WaveManager : MonoBehaviour
     {
         if (currentEnemies.Count == 0 && !isSpawningWave)
         {
-            shopController.OpenShop();
             StartCoroutine(StartNextWave());
         }
     }

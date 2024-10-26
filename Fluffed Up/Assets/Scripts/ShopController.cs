@@ -13,7 +13,7 @@ public class ShopController : MonoBehaviour
 {
     [SerializeField] private GameObject shopComponent;
     [SerializeField] private GameObject dt;
-    [SerializeField] private PlayerController player;
+    private PlayerController player;
     private CinemachineFreeLook freeLookCamera;
     private BGMPlayer bgmPlayer;
 
@@ -59,6 +59,7 @@ public class ShopController : MonoBehaviour
         Debug.Log($"DropTable Found: {dropTables}");
         shopIsStocked = false;
 
+        player = FindObjectOfType<PlayerController>();
         freeLookCamera = FindObjectOfType<CinemachineFreeLook>();
 
         GameObject bgmObject = GameObject.FindGameObjectWithTag("BGM");
