@@ -37,6 +37,7 @@ public class HealthBar : MonoBehaviour
     {
         healthSlider.maxValue = health;
         healthSlider.value = health;
+        easeHealthSlider.maxValue = health;
         easeHealthSlider.value = health;
         UpdateHealthText();
     }

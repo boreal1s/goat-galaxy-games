@@ -43,7 +43,6 @@ public class EnemyBase : CharacterClass
         navMeshAgent = GetComponent<NavMeshAgent>();
         // Temporary initialization since this is the base.
         // However, we can utilize this method for inherited classes.
-        InitializeStat(100f, 1f);
         healthBar = GetComponentInChildren<HealthBar>();
         if (healthBar != null)
         {
@@ -63,12 +62,12 @@ public class EnemyBase : CharacterClass
         {
         case EnemyState.Idle:
             // Debug.Log("EnemyState: Idle");
-            if (distanceToPlayer > 1)
+            if (distanceToPlayer > attackDistanceThreshold)
                 enemyState = EnemyState.ChasingPlayer;
             break;
         case EnemyState.ChasingPlayer:
             // Debug.Log("EnemyState: ChasingPlayer");
-            if (distanceToPlayer > 1)
+            if (distanceToPlayer > attackDistanceThreshold)
             {
                 navMeshAgent.SetDestination(player.transform.position);
             }
