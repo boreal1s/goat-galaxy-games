@@ -239,7 +239,7 @@ public class WaveManager : MonoBehaviour
     void Update()
     {
         currentEnemies.RemoveAll(enemy => enemy == null);
-        ResponsiveShopLight(shopTrigger.canTriggerShop);        
+        ResponsiveShopLight(shopController.canTriggerShop);        
         waveEvent.Invoke();
     }
 
