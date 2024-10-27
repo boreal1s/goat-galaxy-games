@@ -256,12 +256,26 @@ public class ShopController : MonoBehaviour
     {
         if (upgrade.upgradeType == UpgradeType.StatUpgrade)
         {
-            switch (upgrade.statUpgrade.GetType())
+            switch (upgrade.statUpgrade.statType)
             {
-                // Update player's respective stat
+                case StatType.Health:
+                    player.updateMaxHealth(upgrade.statUpgrade.statValue);
+                    break;
+                case StatType.Defense:
+                    player.defense += upgrade.statUpgrade.statValue;
+                    break;
+                case StatType.AttackSpeed:
+                    player.attackSpeed = Math.Clamp(player.attackSpeed + upgrade.statUpgrade.statValue, 0.1f, player.maxAttackSpeed);
+                    break;
+                case StatType.AttackPower:
+                    player.attackPower += upgrade.statUpgrade.statValue;
+                    player.projectileDamage += (upgrade.statUpgrade.statValue * .4f);
+                    break;
+                case StatType.MoveSpeed:
+                    player.moveSpeed += upgrade.statUpgrade.statValue;
+                    break;
             }
         }
-
         // Handle other cases
     }
 }

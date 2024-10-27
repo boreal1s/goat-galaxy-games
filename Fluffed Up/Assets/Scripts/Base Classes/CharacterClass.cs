@@ -19,6 +19,7 @@ public class CharacterClass : MonoBehaviour
     // Attack
     public float attackPower;
     public float attackSpeed;
+    public float maxAttackSpeed;
     public float attackDistanceThreshold;
     public bool isAttacking = false;
 
@@ -127,16 +128,17 @@ public class CharacterClass : MonoBehaviour
         isFrozen = false; // Reset frozen state
     }
 
+    public virtual void updateMaxHealth(float maxHealthChange)
+    {
+        maxHealth += maxHealthChange;
+        healthBar.SetMaxHealth(maxHealth);
+        if (maxHealthChange > 0)
+            Heal(maxHealthChange);
+    }
+
     public virtual void Heal(float amount)
     {
-        // Debug.Log($"{gameObject.name} is taking {damage} damage.");
-        health += amount;
-        // Debug.Log($"{gameObject.name} health is now {health}");
-
-        if (health > 100)
-        {
-            health = 100;
-        }
+        health = Mathf.Clamp(health + amount, 0, maxHealth);
 
         if (healthBar != null)
         {
@@ -148,9 +150,10 @@ public class CharacterClass : MonoBehaviour
     {
         PlaySoundEffect(hitSoundEffect, hitSoundPitch);
 
-        // Debug.Log($"{gameObject.name} is taking {damage} damage.");
-        health -= damage;
-        // Debug.Log($"{gameObject.name} health is now {health}");
+        float mitigatedDamage = Mathf.Clamp(damage - defense, 0, damage);
+        //Debug.Log($"{gameObject.name} is taking {damage} damage.");
+        health = health - mitigatedDamage;
+        //Debug.Log($"{gameObject.name} health is now {health}");
 
         if (health <= 0)
         {

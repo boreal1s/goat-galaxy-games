@@ -31,12 +31,12 @@ public class WaveManager : MonoBehaviour
     // List of enemies
     public GameObject enemyPrefabSlime;
     public GameObject enemyPrefabTurtle;
-    public GameObject enemySpawnArea;
+    [SerializeField] public GameObject enemySpawnArea;
     public BoxCollider[] enemySpawnBoxes;
 
     // Shop light source
-    public LightPulse shopIndicatorLight;
-    public LightPulse shopBeaconLight;
+    [SerializeField] public LightPulse shopIndicatorLight;
+    [SerializeField] public LightPulse shopBeaconLight;
 
     public UnityEvent waveEvent;
     private List<GameObject> currentEnemies = new List<GameObject>();

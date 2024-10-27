@@ -38,8 +38,8 @@ public class DropTables : MonoBehaviour
     static int rareWeight = 40;
     static int legendaryWeight = 40;
 
-    int skillWeight = 40;
-    int statUpgradeWeight = 30;
+    int skillWeight = 45;
+    int statUpgradeWeight = 25;
     int playerModWeight = 15;
     int gameModWeight = 15;
 
@@ -89,8 +89,8 @@ public class DropTables : MonoBehaviour
         Debug.Log("Upgrade type table populated");
 
         // Stat Upgrades
-        Upgrade attackPower = new Upgrade("Attack Power", "Increase attack power by 10", UpgradeType.StatUpgrade, 10, attackPowerShopSprite, attackPowerToolbarSprite, new StatUpgrade(10f, StatType.Damage));
-        Upgrade healthIncrease = new Upgrade("Max Health Increase", "Increase max health by 10", UpgradeType.StatUpgrade, 10, healthIncreaseShopSprite, healthIncreaseToolbarSprite, new StatUpgrade(10f, StatType.Health));
+        Upgrade attackPower = new Upgrade("Attack Power", "Increase attack power by 10", UpgradeType.StatUpgrade, 10, attackPowerShopSprite, attackPowerToolbarSprite, new StatUpgrade(10f, StatType.AttackPower));
+        Upgrade healthIncrease = new Upgrade("Max Health Increase", "Increase max health by 10", UpgradeType.StatUpgrade, 10, healthIncreaseShopSprite, healthIncreaseToolbarSprite, new StatUpgrade(20f, StatType.Health));
         statUpgrades = new WeightedList<Upgrade>()
         {
             {attackPower, uncommonWeight},

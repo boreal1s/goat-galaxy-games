@@ -72,6 +72,7 @@ public class PlayerController : CharacterClass
         airSpeedMultiplier = 0.6f;
         attackPower = 70f;
         health = 100f;
+        maxHealth = 100f;
         attackDistanceThreshold = 3f;
 
         healthBar = GetComponentInChildren<HealthBar>();

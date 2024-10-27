@@ -1087,8 +1087,8 @@ MonoBehaviour:
   consumableOptionName: {fileID: 195546055}
   consumableOptionDescription: {fileID: 326765014}
   shopIsOpen: 0
-  shopIsStocked: 0
   canTriggerShop: 0
+  canStock: 0
 --- !u!4 &54886638
 Transform:
   m_ObjectHideFlags: 0
@@ -1335,7 +1335,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &85215962
 BoxCollider:
