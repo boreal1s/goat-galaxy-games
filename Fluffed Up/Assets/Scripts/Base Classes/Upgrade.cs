@@ -52,7 +52,7 @@ public class Upgrade
         this.playerMod = playerMod;
     }
 
-    public Upgrade(string name, string description, UpgradeType upgradeType, int cost, Sprite shopArt, Sprite toolbarArt, GameModification playerMod) : this(name, description, upgradeType, cost, shopArt, toolbarArt)
+    public Upgrade(string name, string description, UpgradeType upgradeType, int cost, Sprite shopArt, Sprite toolbarArt, GameModification gameMod) : this(name, description, upgradeType, cost, shopArt, toolbarArt)
     {
         this.gameMod = gameMod;
     }

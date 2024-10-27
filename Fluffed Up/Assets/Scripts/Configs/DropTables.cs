@@ -186,8 +186,6 @@ public class DropTables : MonoBehaviour
                 return null;
         }
 
-        
-
         return upgrade;
     }
 
@@ -205,6 +203,7 @@ public class DropTables : MonoBehaviour
                 availableUpgrades[UpgradeType.PlayerModification] += 1;
                 break;
             case UpgradeType.GameModification:
+                Debug.Log($"{upgrade.upgradeName}");
                 gameModifications.SetWeight(upgrade, weightMap[upgrade.gameMod.rarity]);
                 availableUpgrades[UpgradeType.GameModification] += 1;
                 break;
