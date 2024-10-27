@@ -70,7 +70,7 @@ public class PlayerController : CharacterClass
         jumpTime = 3f;
         jumpCooldown = 0.5f;
         airSpeedMultiplier = 0.6f;
-        attackPower = 25f;
+        attackPower = 70f;
         health = 100f;
         attackDistanceThreshold = 3f;
 
@@ -258,7 +258,7 @@ public class PlayerController : CharacterClass
         animator.Play("GetHit");
     }
 
-    void UpdateCoinCounter()
+    public void UpdateCoinCounter()
     {
         ItemProperties properties = GetItemProperties("Coin");
         if(properties != null)
