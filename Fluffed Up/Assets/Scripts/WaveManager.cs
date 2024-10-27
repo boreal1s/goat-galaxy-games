@@ -137,7 +137,8 @@ public class WaveManager : MonoBehaviour
         }
 
         shopController.canTriggerShop = false;
-        shopController.CloseShop();
+        if (shopController.shopIsOpen)
+            shopController.CloseShop();
         Debug.Log("Times up. Disabling Shop");
 
         // Clear the countdown text when finished
@@ -248,7 +249,8 @@ public class WaveManager : MonoBehaviour
 
     private IEnumerator StartRestTimer()
     {
-        shopController.canTriggerShop = true;
+        if (currentWave > 0)
+            shopController.canTriggerShop = true;
 
         float countdownDuration = 10f; // Total countdown time
         float elapsed = 0f;
@@ -271,6 +273,7 @@ public class WaveManager : MonoBehaviour
     IEnumerator StartNextWave()
     {
         isSpawningWave = true; // Set the flag to true to prevent multiple triggers
+        shopController.canStock = true;
         
         // Start the rest timer and wait for it to finish
         if (restTimerCoroutine != null)

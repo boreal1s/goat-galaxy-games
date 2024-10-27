@@ -48,16 +48,16 @@ public class ShopController : MonoBehaviour
     bool consumablePurchased;
 
     public bool shopIsOpen;
-    public bool shopIsStocked;
     public bool canTriggerShop = false;
+    public bool canStock = false;
     private DropTables dropTables;
 
     private void Start()
     {
+        shopIsOpen = false;
         shopComponent.SetActive(false);
         dropTables = dt.GetComponent<DropTables>();
         Debug.Log($"DropTable Found: {dropTables}");
-        shopIsStocked = false;
 
         player = FindObjectOfType<PlayerController>();
         freeLookCamera = FindObjectOfType<CinemachineFreeLook>();
@@ -68,12 +68,12 @@ public class ShopController : MonoBehaviour
 
     private void Update()
     {
-        if (shopComponent.activeSelf)
+        if (shopComponent.activeInHierarchy)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-        if (shopIsStocked == false)
+        if (canStock == true)
             StockShop();
     }
 
@@ -82,7 +82,7 @@ public class ShopController : MonoBehaviour
         Debug.Log("Shop opened");
         activateShop();
         Debug.Log($"Shop component: {shopComponent}");
-        Time.timeScale = 0;
+        // Time.timeScale = 0;
         shopIsOpen = true;
 
         if (player != null)
@@ -99,11 +99,10 @@ public class ShopController : MonoBehaviour
     public void CloseShop()
     {
         shopComponent.SetActive(false);
-        Time.timeScale = 1f;
+        // Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         shopIsOpen = false;
-        shopIsStocked = false;
 
         if (upgrade1Purchased == false)
             dropTables.putBack(upgrade1);
@@ -127,30 +126,38 @@ public class ShopController : MonoBehaviour
     private void activateShop()
     {
         shopComponent.SetActive(true);
-        option1.SetActive(true);
-        option2.SetActive(true);
-        option3.SetActive(true);
-        consumableOption.SetActive(true);
 
-        option1ShopImage.GetComponent<Image>().overrideSprite = upgrade1.shopArt;
-        option1Name.GetComponent<TextMeshProUGUI>().text = upgrade1.upgradeName;
-        option1Description.GetComponent<TextMeshProUGUI>().text = upgrade1.description;
-        upgrade1Purchased = false;
+        if (!upgrade1Purchased)
+        {
+            option1.SetActive(true);
+            option1ShopImage.GetComponent<Image>().overrideSprite = upgrade1.shopArt;
+            option1Name.GetComponent<TextMeshProUGUI>().text = upgrade1.upgradeName;
+            option1Description.GetComponent<TextMeshProUGUI>().text = upgrade1.description;
+        }
 
-        option2ShopImage.GetComponent<Image>().overrideSprite = upgrade2.shopArt;
-        option2Name.GetComponent<TextMeshProUGUI>().text = upgrade2.upgradeName;
-        option2Description.GetComponent<TextMeshProUGUI>().text = upgrade2.description;
-        upgrade2Purchased = false;
+        if (!upgrade2Purchased)
+        {
+            option2.SetActive(true);
+            option2ShopImage.GetComponent<Image>().overrideSprite = upgrade2.shopArt;
+            option2Name.GetComponent<TextMeshProUGUI>().text = upgrade2.upgradeName;
+            option2Description.GetComponent<TextMeshProUGUI>().text = upgrade2.description;
+        }
 
-        option3ShopImage.GetComponent<Image>().overrideSprite = upgrade3.shopArt;
-        option3Name.GetComponent<TextMeshProUGUI>().text = upgrade3.upgradeName;
-        option3Description.GetComponent<TextMeshProUGUI>().text = upgrade3.description;
-        upgrade3Purchased = false;
+        if (!upgrade3Purchased)
+        {
+            option3.SetActive(true);
+            option3ShopImage.GetComponent<Image>().overrideSprite = upgrade3.shopArt;
+            option3Name.GetComponent<TextMeshProUGUI>().text = upgrade3.upgradeName;
+            option3Description.GetComponent<TextMeshProUGUI>().text = upgrade3.description;
+        }
 
-        consumableOptionShopImage.GetComponent<Image>().overrideSprite = consumable.shopArt;
-        consumableOptionName.GetComponent<TextMeshProUGUI>().text = consumable.upgradeName;
-        consumableOptionDescription.GetComponent<TextMeshProUGUI>().text = consumable.description;
-        consumablePurchased = false;
+        if (!consumablePurchased)
+        {
+            consumableOption.SetActive(true);
+            consumableOptionShopImage.GetComponent<Image>().overrideSprite = consumable.shopArt;
+            consumableOptionName.GetComponent<TextMeshProUGUI>().text = consumable.upgradeName;
+            consumableOptionDescription.GetComponent<TextMeshProUGUI>().text = consumable.description;
+        }
 
         Debug.Log("Shop component activated");
     }
@@ -160,10 +167,14 @@ public class ShopController : MonoBehaviour
         Debug.Log($"Option 1: {option1}");
         Debug.Log($"DropTables: {dropTables}");
         upgrade1 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
+        upgrade1Purchased = false;
         upgrade2 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
+        upgrade2Purchased = false;
         upgrade3 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
+        upgrade3Purchased = false;
         consumable = dropTables.getRandomUpgrade(UpgradeType.Consumable);
-        shopIsStocked = true;
+        consumablePurchased = false;
+        canStock = false;
         Debug.Log($"Stocked with:  {upgrade1.upgradeName}, {upgrade2.upgradeName}, {upgrade3.upgradeName}, {consumable.upgradeName}");
     }
 
