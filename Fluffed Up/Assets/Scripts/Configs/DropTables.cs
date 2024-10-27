@@ -113,10 +113,10 @@ public class DropTables : MonoBehaviour
         };
 
         // Game Modifications
-        Upgrade restockMod = new Upgrade("Flesh Wound", "Occassionally negate a small amount of damage.", UpgradeType.GameModification, 20, restockModShopSprite, restockModToolbarSprite, new GameModification(new List<Upgrade>(), Rarity.Rare));
+        Upgrade restockMod = new Upgrade("Restock", "The shop now restocks on purchase.", UpgradeType.GameModification, 20, restockModShopSprite, restockModToolbarSprite, new GameModification(new List<Upgrade>(), Rarity.Rare));
         gameModifications = new WeightedList<Upgrade>()
         {
-            {restockMod, uncommonWeight},
+            {restockMod, rareWeight},
         };
 
         // Consumables
@@ -193,22 +193,21 @@ public class DropTables : MonoBehaviour
 
     public void putBack(Upgrade upgrade)
     {
+       
         switch (upgrade.upgradeType)
         {
             case UpgradeType.Skill:
-                upgrade = skills.Next();
                 skills.SetWeight(upgrade, weightMap[upgrade.skill.GetRarity()]);
                 availableUpgrades[UpgradeType.Skill] += 1;
                 break;
             case UpgradeType.PlayerModification:
-                upgrade = playerModifications.Next();
                 playerModifications.SetWeight(upgrade, weightMap[upgrade.playerMod.rarity]);
-                availableUpgrades[UpgradeType.PlayerModification] -= 1;
+                availableUpgrades[UpgradeType.PlayerModification] += 1;
                 break;
             case UpgradeType.GameModification:
-                upgrade = gameModifications.Next();
+                Debug.Log($"Game Modification:{upgrade}, {upgrade.gameMod.rarity}");
                 gameModifications.SetWeight(upgrade, weightMap[upgrade.gameMod.rarity]);
-                availableUpgrades[UpgradeType.GameModification] -= 1;
+                availableUpgrades[UpgradeType.GameModification] += 1;
                 break;
             default:
                 break;
