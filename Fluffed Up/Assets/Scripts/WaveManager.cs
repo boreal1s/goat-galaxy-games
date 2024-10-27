@@ -44,7 +44,6 @@ public class WaveManager : MonoBehaviour
     private bool isSpawningWave = false; // Flag to prevent multiple waves from starting
 
     // Sound Events
-    public UnityEvent<Vector3, AudioClip> playerSoundEvent;
     private float waveSpawnDelay = 2f;
 
     [SerializeField]
