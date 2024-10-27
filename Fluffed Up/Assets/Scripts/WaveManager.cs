@@ -40,7 +40,7 @@ public class WaveManager : MonoBehaviour
 
     public UnityEvent waveEvent;
     private List<GameObject> currentEnemies = new List<GameObject>();
-    private int currentWave = 0;
+    private int currentWave = 100; // Will be switched to 0 by StartWave
     private bool isSpawningWave = false; // Flag to prevent multiple waves from starting
 
     // Sound Events
@@ -153,23 +153,16 @@ public class WaveManager : MonoBehaviour
 
         // Clear the countdown text when finished
         countdownText.text = "";
-        currentWave++; // update wave count
-        UpdateWaveCounter();
-        SpawnEnemy();
-    }
 
-    void UpdateWaveCounter()
-    {
-        waveCounterText.text = "Wave " + currentWave.ToString();
-    }
-
-    void SpawnEnemy()
-    {
-        if (currentWave % 9 == 0)
+        // Increment Wave
+        currentWave++;
+        if (currentWave >= 11)
         {
-            currentWave = 0;
+            currentWave = 1;
         }
-        EnemyLoader(waveList[currentWave - 1]);
+
+        waveCounterText.text = "Wave " + currentWave.ToString();// Update wave counter
+        EnemyLoader(waveList[currentWave - 1]);// Spawn enemy
     }
 
     private void EnemyLoader(List<EnemySpawnInfo> wave)
