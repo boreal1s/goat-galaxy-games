@@ -31,6 +31,10 @@ public class WaveManager : MonoBehaviour
     public GameObject enemyPrefabSlime;
     public GameObject enemyPrefabTurtle;
 
+    // Shop light source
+    public LightPulse shopIndicatorLight;
+    public LightPulse shopBeaconLight;
+
     public UnityEvent waveEvent;
     private List<GameObject> currentEnemies = new List<GameObject>();
     private int currentWave = 0;
@@ -235,10 +239,33 @@ public class WaveManager : MonoBehaviour
     void Update()
     {
         currentEnemies.RemoveAll(enemy => enemy == null);
-
+        ResponsiveShopLight(shopController.canTriggerShop);        
         waveEvent.Invoke();
     }
 
+    private void ResponsiveShopLight(bool activate)
+    {
+        if (activate)
+        {
+            float distanceThreshold = 12.0f;
+            float distanceFromShopToPlayer = Vector3.Distance(player.transform.position, shopIndicatorLight.transform.position);
+            if (distanceFromShopToPlayer <= distanceThreshold)
+            {
+                shopIndicatorLight.lightActivate = false;
+                shopBeaconLight.lightActivate = true;
+            }
+            else
+            {
+                shopIndicatorLight.lightActivate = true;
+                shopBeaconLight.lightActivate = false;
+            }
+        }
+        else
+        {
+            shopIndicatorLight.lightActivate = false;
+            shopBeaconLight.lightActivate = false;
+        }
+    }
 
     private void RequestNextWave()
     {
