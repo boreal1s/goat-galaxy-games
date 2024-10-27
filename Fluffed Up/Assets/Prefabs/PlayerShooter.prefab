@@ -6501,7 +6501,8 @@ MonoBehaviour:
   projectileSpawnPoint: {fileID: 7924904203460507141}
   projectileSpeed: 20
   projectileDamage: 10
-  attackSound: {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}
+  attackSound: {fileID: 0}
+  shootingSound: {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}
   attackDelayInMilli: 300
   inputs: {fileID: 0}
   cameraTransform: {fileID: 0}

@@ -18,6 +18,7 @@ public class PlayerController : CharacterClass
     public float projectileSpeed = 20f;       // Speed of the projectile
     public float projectileDamage = 10f;      // Damage dealt by the projectile
     public AudioClip attackSound;
+    public AudioClip shootingSound;
     public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not. 
 
     [System.Serializable]
@@ -50,8 +51,6 @@ public class PlayerController : CharacterClass
     public TextMeshProUGUI healthCounterText; // For Unity UI Text
 
 
-    [Header("SceneManagement")]
-    private string lastScene;
 
     private void Awake()
     {
@@ -127,28 +126,23 @@ public class PlayerController : CharacterClass
     void Update()
     {
         animator.SetBool("isRunning", isRunning);
-        // Debug.Log("isAttacking:" + isAttacking.ToString());
 
-        if (SceneManager.GetActiveScene().name == "OtherCharacter")
+        if (SelectChar.characterID == 1) // If the shooter character is selected
         {
             if (Input.GetMouseButtonDown(0) && !isAttacking)
             {
-                Debug.Log("Right mouse button clicked - calling Shoot() in 'OtherCharacter' scene");
+                Debug.Log("Right mouse button clicked - calling Shoot() for shooter character");
                 Shoot();
             }
         }
-
-        if (SceneManager.GetActiveScene().name == "SampleScene")
+        else // If the sword character is selected
         {
             if (Input.GetMouseButtonDown(0) && !isAttacking)
             {
-                Debug.Log("Right mouse button clicked - calling Shoot() in 'OtherCharacter' scene");
+                Debug.Log("Right mouse button clicked - calling attackEnemy() for sword character");
                 attackEnemy();
             }
         }
-        // Enemy attack control. Attack when clicking left click.
-        // TODO might need to update to input string name to account for controller.
-        
 
         if (inputs.jump && isGrounded && !isJumping)
         {
@@ -159,11 +153,7 @@ public class PlayerController : CharacterClass
 
         if (health <= 0)
         {
-             lastScene = SceneManager.GetActiveScene().name;
 
-             PlayerPrefs.SetString("LastPlayedScene", lastScene);
-
-            
              SceneManager.LoadScene("DeathScene");
         }
         
@@ -180,6 +170,8 @@ public class PlayerController : CharacterClass
 
         // Trigger the shooting animation (if you have one)
         animator.Play("Defend");
+
+        PlaySoundEffect(shootingSound);
 
         // Instantiate the projectile at the spawn point
         GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
