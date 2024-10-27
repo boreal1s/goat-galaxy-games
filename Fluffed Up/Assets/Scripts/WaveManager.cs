@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using TMPro;
 using System.Linq.Expressions;
 using Cinemachine;
+using System.Security.Cryptography.X509Certificates;
 
 public class WaveManager : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class WaveManager : MonoBehaviour
     // List of enemies
     public GameObject enemyPrefabSlime;
     public GameObject enemyPrefabTurtle;
+    public GameObject enemySpawnArea;
+    public BoxCollider[] enemySpawnBoxes;
 
     // Shop light source
     public LightPulse shopIndicatorLight;
@@ -63,6 +66,8 @@ public class WaveManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Prepare Enemies
+        enemySpawnBoxes = enemySpawnArea.GetComponents<BoxCollider>();
         waveEvent.AddListener(RequestNextWave);
         PopulateWave();
         StartWave();
@@ -192,17 +197,20 @@ public class WaveManager : MonoBehaviour
 
     Vector3 GetRandomPosition()
     {
-        // Generate a random position on a circle with radius 18
-        Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * 18f;
-        Vector3 spawnPosition = new Vector3(randomCircle.x, 1f, randomCircle.y); // Start high enough above ground
+        BoxCollider selectedBox = enemySpawnBoxes[UnityEngine.Random.Range(0, enemySpawnBoxes.Length)];
+        Vector3 spawnPosition = new Vector3(
+            UnityEngine.Random.Range(selectedBox.bounds.min.x, selectedBox.bounds.max.x),
+            2f,
+            UnityEngine.Random.Range(selectedBox.bounds.min.z, selectedBox.bounds.max.z)
+        );
 
         // Raycast down to find the terrain level
-        RaycastHit hit;
-        if (Physics.Raycast(spawnPosition, Vector3.down, out hit, Mathf.Infinity))
-        {
-            // Return the ground level plus a small offset to prevent sinking
-            return new Vector3(randomCircle.x, hit.point.y + 0.1f, randomCircle.y);
-        }
+        // RaycastHit hit;
+        // if (Physics.Raycast(spawnPosition, Vector3.down, out hit, Mathf.Infinity))
+        // {
+        //     // Return the ground level plus a small offset to prevent sinking
+        //     return new Vector3(spawnPosition.x, hit.point.y + 0.1f, spawnPosition.y);
+        // }
 
         // Fallback if the raycast fails
         return spawnPosition;
