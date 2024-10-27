@@ -102,23 +102,28 @@ public class ShopController : MonoBehaviour
         Cursor.visible = false;
         shopIsOpen = false;
 
-        if (upgrade1Purchased == false)
-            dropTables.putBack(upgrade1);
-
-        if (upgrade2Purchased == false)
-            dropTables.putBack(upgrade2);
-
-        if (upgrade3Purchased == false)
-            dropTables.putBack(upgrade3);
-
-        if (consumablePurchased == false) // Should never actually do anything unless we make consumables limited in quantity
-            dropTables.putBack(consumable);
-
         if (player != null)
             player.enabled = true; // Re-enable player movement
 
         if (freeLookCamera != null)
             freeLookCamera.enabled = true; // Re-enable the CinemachineFreeLook component
+    }
+
+    public void RestockShop()
+    {
+        if (upgrade1Purchased == false && upgrade1 != null)
+            dropTables.putBack(upgrade1);
+
+        if (upgrade2Purchased == false && upgrade2 != null)
+            dropTables.putBack(upgrade2);
+
+        if (upgrade3Purchased == false && upgrade3 != null)
+            dropTables.putBack(upgrade3);
+
+        if (consumablePurchased == false && consumable != null) // Should never actually do anything unless we make consumables limited in quantity
+            dropTables.putBack(consumable);
+
+        canStock = true;
     }
 
     private void activateShop()

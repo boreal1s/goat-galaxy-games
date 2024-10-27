@@ -137,6 +137,7 @@ public class WaveManager : MonoBehaviour
         }
 
         shopController.canTriggerShop = false;
+        shopController.RestockShop();
         if (shopController.shopIsOpen)
             shopController.CloseShop();
         Debug.Log("Times up. Disabling Shop");
@@ -273,7 +274,6 @@ public class WaveManager : MonoBehaviour
     IEnumerator StartNextWave()
     {
         isSpawningWave = true; // Set the flag to true to prevent multiple triggers
-        shopController.canStock = true;
         
         // Start the rest timer and wait for it to finish
         if (restTimerCoroutine != null)

@@ -205,7 +205,6 @@ public class DropTables : MonoBehaviour
                 availableUpgrades[UpgradeType.PlayerModification] += 1;
                 break;
             case UpgradeType.GameModification:
-                Debug.Log($"Game Modification:{upgrade}, {upgrade.gameMod.rarity}");
                 gameModifications.SetWeight(upgrade, weightMap[upgrade.gameMod.rarity]);
                 availableUpgrades[UpgradeType.GameModification] += 1;
                 break;
