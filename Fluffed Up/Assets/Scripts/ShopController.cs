@@ -185,9 +185,9 @@ public class ShopController : MonoBehaviour
     {
         switch (i) {
             case 1:
-                if (player.GetItemProperties("Coin").totalAmount >= upgrade1.cost)
+                if (player.GetCoins() >= upgrade1.cost)
                 {
-                    player.GetItemProperties("Coin").totalAmount -= upgrade1.cost;
+                    player.UpdateCoins(-upgrade1.cost);
                     Debug.Log($"Buying: {upgrade1.upgradeName}");
                     option1.SetActive(false);
                     dropTables.purchase(upgrade1);
@@ -200,9 +200,9 @@ public class ShopController : MonoBehaviour
                 }
                 break;
             case 2:
-                if (player.GetItemProperties("Coin").totalAmount >= upgrade2.cost)
+                if (player.GetCoins() >= upgrade2.cost)
                 {
-                    player.GetItemProperties("Coin").totalAmount -= upgrade2.cost;
+                    player.UpdateCoins(-upgrade2.cost);
                     Debug.Log($"Buying: {upgrade2.upgradeName}");
                     option2.SetActive(false);
                     dropTables.purchase(upgrade2);
@@ -215,9 +215,9 @@ public class ShopController : MonoBehaviour
                 }
                 break;
             case 3:
-                if (player.GetItemProperties("Coin").totalAmount >= upgrade3.cost)
+                if (player.GetCoins() >= upgrade3.cost)
                 {
-                    player.GetItemProperties("Coin").totalAmount -= upgrade3.cost;
+                    player.UpdateCoins(-upgrade3.cost);
                     Debug.Log($"Buying: {upgrade3.upgradeName}");
                     option3.SetActive(false);
                     dropTables.purchase(upgrade3);
@@ -230,9 +230,9 @@ public class ShopController : MonoBehaviour
                 }
                 break;
             case 4:
-                if (player.GetItemProperties("Coin").totalAmount >= consumable.cost)
+                if (player.GetCoins() >= consumable.cost)
                 {
-                    player.GetItemProperties("Coin").totalAmount -= consumable.cost;
+                    player.UpdateCoins(-consumable.cost);
                     Debug.Log($"Buying: {consumable.upgradeName}");
                     consumableOption.SetActive(false);
                     dropTables.purchase(consumable);
@@ -247,9 +247,6 @@ public class ShopController : MonoBehaviour
             default: 
                 break;
         }
-
-        player.UpdateCoinCounter();
-
     }
 
     private void HandleUpgrade(Upgrade upgrade)

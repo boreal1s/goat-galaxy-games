@@ -20,6 +20,7 @@ public class PlayerController : CharacterClass
     public AudioClip attackSound;
     public AudioClip shootingSound;
     public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not. 
+    private int coins;
 
     [System.Serializable]
     public class ItemProperties
@@ -74,12 +75,13 @@ public class PlayerController : CharacterClass
         health = 100f;
         maxHealth = 100f;
         attackDistanceThreshold = 3f;
+        coins = 0;
 
         healthBar = GetComponentInChildren<HealthBar>();
         if (healthBar != null)
-        {
-            healthBar.SetMaxHealth(health);
-        }
+            healthBar.SetMaxHealth(maxHealth);
+        else
+            Debug.Log("No HealthBar attached to PlayerController");
 
 
         UpdateAllCounters();
@@ -338,5 +340,16 @@ public class PlayerController : CharacterClass
         {
             Debug.Log("No health to heal.");
         }
+    }
+
+    public void UpdateCoins(int addedCoins)
+    {
+        coins += addedCoins;
+        UpdateCoinCounter();
+    }
+
+    public int GetCoins()
+    {
+        return coins;
     }
 }

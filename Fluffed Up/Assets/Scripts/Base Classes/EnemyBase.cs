@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.AI;
+using System;
 
 public class EnemyBase : CharacterClass
 {
@@ -36,18 +37,29 @@ public class EnemyBase : CharacterClass
     [SerializeField]
     private List<ItemDrop> itemDrops; // List of item drops with chances
 
+    [SerializeField]
+    private int goldValueMin;
+
+    [SerializeField]
+    private int goldValueMax;
+
+    private PlayerController playerController;
+
     void Start()
     {
         animator = GetComponent<Animator>();
         enemyState = EnemyState.Idle;
         navMeshAgent = GetComponent<NavMeshAgent>();
+
         // Temporary initialization since this is the base.
         // However, we can utilize this method for inherited classes.
         healthBar = GetComponentInChildren<HealthBar>();
         if (healthBar != null)
-        {
             healthBar.SetMaxHealth(health);
-        }
+
+        playerController = FindAnyObjectByType<PlayerController>();
+        if (playerController != null)
+            Debug.Log("EnemyBase could not find PlayerController");
     }
 
     void Update()
@@ -101,10 +113,14 @@ public class EnemyBase : CharacterClass
 
     protected override void Die()
     {
+
+        int coinDrop = UnityEngine.Random.Range(goldValueMin, goldValueMax);
+        playerController.UpdateCoins(coinDrop);
+
         // Randomly select an item to drop based on drop chances
         if (itemDrops.Count > 0)
         {
-            float randomValue = Random.Range(0f, 100f); // Random value between 0 and 100
+            float randomValue = UnityEngine.Random.Range(0f, 100f); // Random value between 0 and 100
             float cumulativeChance = 0f;
 
             foreach (var itemDrop in itemDrops)
