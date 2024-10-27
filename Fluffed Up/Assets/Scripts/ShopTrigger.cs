@@ -20,15 +20,6 @@ public class ShopTrigger : MonoBehaviour
 
 
     // Start is called before the first frame update
-    
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.CompareTag("Player") && canTriggerShop)
-        {
-           OpenShop();
-        }
-    }
-
      void Start()
     {
         shopUI.SetActive(false);
@@ -41,21 +32,23 @@ public class ShopTrigger : MonoBehaviour
 
     public void OpenShop()
     {
-        bgmPlayer.DimAndDull();
-        shopUI.SetActive(true);
-        // Time.timeScale = 0;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        shopIsOpen = true;
+        if (canTriggerShop) {
+            bgmPlayer.DimAndDull();
+            shopUI.SetActive(true);
+            // Time.timeScale = 0;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            shopIsOpen = true;
 
-        if (playerController != null)
-        {
-            playerController.enabled = false; // Disable player movement
-        }
+            if (playerController != null)
+            {
+                playerController.enabled = false; // Disable player movement
+            }
 
-        if (freeLookCamera != null)
-        {
-            freeLookCamera.enabled = false; // Disable the CinemachineFreeLook component
+            if (freeLookCamera != null)
+            {
+                freeLookCamera.enabled = false; // Disable the CinemachineFreeLook component
+            }
         }
     }
 
