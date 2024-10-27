@@ -36,6 +36,8 @@ public class EnemyBase : CharacterClass
     [SerializeField]
     private List<ItemDrop> itemDrops; // List of item drops with chances
 
+    public GameObject FloatingTextPrefab;
+
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -97,6 +99,16 @@ public class EnemyBase : CharacterClass
     {
         navMeshAgent.SetDestination(transform.position);
         base.TakeDamage(damage);
+
+        if (FloatingTextPrefab) {
+            ShowFloatingText(damage);
+        }
+    }
+
+    void ShowFloatingText(float damage)
+    {
+        var textMesh = Instantiate(FloatingTextPrefab, transform.position, Quaternion.identity, transform);
+        textMesh.GetComponent<TextMesh>().text = damage.ToString();
     }
 
     protected override void Die()
