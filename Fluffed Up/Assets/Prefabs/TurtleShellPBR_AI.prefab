@@ -1222,7 +1222,9 @@ MonoBehaviour:
   navMeshAgent: {fileID: 0}
   enemyState: 0
   player: {fileID: 0}
-  itemDrops: []
+  itemDrops:
+  - prefab: {fileID: 378334508266577950, guid: e94711451283b5e4ea97dd9bec1c8506, type: 3}
+    dropChance: 20
   goldValueMin: 12
   goldValueMax: 18
   FloatingTextPrefab: {fileID: 7094480470114473468, guid: 30af797ce4be6234b96581d2f79fa94b, type: 3}
