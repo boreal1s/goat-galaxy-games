@@ -3478,6 +3478,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactText: Open Shop
+  shopController: {fileID: 54886637}
 --- !u!1001 &307107672
 PrefabInstance:
   m_ObjectHideFlags: 0

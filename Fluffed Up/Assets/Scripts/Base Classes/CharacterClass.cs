@@ -174,10 +174,9 @@ public class CharacterClass : MonoBehaviour
 
     public void PlaySoundEffect(AudioClip audioClip, float pitch = 1.0f)
     {
-        Debug.Log("CharacterClass PlaySoundEffect");
         if (sound3DPrefab)
         {
-            Debug.Log("CharacterClass PlaySoundEffect!!!!");
+            // Debug.Log("CharacterClass PlaySoundEffect!!!!");
             Sound3D sound3DObject = Instantiate(sound3DPrefab, transform.position, Quaternion.identity, null);
             sound3DObject.audioSrc.clip = audioClip;
 

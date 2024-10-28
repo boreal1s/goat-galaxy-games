@@ -73,8 +73,12 @@ public class WaveManager : MonoBehaviour
         currentWave = waveList.Count - 1;
         StartWave();
 
-        if (shopController == null)
+        if (shopController == null) {
             Debug.LogWarning("No ShopController was assigned to WaveManager");
+        }
+        else {
+            shopController.CloseShop();
+        }
     }
 
     void SpawnPlayer()

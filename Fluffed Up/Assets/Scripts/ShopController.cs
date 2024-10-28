@@ -79,19 +79,22 @@ public class ShopController : MonoBehaviour
 
     public void OpenShop()
     {
-        Debug.Log("Shop opened");
-        activateShop();
-        Debug.Log($"Shop component: {shopComponent}");
-        shopIsOpen = true;
-
-        if (player != null)
+        if (canTriggerShop)
         {
-            player.enabled = false; // Disable player movement
-        }
+            Debug.Log("Shop opened");
+            activateShop();
+            Debug.Log($"Shop component: {shopComponent}");
+            shopIsOpen = true;
 
-        if (freeLookCamera != null)
-        {
-            freeLookCamera.enabled = false; // Disable the CinemachineFreeLook component
+            if (player != null)
+            {
+                player.enabled = false; // Disable player movement
+            }
+
+            if (freeLookCamera != null)
+            {
+                freeLookCamera.enabled = false; // Disable the CinemachineFreeLook component
+            }
         }
     }
 
