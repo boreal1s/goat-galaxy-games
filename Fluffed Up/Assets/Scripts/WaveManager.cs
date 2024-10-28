@@ -45,7 +45,6 @@ public class WaveManager : MonoBehaviour
 
     // Sound Events
     public UnityEvent<Vector3, AudioClip> playerSoundEvent;
-    private float waveSpawnDelay = 2f;
 
     [SerializeField]
     private ShopController shopController;
