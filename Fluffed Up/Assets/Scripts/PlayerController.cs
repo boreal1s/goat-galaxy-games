@@ -80,7 +80,7 @@ public class PlayerController : CharacterClass
         jumpCooldown = 0.5f;
         airSpeedMultiplier = 0.6f;
         attackPower = 70f;
-        health = 100f;
+        health = 1f;
         maxHealth = 100f;
         attackDistanceThreshold = 3f;
 
@@ -188,11 +188,6 @@ public class PlayerController : CharacterClass
         }
         healthBar.SetHealth(health);
 
-        if (health <= 0)
-        {
-
-             SceneManager.LoadScene("DeathScene");
-        }
         
 
         if (Input.GetKeyDown(KeyCode.Alpha1) && !isAttacking)

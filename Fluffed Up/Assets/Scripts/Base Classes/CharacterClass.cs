@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+
 
 public class CharacterClass : MonoBehaviour
 {
@@ -157,6 +159,7 @@ public class CharacterClass : MonoBehaviour
 
         if (health <= 0)
         {
+            SceneManager.LoadSceneAsync("DeathScene");
             Die();
         }
 
