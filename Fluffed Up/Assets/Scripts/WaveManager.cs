@@ -43,9 +43,6 @@ public class WaveManager : MonoBehaviour
     private int currentWave = -1; // Will be switched to 0 by StartWave
     private bool isSpawningWave = false; // Flag to prevent multiple waves from starting
 
-    // Sound Events
-    private float waveSpawnDelay = 2f;
-
     [SerializeField]
     private ShopController shopController;
 

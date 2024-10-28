@@ -360,7 +360,7 @@ public class PlayerController : CharacterClass
         ItemProperties properties = GetItemProperties("Health");
         if(properties != null)
         {
-            if(properties.quantity != 0 && health < 100)
+            if(properties.quantity != 0 && health < maxHealth)
             {
                 Heal(properties.value);
                 properties.totalAmount -= properties.quantity * properties.value;
