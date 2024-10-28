@@ -3451,7 +3451,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed032afccf9c6244eb997967fe4bdc89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shopController: {fileID: 54886637}
 --- !u!65 &306711691
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11835,9 +11834,6 @@ MonoBehaviour:
   waveEvent:
     m_PersistentCalls:
       m_Calls: []
-  playerSoundEvent:
-    m_PersistentCalls:
-      m_Calls: []
   shopController: {fileID: 54886637}
   waveCounterText: {fileID: 0}
   countdownText: {fileID: 0}
@@ -18493,7 +18489,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: -1.814643e+29, z: 7.1e-43, w: 2.877e-40}
+  m_BoundingSphereOverride: {x: 1.02e-43, y: 0, z: 0, w: 3.1160156e+10}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0

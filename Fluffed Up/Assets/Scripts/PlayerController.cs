@@ -136,6 +136,27 @@ public class PlayerController : CharacterClass
         isRunning = move != Vector3.zero && isGrounded;
         #endregion
 
+        if (Time.time - timeSinceLastCoinChange > 3 && coinFlushCounter != 0)
+            coinsAreFlushing = true;
+
+        if (coinsAreFlushing)
+        {
+            if (coinFlushCounter < 0)
+            {
+                coinFlushCounter += 1;
+                coins -= 1;
+            }
+            else if (coinFlushCounter > 0)
+            {
+                coinFlushCounter -= 1;
+                coins += 1;
+            }
+
+            UpdateCoinCounter();
+        }
+
+        if (coinFlushCounter == 0)
+            coinsAreFlushing = false;
     }
 
     // Update is called once per frame
@@ -178,28 +199,6 @@ public class PlayerController : CharacterClass
         {
             HealSelf();
         }
-
-        if (Time.time - timeSinceLastCoinChange > 3 && coinFlushCounter != 0)
-            coinsAreFlushing = true;
-
-        if (coinsAreFlushing)
-        {
-            if (coinFlushCounter < 0)
-            {
-                coinFlushCounter += 1;
-                coins -= 1;
-            } 
-            else if (coinFlushCounter > 0)
-            {
-                coinFlushCounter -= 1;
-                coins += 1;
-            }
-            
-            UpdateCoinCounter();
-        }
-
-        if (coinFlushCounter == 0)
-            coinsAreFlushing = false;
 
     }
     void Shoot()
