@@ -2,26 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatUpgrade : Upgrade
+public enum StatType
 {
-    enum StatType
-    {
-        Health,
-        Defense,
-        AttackSpeed,
-        Damage,
-        MoveSpeed,
-    }
+    Health,
+    Defense,
+    AttackSpeed,
+    AttackPower,
+    MoveSpeed,
+}
 
-    float statValue;
+public class StatUpgrade
+{
+    public float statValue;
+    public StatType statType;
 
-    public StatUpgrade(Upgrade upgrade, float statValue) : base(upgrade.name, upgrade.description, upgrade.followingUpgrades, upgrade.upgradeType, upgrade.cost, upgrade.rarity)
-    {
-        this.statValue = statValue;
-    }
-
-    public StatUpgrade(string name, string description, ArrayList followingUpgrades, UpgradeType upgradeType, int cost, float rarity, float statValue) : base(name, description, followingUpgrades, upgradeType, cost, rarity)
+    public StatUpgrade(float statValue, StatType statType)
     {
         this.statValue = statValue;
+        this.statType = statType;
     }
 }

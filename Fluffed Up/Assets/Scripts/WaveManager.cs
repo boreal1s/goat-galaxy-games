@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using TMPro;
 using System.Linq.Expressions;
 using Cinemachine;
+using System.Security.Cryptography.X509Certificates;
 
 public class WaveManager : MonoBehaviour
 {
@@ -30,10 +31,16 @@ public class WaveManager : MonoBehaviour
     // List of enemies
     public GameObject enemyPrefabSlime;
     public GameObject enemyPrefabTurtle;
+    [SerializeField] public GameObject enemySpawnArea;
+    public BoxCollider[] enemySpawnBoxes;
+
+    // Shop light source
+    [SerializeField] public LightPulse shopIndicatorLight;
+    [SerializeField] public LightPulse shopBeaconLight;
 
     public UnityEvent waveEvent;
     private List<GameObject> currentEnemies = new List<GameObject>();
-    private int currentWave = 0;
+    private int currentWave = -1; // Will be switched to 0 by StartWave
     private bool isSpawningWave = false; // Flag to prevent multiple waves from starting
 
     // Sound Events
@@ -41,8 +48,7 @@ public class WaveManager : MonoBehaviour
     private float waveSpawnDelay = 2f;
 
     [SerializeField]
-    private GameObject shopComponent;
-    public bool shopIsOpen;
+    private ShopController shopController;
 
     [SerializeField] 
     public TextMeshProUGUI waveCounterText; // For Unity UI Text
@@ -52,26 +58,23 @@ public class WaveManager : MonoBehaviour
 
     private List<List<EnemySpawnInfo>> waveList;
 
-    private ShopTrigger shopTrigger;
+    private void Awake()
+    {
+        SpawnPlayer();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        SpawnPlayer();
-
-        shopTrigger = FindObjectOfType<ShopTrigger>(); // Find the ShopManager in the scene
-        if (shopTrigger == null)
-        {
-            Debug.LogError("No shopTrigger found in the scene.");
-        }
-        shopComponent.SetActive(false);
-
+        // Prepare Enemies
+        enemySpawnBoxes = enemySpawnArea.GetComponents<BoxCollider>();
         waveEvent.AddListener(RequestNextWave);
         PopulateWave();
+        currentWave = waveList.Count - 1;
         StartWave();
 
-        if (shopComponent == null)
-            Debug.Log("No shop component was assigned to the WaveManager");
+        if (shopController == null)
+            Debug.LogWarning("No ShopController was assigned to WaveManager");
     }
 
     void SpawnPlayer()
@@ -143,29 +146,20 @@ public class WaveManager : MonoBehaviour
             restTimerCoroutine = null; // Clear the reference
         }
 
-        shopTrigger.canTriggerShop = false;
-        shopTrigger.CloseShop();
+        shopController.canTriggerShop = false;
+        shopController.RestockShop();
+        if (shopController.shopIsOpen)
+            shopController.CloseShop();
         Debug.Log("Times up. Disabling Shop");
 
         // Clear the countdown text when finished
         countdownText.text = "";
-        currentWave++; // update wave count
-        UpdateWaveCounter();
-        SpawnEnemy();
-    }
 
-    void UpdateWaveCounter()
-    {
-        waveCounterText.text = "Wave " + currentWave.ToString();
-    }
+        // Increment Wave
+        currentWave = (currentWave + 1)%waveList.Count;
 
-    void SpawnEnemy()
-    {
-        if (currentWave % 9 == 0)
-        {
-            currentWave = 0;
-        }
-        EnemyLoader(waveList[currentWave - 1]);
+        waveCounterText.text = "Wave " + (currentWave + 1).ToString();// Update wave counter
+        EnemyLoader(waveList[currentWave]);// Spawn enemy
     }
 
     private void EnemyLoader(List<EnemySpawnInfo> wave)
@@ -193,17 +187,20 @@ public class WaveManager : MonoBehaviour
 
     Vector3 GetRandomPosition()
     {
-        // Generate a random position on a circle with radius 18
-        Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * 18f;
-        Vector3 spawnPosition = new Vector3(randomCircle.x, 1f, randomCircle.y); // Start high enough above ground
+        BoxCollider selectedBox = enemySpawnBoxes[UnityEngine.Random.Range(0, enemySpawnBoxes.Length)];
+        Vector3 spawnPosition = new Vector3(
+            UnityEngine.Random.Range(selectedBox.bounds.min.x, selectedBox.bounds.max.x),
+            2f,
+            UnityEngine.Random.Range(selectedBox.bounds.min.z, selectedBox.bounds.max.z)
+        );
 
         // Raycast down to find the terrain level
-        RaycastHit hit;
-        if (Physics.Raycast(spawnPosition, Vector3.down, out hit, Mathf.Infinity))
-        {
-            // Return the ground level plus a small offset to prevent sinking
-            return new Vector3(randomCircle.x, hit.point.y + 0.1f, randomCircle.y);
-        }
+        // RaycastHit hit;
+        // if (Physics.Raycast(spawnPosition, Vector3.down, out hit, Mathf.Infinity))
+        // {
+        //     // Return the ground level plus a small offset to prevent sinking
+        //     return new Vector3(spawnPosition.x, hit.point.y + 0.1f, spawnPosition.y);
+        // }
 
         // Fallback if the raycast fails
         return spawnPosition;
@@ -240,11 +237,33 @@ public class WaveManager : MonoBehaviour
     void Update()
     {
         currentEnemies.RemoveAll(enemy => enemy == null);
-
+        ResponsiveShopLight(shopController.canTriggerShop);        
         waveEvent.Invoke();
-
     }
 
+    private void ResponsiveShopLight(bool activate)
+    {
+        if (activate)
+        {
+            float distanceThreshold = 12.0f;
+            float distanceFromShopToPlayer = Vector3.Distance(player.transform.position, shopIndicatorLight.transform.position);
+            if (distanceFromShopToPlayer <= distanceThreshold)
+            {
+                shopIndicatorLight.lightActivate = false;
+                shopBeaconLight.lightActivate = true;
+            }
+            else
+            {
+                shopIndicatorLight.lightActivate = true;
+                shopBeaconLight.lightActivate = false;
+            }
+        }
+        else
+        {
+            shopIndicatorLight.lightActivate = false;
+            shopBeaconLight.lightActivate = false;
+        }
+    }
 
     private void RequestNextWave()
     {
@@ -256,7 +275,8 @@ public class WaveManager : MonoBehaviour
 
     private IEnumerator StartRestTimer()
     {
-        shopTrigger.canTriggerShop = true;
+        if (currentWave >= 0)
+            shopController.canTriggerShop = true;
 
         float countdownDuration = 10f; // Total countdown time
         float elapsed = 0f;

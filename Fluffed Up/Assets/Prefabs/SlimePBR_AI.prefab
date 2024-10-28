@@ -781,6 +781,7 @@ MonoBehaviour:
     dropChance: 50
   - prefab: {fileID: 378334508266577950, guid: e94711451283b5e4ea97dd9bec1c8506, type: 3}
     dropChance: 50
+  FloatingTextPrefab: {fileID: 7094480470114473468, guid: 349e3df807dc37045b275eaffd38a36f, type: 3}
 --- !u!1 &9095607449275565481
 GameObject:
   m_ObjectHideFlags: 0
