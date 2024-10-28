@@ -40,7 +40,7 @@ public class WaveManager : MonoBehaviour
 
     public UnityEvent waveEvent;
     private List<GameObject> currentEnemies = new List<GameObject>();
-    private int currentWave = 0;
+    private int currentWave = -1; // Will be switched to 0 by StartWave
     private bool isSpawningWave = false; // Flag to prevent multiple waves from starting
 
     // Sound Events
@@ -70,6 +70,7 @@ public class WaveManager : MonoBehaviour
         enemySpawnBoxes = enemySpawnArea.GetComponents<BoxCollider>();
         waveEvent.AddListener(RequestNextWave);
         PopulateWave();
+        currentWave = waveList.Count - 1;
         StartWave();
 
         if (shopController == null)
@@ -153,23 +154,12 @@ public class WaveManager : MonoBehaviour
 
         // Clear the countdown text when finished
         countdownText.text = "";
-        currentWave++; // update wave count
-        UpdateWaveCounter();
-        SpawnEnemy();
-    }
 
-    void UpdateWaveCounter()
-    {
-        waveCounterText.text = "Wave " + currentWave.ToString();
-    }
+        // Increment Wave
+        currentWave = (currentWave + 1)%waveList.Count;
 
-    void SpawnEnemy()
-    {
-        if (currentWave % 9 == 0)
-        {
-            currentWave = 0;
-        }
-        EnemyLoader(waveList[currentWave - 1]);
+        waveCounterText.text = "Wave " + (currentWave + 1).ToString();// Update wave counter
+        EnemyLoader(waveList[currentWave]);// Spawn enemy
     }
 
     private void EnemyLoader(List<EnemySpawnInfo> wave)
@@ -285,7 +275,7 @@ public class WaveManager : MonoBehaviour
 
     private IEnumerator StartRestTimer()
     {
-        if (currentWave > 0)
+        if (currentWave >= 0)
             shopController.canTriggerShop = true;
 
         float countdownDuration = 10f; // Total countdown time

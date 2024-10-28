@@ -44,6 +44,7 @@ public class EnemyBase : CharacterClass
     private int goldValueMax;
 
     private PlayerController playerController;
+    public GameObject FloatingTextPrefab;
 
     void Start()
     {
@@ -109,6 +110,16 @@ public class EnemyBase : CharacterClass
     {
         navMeshAgent.SetDestination(transform.position);
         base.TakeDamage(damage);
+
+        if (FloatingTextPrefab) {
+            ShowFloatingText(damage);
+        }
+    }
+
+    void ShowFloatingText(float damage)
+    {
+        var textMesh = Instantiate(FloatingTextPrefab, transform.position, Quaternion.identity, transform);
+        textMesh.GetComponent<TextMesh>().text = damage.ToString();
     }
 
     protected override void Die()
