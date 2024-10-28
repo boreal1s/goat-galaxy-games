@@ -1189,6 +1189,7 @@ MonoBehaviour:
   maxHealth: 0
   attackPower: 2
   attackSpeed: 0
+  maxAttackSpeed: 0
   attackDistanceThreshold: 2
   isAttacking: 0
   defense: 0
@@ -1222,6 +1223,8 @@ MonoBehaviour:
   enemyState: 0
   player: {fileID: 0}
   itemDrops: []
+  goldValueMin: 12
+  goldValueMax: 18
   FloatingTextPrefab: {fileID: 7094480470114473468, guid: 30af797ce4be6234b96581d2f79fa94b, type: 3}
 --- !u!1 &5232567365979340287
 GameObject:

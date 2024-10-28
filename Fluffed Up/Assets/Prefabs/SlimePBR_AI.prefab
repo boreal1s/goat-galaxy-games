@@ -744,6 +744,7 @@ MonoBehaviour:
   maxHealth: 0
   attackPower: 1
   attackSpeed: 0
+  maxAttackSpeed: 0
   attackDistanceThreshold: 1
   isAttacking: 0
   defense: 0
@@ -777,10 +778,10 @@ MonoBehaviour:
   enemyState: 0
   player: {fileID: 0}
   itemDrops:
-  - prefab: {fileID: 8059062218478941161, guid: e0bfc7479007bc1479a9f7d769c5056e, type: 3}
-    dropChance: 50
   - prefab: {fileID: 378334508266577950, guid: e94711451283b5e4ea97dd9bec1c8506, type: 3}
-    dropChance: 50
+    dropChance: 20
+  goldValueMin: 7
+  goldValueMax: 12
   FloatingTextPrefab: {fileID: 7094480470114473468, guid: 349e3df807dc37045b275eaffd38a36f, type: 3}
 --- !u!1 &9095607449275565481
 GameObject:
