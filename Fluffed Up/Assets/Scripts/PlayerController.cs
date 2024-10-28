@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class PlayerController : CharacterClass
 {
@@ -20,6 +21,13 @@ public class PlayerController : CharacterClass
     public AudioClip attackSound;
     public AudioClip shootingSound;
     public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not. 
+
+    #region Coin Attributes
+    private int coins;
+    private int coinFlushCounter;
+    bool coinsAreFlushing;
+    float timeSinceLastCoinChange;
+    #endregion
 
     [System.Serializable]
     public class ItemProperties
@@ -48,6 +56,7 @@ public class PlayerController : CharacterClass
     [Header("UI")]
     [SerializeField]
     public TextMeshProUGUI coinCounterText; // For Unity UI Text
+    public TextMeshProUGUI coinFlushCounterText; // For Unity UI Text
     public TextMeshProUGUI healthCounterText; // For Unity UI Text
 
 
@@ -75,11 +84,17 @@ public class PlayerController : CharacterClass
         maxHealth = 100f;
         attackDistanceThreshold = 3f;
 
+        // Coin stuff
+        coins = 0;
+        coinFlushCounter = 0;
+        timeSinceLastCoinChange = Time.time;
+        coinsAreFlushing = false;
+
         healthBar = GetComponentInChildren<HealthBar>();
         if (healthBar != null)
-        {
-            healthBar.SetMaxHealth(health);
-        }
+            healthBar.SetMaxHealth(maxHealth);
+        else
+            Debug.Log("No HealthBar attached to PlayerController");
 
 
         UpdateAllCounters();
@@ -121,6 +136,27 @@ public class PlayerController : CharacterClass
         isRunning = move != Vector3.zero && isGrounded;
         #endregion
 
+        if (Time.time - timeSinceLastCoinChange > 3 && coinFlushCounter != 0)
+            coinsAreFlushing = true;
+
+        if (coinsAreFlushing)
+        {
+            if (coinFlushCounter < 0)
+            {
+                coinFlushCounter += 1;
+                coins -= 1;
+            }
+            else if (coinFlushCounter > 0)
+            {
+                coinFlushCounter -= 1;
+                coins += 1;
+            }
+
+            UpdateCoinCounter();
+        }
+
+        if (coinFlushCounter == 0)
+            coinsAreFlushing = false;
     }
 
     // Update is called once per frame
@@ -261,14 +297,21 @@ public class PlayerController : CharacterClass
 
     public void UpdateCoinCounter()
     {
-        ItemProperties properties = GetItemProperties("Coin");
-        if(properties != null)
+        coinCounterText.text = coins.ToString();
+
+        if (coinFlushCounter == 0)
         {
-            coinCounterText.text = properties.totalAmount.ToString();
+            coinFlushCounterText.text = "";
+        }
+        else if (coinFlushCounter > 0)
+        {
+            coinFlushCounterText.text = "+$" + coinFlushCounter.ToString();
+            coinFlushCounterText.color = Color.green;
         }
         else
         {
-            coinCounterText.text = "0";
+            coinFlushCounterText.text = "-$" + Math.Abs(coinFlushCounter).ToString();
+            coinFlushCounterText.color = Color.red;
         }
     }
 
@@ -317,7 +360,7 @@ public class PlayerController : CharacterClass
         ItemProperties properties = GetItemProperties("Health");
         if(properties != null)
         {
-            if(properties.quantity != 0 && health < 100)
+            if(properties.quantity != 0 && health < maxHealth)
             {
                 Heal(properties.value);
                 properties.totalAmount -= properties.quantity * properties.value;
@@ -338,5 +381,33 @@ public class PlayerController : CharacterClass
         {
             Debug.Log("No health to heal.");
         }
+    }
+
+    public void UpdateCoins(int addedCoins)
+    {
+        if (coinsAreFlushing)
+        {
+            coinsAreFlushing = false;
+            coins += coinFlushCounter;
+            coinFlushCounter = 0;
+        }
+        else if (coinFlushCounter * addedCoins < 0)
+        {
+            coinsAreFlushing = false;
+            coins += coinFlushCounter;
+            coinFlushCounter = addedCoins;
+        }
+        else
+        {
+            coinFlushCounter += addedCoins;
+            timeSinceLastCoinChange = Time.time;
+        }
+
+        UpdateCoinCounter();
+    }
+
+    public int GetCoins()
+    {
+        return coins;
     }
 }
