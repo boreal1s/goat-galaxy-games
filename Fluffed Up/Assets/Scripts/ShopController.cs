@@ -62,8 +62,8 @@ public class ShopController : MonoBehaviour
         player = FindObjectOfType<PlayerController>();
         freeLookCamera = FindObjectOfType<CinemachineFreeLook>();
 
-        //GameObject bgmObject = GameObject.FindGameObjectWithTag("BGM");
-        //bgmPlayer = bgmObject.GetComponent<BGMPlayer>();
+        GameObject bgmObject = GameObject.FindGameObjectWithTag("BGM");
+        bgmPlayer = bgmObject.GetComponent<BGMPlayer>();
     }
 
     private void Update()
@@ -81,6 +81,7 @@ public class ShopController : MonoBehaviour
     {
         if (canTriggerShop)
         {
+            bgmPlayer.DimAndDull();
             Debug.Log("Shop opened");
             activateShop();
             Debug.Log($"Shop component: {shopComponent}");
@@ -100,6 +101,7 @@ public class ShopController : MonoBehaviour
 
     public void CloseShop()
     {
+        bgmPlayer.LoudAndClear();
         shopComponent.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
