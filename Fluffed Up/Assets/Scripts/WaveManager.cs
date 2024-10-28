@@ -44,7 +44,6 @@ public class WaveManager : MonoBehaviour
     private bool isSpawningWave = false; // Flag to prevent multiple waves from starting
 
     // Sound Events
-    public UnityEvent<Vector3, AudioClip> playerSoundEvent;
     private float waveSpawnDelay = 2f;
 
     [SerializeField]
@@ -73,8 +72,12 @@ public class WaveManager : MonoBehaviour
         currentWave = waveList.Count - 1;
         StartWave();
 
-        if (shopController == null)
+        if (shopController == null) {
             Debug.LogWarning("No ShopController was assigned to WaveManager");
+        }
+        else {
+            shopController.CloseShop();
+        }
     }
 
     void SpawnPlayer()
