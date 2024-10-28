@@ -179,13 +179,22 @@ public class PlayerController : CharacterClass
             HealSelf();
         }
 
-        if (Time.time - timeSinceLastCoinChange > 3 && coinFlushCounter > 0)
+        if (Time.time - timeSinceLastCoinChange > 3 && coinFlushCounter != 0)
             coinsAreFlushing = true;
 
         if (coinsAreFlushing)
         {
-            coinFlushCounter -= 1;
-            coins += 1;
+            if (coinFlushCounter < 0)
+            {
+                coinFlushCounter += 1;
+                coins -= 1;
+            } 
+            else if (coinFlushCounter > 0)
+            {
+                coinFlushCounter -= 1;
+                coins += 1;
+            }
+            
             UpdateCoinCounter();
         }
 
@@ -292,11 +301,19 @@ public class PlayerController : CharacterClass
         coinCounterText.text = coins.ToString();
 
         if (coinFlushCounter == 0)
+        {
             coinFlushCounterText.text = "";
+        }
         else if (coinFlushCounter > 0)
+        {
             coinFlushCounterText.text = "+$" + coinFlushCounter.ToString();
+            coinFlushCounterText.color = Color.green;
+        }
         else
+        {
             coinFlushCounterText.text = "-$" + Math.Abs(coinFlushCounter).ToString();
+            coinFlushCounterText.color = Color.red;
+        }
     }
 
     void RemoveCoins(float amount)
