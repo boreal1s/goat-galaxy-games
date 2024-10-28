@@ -3707,18 +3707,6 @@ Transform:
   m_Father: {fileID: 1741623471}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &306711690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 306711688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed032afccf9c6244eb997967fe4bdc89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!65 &306711691
 BoxCollider:
   m_ObjectHideFlags: 0
