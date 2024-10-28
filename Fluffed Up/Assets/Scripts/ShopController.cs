@@ -79,20 +79,23 @@ public class ShopController : MonoBehaviour
 
     public void OpenShop()
     {
-        bgmPlayer.DimAndDull();
-        Debug.Log("Shop opened");
-        activateShop();
-        Debug.Log($"Shop component: {shopComponent}");
-        shopIsOpen = true;
-
-        if (player != null)
+        if (canTriggerShop)
         {
-            player.enabled = false; // Disable player movement
-        }
+            bgmPlayer.DimAndDull();
+            Debug.Log("Shop opened");
+            activateShop();
+            Debug.Log($"Shop component: {shopComponent}");
+            shopIsOpen = true;
 
-        if (freeLookCamera != null)
-        {
-            freeLookCamera.enabled = false; // Disable the CinemachineFreeLook component
+            if (player != null)
+            {
+                player.enabled = false; // Disable player movement
+            }
+
+            if (freeLookCamera != null)
+            {
+                freeLookCamera.enabled = false; // Disable the CinemachineFreeLook component
+            }
         }
     }
 
@@ -258,12 +261,26 @@ public class ShopController : MonoBehaviour
     {
         if (upgrade.upgradeType == UpgradeType.StatUpgrade)
         {
-            switch (upgrade.statUpgrade.GetType())
+            switch (upgrade.statUpgrade.statType)
             {
-                // Update player's respective stat
+                case StatType.Health:
+                    player.updateMaxHealth(upgrade.statUpgrade.statValue);
+                    break;
+                case StatType.Defense:
+                    player.defense += upgrade.statUpgrade.statValue;
+                    break;
+                case StatType.AttackSpeed:
+                    player.attackSpeed = Math.Clamp(player.attackSpeed + upgrade.statUpgrade.statValue, 0.1f, player.maxAttackSpeed);
+                    break;
+                case StatType.AttackPower:
+                    player.attackPower += upgrade.statUpgrade.statValue;
+                    player.projectileDamage += (upgrade.statUpgrade.statValue * .4f);
+                    break;
+                case StatType.MoveSpeed:
+                    player.moveSpeed += upgrade.statUpgrade.statValue;
+                    break;
             }
         }
-
         // Handle other cases
     }
 }

@@ -7,14 +7,14 @@ public enum StatType
     Health,
     Defense,
     AttackSpeed,
-    Damage,
+    AttackPower,
     MoveSpeed,
 }
 
 public class StatUpgrade
 {
-    float statValue;
-    StatType statType;
+    public float statValue;
+    public StatType statType;
 
     public StatUpgrade(float statValue, StatType statType)
     {
