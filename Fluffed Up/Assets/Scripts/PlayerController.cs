@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class PlayerController : CharacterClass
 {
@@ -20,7 +21,13 @@ public class PlayerController : CharacterClass
     public AudioClip attackSound;
     public AudioClip shootingSound;
     public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not. 
+
+    #region Coin Attributes
     private int coins;
+    private int coinFlushCounter;
+    bool coinsAreFlushing;
+    float timeSinceLastCoinChange;
+    #endregion
 
     [System.Serializable]
     public class ItemProperties
@@ -49,6 +56,7 @@ public class PlayerController : CharacterClass
     [Header("UI")]
     [SerializeField]
     public TextMeshProUGUI coinCounterText; // For Unity UI Text
+    public TextMeshProUGUI coinFlushCounterText; // For Unity UI Text
     public TextMeshProUGUI healthCounterText; // For Unity UI Text
 
 
@@ -75,7 +83,12 @@ public class PlayerController : CharacterClass
         health = 100f;
         maxHealth = 100f;
         attackDistanceThreshold = 3f;
+
+        // Coin stuff
         coins = 0;
+        coinFlushCounter = 0;
+        timeSinceLastCoinChange = Time.time;
+        coinsAreFlushing = false;
 
         healthBar = GetComponentInChildren<HealthBar>();
         if (healthBar != null)
@@ -165,6 +178,19 @@ public class PlayerController : CharacterClass
         {
             HealSelf();
         }
+
+        if (Time.time - timeSinceLastCoinChange > 3 && coinFlushCounter > 0)
+            coinsAreFlushing = true;
+
+        if (coinsAreFlushing)
+        {
+            coinFlushCounter -= 1;
+            coins += 1;
+            UpdateCoinCounter();
+        }
+
+        if (coinFlushCounter == 0)
+            coinsAreFlushing = false;
 
     }
     void Shoot()
@@ -263,15 +289,14 @@ public class PlayerController : CharacterClass
 
     public void UpdateCoinCounter()
     {
-        ItemProperties properties = GetItemProperties("Coin");
-        if(properties != null)
-        {
-            coinCounterText.text = properties.totalAmount.ToString();
-        }
+        coinCounterText.text = coins.ToString();
+
+        if (coinFlushCounter == 0)
+            coinFlushCounterText.text = "";
+        else if (coinFlushCounter > 0)
+            coinFlushCounterText.text = "+$" + coinFlushCounter.ToString();
         else
-        {
-            coinCounterText.text = "0";
-        }
+            coinFlushCounterText.text = "-$" + Math.Abs(coinFlushCounter).ToString();
     }
 
     void RemoveCoins(float amount)
@@ -344,7 +369,24 @@ public class PlayerController : CharacterClass
 
     public void UpdateCoins(int addedCoins)
     {
-        coins += addedCoins;
+        if (coinsAreFlushing)
+        {
+            coinsAreFlushing = false;
+            coins += coinFlushCounter;
+            coinFlushCounter = 0;
+        }
+        else if (coinFlushCounter * addedCoins < 0)
+        {
+            coinsAreFlushing = false;
+            coins += coinFlushCounter;
+            coinFlushCounter = addedCoins;
+        }
+        else
+        {
+            coinFlushCounter += addedCoins;
+            timeSinceLastCoinChange = Time.time;
+        }
+
         UpdateCoinCounter();
     }
 
