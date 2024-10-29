@@ -17,6 +17,16 @@ public class PlayerController : CharacterClass
     public float projectileDamage = 10f;      // Damage dealt by the projectile
     private List<CollectibleItem> inventory = new List<CollectibleItem>();
 
+    [Header("Melee attack attibutes")]
+    private float attackComboCooldown;
+    private int attackComboMax;
+    public int CurrentAttackCounter
+    {
+        get => currentAttackCounter;
+        private set => currentAttackCounter = value >= attackComboMax ? 0 : value;
+    }
+    public int currentAttackCounter;
+
     [Header("Inputs")]
     [SerializeField]
     private InputMap inputs;
@@ -50,6 +60,9 @@ public class PlayerController : CharacterClass
         attackPower = 25f;
         health = 100f;
         attackDistanceThreshold = 3f;
+        CurrentAttackCounter = 0;
+        attackComboMax = 3;
+        attackComboCooldown = 1f;
 
         healthBar = GetComponentInChildren<HealthBar>();
         if (healthBar != null)
@@ -162,10 +175,28 @@ public class PlayerController : CharacterClass
 
     void attackEnemy()
     {
-        animator.Play("Attack01");
         isAttacking = true;
+        switch (CurrentAttackCounter)
+        {
+            case 0:
+                animator.SetBool("attack01", true);
+                break;
+            case 1:
+                animator.SetBool("attack02", true);
+                break;
+            case 2:
+                animator.SetBool("attack01", true);
+                break;
+            default:
+                break;
+        }
+        CurrentAttackCounter += 1;
+
         // Reset the attacking state after the attack animation finishes
-        StartCoroutine(ResetAttackState());
+        if (CurrentAttackCounter == attackComboMax)
+            StartCoroutine(ResetAttackState(attackComboCooldown));
+        else
+            StartCoroutine(ResetAttackState());
 
         // Find nearby enemies
         AttackEvent?.Invoke(attackPower);
