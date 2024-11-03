@@ -54,6 +54,8 @@ public class PlayerController : CharacterClass
         private set => currentAttackCounter = value >= attackComboMax ? 0 : value;
     }
     public int currentAttackCounter;
+    public bool ATTACK_1_BOOL;
+    public bool ATTACK_2_BOOL;
 
     [Header("Inputs")]
     [SerializeField]
@@ -96,6 +98,7 @@ public class PlayerController : CharacterClass
         CurrentAttackCounter = 0;
         attackComboMax = 3;
         attackComboCooldown = 1f;
+        attackSpeed = 1f;
 
         // Coin stuff
         coins = 0;
@@ -109,6 +112,7 @@ public class PlayerController : CharacterClass
         else
             Debug.Log("No HealthBar attached to PlayerController");
 
+        animator.SetFloat("attackSpeed", attackSpeed);
 
         UpdateAllCounters();
     }
@@ -181,7 +185,7 @@ public class PlayerController : CharacterClass
         {
             if (Input.GetMouseButtonDown(0) && !isAttacking)
             {
-                Debug.Log("Right mouse button clicked - calling Shoot() for shooter character");
+                Debug.Log("Left mouse button clicked - calling Shoot() for shooter character");
                 Shoot();
             }
         }
@@ -189,8 +193,8 @@ public class PlayerController : CharacterClass
         {
             if (Input.GetMouseButtonDown(0) && !isAttacking)
             {
-                Debug.Log("Right mouse button clicked - calling attackEnemy() for sword character");
-                attackEnemy();
+                Debug.Log("Left mouse button clicked - calling meleeAttack() for sword character");
+                meleeAttack();
             }
         }
 
@@ -245,30 +249,24 @@ public class PlayerController : CharacterClass
         projectile.transform.forward = transform.forward;
     }
 
-    void attackEnemy()
+    void meleeAttack()
     {
         isAttacking = true;
         switch (CurrentAttackCounter)
         {
             case 0:
-                animator.SetBool("attack01", true);
+                animator.SetTrigger("attack01");
                 break;
             case 1:
-                animator.SetBool("attack02", true);
-                break;
-            case 2:
-                animator.SetBool("attack01", true);
+                animator.SetTrigger("attack02");
                 break;
             default:
                 break;
         }
-        CurrentAttackCounter += 1;
+        CurrentAttackCounter = (CurrentAttackCounter + 1) % 2;
 
         // Reset the attacking state after the attack animation finishes
-        if (CurrentAttackCounter == attackComboMax)
-            StartCoroutine(ResetAttackState(attackComboCooldown));
-        else
-            StartCoroutine(ResetAttackState());
+        StartCoroutine(ResetAttackState());
 
         // Play attack sound
         PlaySoundEffect(attackSound);

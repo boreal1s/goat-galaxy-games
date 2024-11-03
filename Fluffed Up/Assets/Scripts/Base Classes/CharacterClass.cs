@@ -187,4 +187,10 @@ public class CharacterClass : MonoBehaviour
             sound3DObject.audioSrc.Play();
         }
     }
+
+    public void UpdateAttackSpeed(float attackSpeedMultiplier)
+    {
+        attackSpeed = attackSpeed + (attackSpeed * attackSpeedMultiplier);
+        animator.SetFloat("attackSpeed", attackSpeed);
+    }
 }
