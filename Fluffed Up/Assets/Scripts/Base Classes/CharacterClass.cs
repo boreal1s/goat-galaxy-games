@@ -128,6 +128,12 @@ public class CharacterClass : MonoBehaviour
         isFrozen = false; // Reset frozen state
     }
 
+    public IEnumerator DieCoroutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        Destroy(gameObject);
+    }
+
     public virtual void updateMaxHealth(float maxHealthChange)
     {
         maxHealth += maxHealthChange;
@@ -166,12 +172,6 @@ public class CharacterClass : MonoBehaviour
         }
     }
 
-    protected virtual void Die()
-    {
-        Debug.Log($"{gameObject.name} has died.");
-        Destroy(gameObject);
-    }
-
     public void PlaySoundEffect(AudioClip audioClip, float pitch = 1.0f)
     {
         if (sound3DPrefab)
@@ -187,4 +187,7 @@ public class CharacterClass : MonoBehaviour
             sound3DObject.audioSrc.Play();
         }
     }
+
+    protected virtual void Die()
+    {}
 }
