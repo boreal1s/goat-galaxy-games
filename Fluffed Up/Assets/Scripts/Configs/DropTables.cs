@@ -116,8 +116,9 @@ public class DropTables : MonoBehaviour
         };
 
         // Skill
-        Upgrade blinkSkill = new Upgrade("Blink", "Instantaneously teleport a short distance", UpgradeType.Skill, 20, blinkSkillShopSprite, blinkSkillToolbarSprite, new BlinkSkill(new List<Upgrade>(), Rarity.Rare, 5f));
-        Upgrade dodgeSkill = new Upgrade("Roll", "Swiftly roll out of harms way", UpgradeType.Skill, 10, dodgeSkillShopSprite, dodgeSkillToolbarSprite, new RollSkill(new List<Upgrade>() { blinkSkill }, Rarity.Common, 5f));
+        Upgrade blinkSkill = new Upgrade("Blink", "Instantaneously teleport a short distance", UpgradeType.Skill, 20, blinkSkillShopSprite, blinkSkillToolbarSprite, new BlinkSkill(new List<Upgrade>(), Rarity.Rare, 4f));
+        Upgrade dashSkill = new Upgrade("Dash", "A faster way to dodge", UpgradeType.Skill, 20, blinkSkillShopSprite, blinkSkillToolbarSprite, new DashSkill(new List<Upgrade>(), Rarity.Uncommon, 3f));
+        Upgrade dodgeSkill = new Upgrade("Roll", "Swiftly roll out of harms way", UpgradeType.Skill, 10, dodgeSkillShopSprite, dodgeSkillToolbarSprite, new RollSkill(new List<Upgrade>() { blinkSkill, dashSkill }, Rarity.Common, 1.2f));
         skills = new WeightedList<Upgrade>()
         {
             { dodgeSkill, commonWeight},
