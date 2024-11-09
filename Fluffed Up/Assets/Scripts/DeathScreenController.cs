@@ -3,17 +3,18 @@ using UnityEngine.SceneManagement;
 
 public class DeathScreenController : MonoBehaviour
 {
-    
-    public void RestartLevel()
+
+    public void RestartGame()
     {
-
-        SceneManager.LoadScene("SampleScene"); 
-
-      
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        SceneManager.LoadScene("SampleScene");
     }
-   
+
     public void QuitToMenu()
-    { 
-        SceneManager.LoadScene("Main Menu"); 
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        SceneManager.LoadScene("Main Menu");
     }
 }

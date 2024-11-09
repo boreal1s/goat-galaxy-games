@@ -159,7 +159,6 @@ public class CharacterClass : MonoBehaviour
 
         if (health <= 0)
         {
-            SceneManager.LoadSceneAsync("DeathScene");
             Die();
         }
 
@@ -172,6 +171,11 @@ public class CharacterClass : MonoBehaviour
     protected virtual void Die()
     {
         Debug.Log($"{gameObject.name} has died.");
+        if(gameObject.name == "PlayerSlayer(Clone)" || gameObject.name == "PlayerShooter(Clone)") {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("DeathScene");
+        }
         Destroy(gameObject);
     }
 

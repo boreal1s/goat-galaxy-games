@@ -80,7 +80,7 @@ public class PlayerController : CharacterClass
         jumpCooldown = 0.5f;
         airSpeedMultiplier = 0.6f;
         attackPower = 70f;
-        health = 1f;
+        health = 100f;
         maxHealth = 100f;
         attackDistanceThreshold = 3f;
 
