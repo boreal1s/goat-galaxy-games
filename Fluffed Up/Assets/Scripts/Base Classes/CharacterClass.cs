@@ -80,9 +80,9 @@ public class CharacterClass : MonoBehaviour
         isJumping = false;
     }
 
-    public IEnumerator ResetAttackState()
+    public IEnumerator ResetAttackState(float additionalWaitTime = 0f)
     {
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitForSeconds((animator.GetCurrentAnimatorStateInfo(0).length * 0.7f) + additionalWaitTime);
         isAttacking = false; // Reset attacking state after the action is done
     }
 
@@ -190,4 +190,10 @@ public class CharacterClass : MonoBehaviour
 
     protected virtual void Die()
     {}
+    
+    public void UpdateAttackSpeed(float attackSpeedMultiplier)
+    {
+        attackSpeed = attackSpeed + (attackSpeed * attackSpeedMultiplier);
+        animator.SetFloat("attackSpeed", attackSpeed);
+    }
 }
