@@ -59,7 +59,7 @@ public class PlayerController : CharacterClass
     public TextMeshProUGUI coinFlushCounterText; // For Unity UI Text
     public TextMeshProUGUI healthCounterText; // For Unity UI Text
 
-
+    
 
     private void Awake()
     {
@@ -166,6 +166,8 @@ public class PlayerController : CharacterClass
 
         if (SelectChar.characterID == 1) // If the shooter character is selected
         {
+            // default the shooter's position
+            animator.Play("Defend");
             if (Input.GetMouseButtonDown(0) && !isAttacking)
             {
                 Debug.Log("Right mouse button clicked - calling Shoot() for shooter character");
@@ -201,14 +203,19 @@ public class PlayerController : CharacterClass
         }
 
     }
-    void Shoot()
+
+   void Shoot()
     {
         Debug.Log("Shoot() method is being called");
 
-        // Trigger the shooting animation (if you have one)
-        animator.Play("Defend");
 
         PlaySoundEffect(shootingSound);
+
+        // Get the camera's forward direction (includes both horizontal and vertical rotation)
+        Vector3 cameraForward = cameraTransform.forward;
+
+        // Normalize the direction to ensure consistent speed
+        cameraForward.Normalize();
 
         // Instantiate the projectile at the spawn point
         GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
@@ -228,8 +235,15 @@ public class PlayerController : CharacterClass
             Debug.LogError("Projectile script not found on the projectile prefab.");
         }
 
-        // Set the projectile's direction
-        projectile.transform.forward = transform.forward;
+        // Set the projectile's direction based on the camera's forward direction
+        projectile.transform.forward = cameraForward;
+
+        // Apply velocity to the projectile using the Rigidbody component
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.velocity = cameraForward * projectileSpeed; // Set velocity along the camera's forward direction
+        }
     }
 
     void attackEnemy()
