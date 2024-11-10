@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+
 
 public class CharacterClass : MonoBehaviour
 {
@@ -189,7 +191,15 @@ public class CharacterClass : MonoBehaviour
     }
 
     protected virtual void Die()
-    {}
+    {
+        Debug.Log($"{gameObject.name} has died.");
+        if(gameObject.name == "PlayerSlayer(Clone)" || gameObject.name == "PlayerShooter(Clone)") {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("DeathScene");
+        }
+        Destroy(gameObject);
+    }
     
     public void UpdateAttackSpeed(float attackSpeedMultiplier)
     {

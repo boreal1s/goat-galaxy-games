@@ -205,11 +205,6 @@ public class PlayerController : CharacterClass
         }
         healthBar.SetHealth(health);
 
-        if (health <= 0)
-        {
-
-             SceneManager.LoadScene("DeathScene");
-        }
         
 
         if (Input.GetKeyDown(KeyCode.Alpha1) && !isAttacking)
