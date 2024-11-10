@@ -45,6 +45,18 @@ public class PlayerController : CharacterClass
     }
     private Dictionary<string, ItemProperties> inventory = new Dictionary<string, ItemProperties>();
 
+    [Header("Melee attack attibutes")]
+    private float attackComboCooldown;
+    private int attackComboMax;
+    public int CurrentAttackCounter
+    {
+        get => currentAttackCounter;
+        private set => currentAttackCounter = value >= attackComboMax ? 0 : value;
+    }
+    public int currentAttackCounter;
+    public bool ATTACK_1_BOOL;
+    public bool ATTACK_2_BOOL;
+
     [Header("Inputs")]
     [SerializeField]
     private InputMap inputs;
@@ -83,6 +95,10 @@ public class PlayerController : CharacterClass
         health = 100f;
         maxHealth = 100f;
         attackDistanceThreshold = 3f;
+        CurrentAttackCounter = 0;
+        attackComboMax = 3;
+        attackComboCooldown = 1f;
+        attackSpeed = 1f;
 
         // Coin stuff
         coins = 0;
@@ -96,6 +112,7 @@ public class PlayerController : CharacterClass
         else
             Debug.Log("No HealthBar attached to PlayerController");
 
+        animator.SetFloat("attackSpeed", attackSpeed);
 
         UpdateAllCounters();
     }
@@ -168,7 +185,7 @@ public class PlayerController : CharacterClass
         {
             if (Input.GetMouseButtonDown(0) && !isAttacking)
             {
-                Debug.Log("Right mouse button clicked - calling Shoot() for shooter character");
+                Debug.Log("Left mouse button clicked - calling Shoot() for shooter character");
                 Shoot();
             }
         }
@@ -176,8 +193,8 @@ public class PlayerController : CharacterClass
         {
             if (Input.GetMouseButtonDown(0) && !isAttacking)
             {
-                Debug.Log("Right mouse button clicked - calling attackEnemy() for sword character");
-                attackEnemy();
+                Debug.Log("Left mouse button clicked - calling meleeAttack() for sword character");
+                meleeAttack();
             }
         }
 
@@ -227,10 +244,22 @@ public class PlayerController : CharacterClass
         projectile.transform.forward = transform.forward;
     }
 
-    void attackEnemy()
+    void meleeAttack()
     {
-        animator.Play("Attack01");
         isAttacking = true;
+        switch (CurrentAttackCounter)
+        {
+            case 0:
+                animator.SetTrigger("attack01");
+                break;
+            case 1:
+                animator.SetTrigger("attack02");
+                break;
+            default:
+                break;
+        }
+        CurrentAttackCounter = (CurrentAttackCounter + 1) % 2;
+
         // Reset the attacking state after the attack animation finishes
         StartCoroutine(ResetAttackState());
 

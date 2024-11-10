@@ -13,6 +13,7 @@ public class EnemyBase : CharacterClass
         Idle,
         InitiateAttack,
         Attacking,
+        Dead
     };
 
     [System.Serializable]
@@ -91,6 +92,9 @@ public class EnemyBase : CharacterClass
                         enemyState = EnemyState.InitiateAttack;
                     }
                     break;
+                case EnemyState.Dead:
+                    navMeshAgent.SetDestination(transform.position); // Stop enemy chasing player
+                    break;
                 default:
                     break;
             }
@@ -127,7 +131,8 @@ public class EnemyBase : CharacterClass
 
     protected override void Die()
     {
-
+        enemyState = EnemyState.Dead;
+        
         int coinDrop = UnityEngine.Random.Range(goldValueMin, goldValueMax);
         playerController.UpdateCoins(coinDrop);
 
@@ -153,7 +158,6 @@ public class EnemyBase : CharacterClass
 
         OnEnemyDeath?.Invoke();
 
-        // Destroy game object from parent CharacterClass
-        base.Die();
+        // game object will be destroyed by DieCoroutine
     }
 }
