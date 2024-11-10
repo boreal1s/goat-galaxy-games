@@ -3970,7 +3970,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7924904203460507142}
   m_LocalRotation: {x: -0.70710677, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.1002, y: 0.3285, z: 0.0441}
+  m_LocalPosition: {x: 0.107, y: 0.34, z: 0.027}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7210,7 +7210,7 @@ MonoBehaviour:
       m_Calls: []
   projectilePrefab: {fileID: 4375877043695035639, guid: b6daace4167ce31d58d10ebfef167161, type: 3}
   projectileSpawnPoint: {fileID: 7924904203460507141}
-  projectileSpeed: 20
+  projectileSpeed: 50
   projectileDamage: 10
   attackSound: {fileID: 0}
   shootingSound: {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}
