@@ -3068,6 +3068,9 @@ MonoBehaviour:
   attackSound: {fileID: 8300000, guid: be779a7c804054a8cbf743ef9a43cd0d, type: 3}
   shootingSound: {fileID: 0}
   attackDelayInMilli: 300
+  currentAttackCounter: 0
+  ATTACK_1_BOOL: 0
+  ATTACK_2_BOOL: 0
   inputs: {fileID: 0}
   cameraTransform: {fileID: 0}
   coinCounterText: {fileID: 8317859749317322553}
