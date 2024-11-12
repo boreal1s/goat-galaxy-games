@@ -8,7 +8,9 @@ using JetBrains.Annotations;
 public class EnemyMiniBossDog : EnemyBase
 {
     private const int ACTION_DELAY_DEFAULT = 500;
+    private const int DIZZY_DELAY_DEFAULT = 800;
     private int actionDelay = ACTION_DELAY_DEFAULT; // give delay in action because minibossdog is stupid!
+    private int dizzyDelay = 0;
 
     public override void AIStateMachine()
     {
@@ -19,20 +21,21 @@ public class EnemyMiniBossDog : EnemyBase
         }
 
         base.AIStateMachine();
+
+        bool isMoving = false;
+
         switch (enemyState)
         {
         case EnemyState.ChasingPlayer:
-            animator.SetBool("isMoving", true);
+            isMoving = true;
             break;
         case EnemyState.InitiateAttack:
-            animator.SetBool("isMoving", false);
             base.AIStateMachine();
             Attack();
             enemyState = EnemyState.Attacking;
             actionDelay = ACTION_DELAY_DEFAULT;
             break;
         case EnemyState.Attacking:
-            animator.SetBool("isMoving", false);
             base.AIStateMachine();
             if (distanceToPlayer > 1)
             {
@@ -45,11 +48,18 @@ public class EnemyMiniBossDog : EnemyBase
                 enemyState = EnemyState.InitiateAttack;
             }
             break;
+        case EnemyState.Dizzy:
+            if (--dizzyDelay <= 0)
+            {
+                enemyState = EnemyState.Attacking;
+            }
+            break;
         default:
-            animator.SetBool("isMoving", false);
             base.AIStateMachine();
             break;
         }
+
+        animator.SetBool("isMoving", isMoving);
     }
 
     public override void Attack()
@@ -65,11 +75,12 @@ public class EnemyMiniBossDog : EnemyBase
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
-        actionDelay = ACTION_DELAY_DEFAULT;
         if (health > 0)
         {
             animator.StopPlayback();
             animator.Play("GetHit");
+            enemyState = EnemyState.Dizzy;
+            dizzyDelay = DIZZY_DELAY_DEFAULT;
         }
     }
 

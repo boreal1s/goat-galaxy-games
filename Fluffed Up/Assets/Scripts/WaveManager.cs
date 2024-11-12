@@ -32,6 +32,7 @@ public class WaveManager : MonoBehaviour
     public GameObject enemyPrefabSlime;
     public GameObject enemyPrefabTurtle;
     public GameObject enemyPrefabMiniBossDog;
+    public GameObject enemyPrefabMiniBossPenguin;
     [SerializeField] public GameObject enemySpawnArea;
     public BoxCollider[] enemySpawnBoxes;
 
@@ -102,15 +103,13 @@ public class WaveManager : MonoBehaviour
         waveList = new List<List<EnemySpawnInfo>>
         {            
             new(){// First wave
-                new(enemyPrefabSlime, 3),
-                new(enemyPrefabMiniBossDog, 1)
+                new(enemyPrefabSlime, 3)                
             },
             new(){// Second wave
                 new(enemyPrefabTurtle, 2)
             },
             new(){// Third wave
-                new(enemyPrefabSlime, 2),
-                new(enemyPrefabTurtle, 2)
+                new(enemyPrefabMiniBossDog, 1),
             },
             new(){// Fourth wave
                 new(enemyPrefabTurtle, 4)
@@ -123,8 +122,7 @@ public class WaveManager : MonoBehaviour
                 new(enemyPrefabTurtle, 3)
             },
             new(){// Sixth wave
-                new(enemyPrefabSlime, 4),
-                new(enemyPrefabTurtle, 4)
+                new(enemyPrefabMiniBossPenguin, 1)
             },
             new(){// Seventh wave
                 new(enemyPrefabSlime, 10)
