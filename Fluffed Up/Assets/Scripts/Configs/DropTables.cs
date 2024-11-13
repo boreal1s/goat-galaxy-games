@@ -20,6 +20,12 @@ public class DropTables : MonoBehaviour
     Sprite attackPowerToolbarSprite;
     Sprite healthIncreaseShopSprite;
     Sprite healthIncreaseToolbarSprite;
+    Sprite defenseUpgradeShopSprite;
+    Sprite defenseUpgradeToolbarSprite;
+    Sprite moveSpeedShopSprite;
+    Sprite moveSpeedUpgradeToolbarSprite;
+    Sprite attackSpeedUpgradeShopSprite;
+    Sprite attackSpeedUpgradeToolbarSprite;
     Sprite dodgeSkillShopSprite;
     Sprite dodgeSkillToolbarSprite;
     Sprite blinkSkillShopSprite;
@@ -67,6 +73,12 @@ public class DropTables : MonoBehaviour
         attackPowerToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
         healthIncreaseShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
         healthIncreaseToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        defenseUpgradeShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        defenseUpgradeToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        moveSpeedShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        moveSpeedUpgradeToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        attackSpeedUpgradeShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        attackSpeedUpgradeToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
         dodgeSkillShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
         dodgeSkillToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
         blinkSkillShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
@@ -91,10 +103,16 @@ public class DropTables : MonoBehaviour
         // Stat Upgrades
         Upgrade attackPower = new Upgrade("Attack Power", "Increase attack power by 10", UpgradeType.StatUpgrade, 10, attackPowerShopSprite, attackPowerToolbarSprite, new StatUpgrade(10f, StatType.AttackPower));
         Upgrade healthIncrease = new Upgrade("Max Health Increase", "Increase max health by 20", UpgradeType.StatUpgrade, 10, healthIncreaseShopSprite, healthIncreaseToolbarSprite, new StatUpgrade(20f, StatType.Health));
+        Upgrade defenseUpgrade = new Upgrade("Defense Up!", "Become a little tougher", UpgradeType.StatUpgrade, 10, defenseUpgradeShopSprite, defenseUpgradeToolbarSprite, new StatUpgrade(2f, StatType.Defense));
+        Upgrade moveSpeedUpgrade = new Upgrade("Move Speed Increase", "Zoooooom!", UpgradeType.StatUpgrade, 10, moveSpeedShopSprite, moveSpeedUpgradeToolbarSprite, new StatUpgrade(10f, StatType.MoveSpeed));
+        Upgrade attackSpeedUpgrade = new Upgrade("Attack Speed Increase", "Increase attack speed by 7%", UpgradeType.StatUpgrade, 10, attackSpeedUpgradeShopSprite, attackSpeedUpgradeToolbarSprite, new StatUpgrade(0.07f, StatType.AttackSpeed));
         statUpgrades = new WeightedList<Upgrade>()
         {
             {attackPower, uncommonWeight},
             {healthIncrease, uncommonWeight},
+            {defenseUpgrade, uncommonWeight},
+            {moveSpeedUpgrade, uncommonWeight},
+            {attackSpeedUpgrade, uncommonWeight},
         };
 
         // Skill

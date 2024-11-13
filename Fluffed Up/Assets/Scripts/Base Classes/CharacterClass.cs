@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -38,7 +39,6 @@ public class CharacterClass : MonoBehaviour
     public float freezeDuration;
     #endregion
 
-
     #region Grounded Attributes
     [Header("Grounded Attributes")]
     public bool isGrounded;
@@ -64,10 +64,8 @@ public class CharacterClass : MonoBehaviour
     public AudioClip hitSoundEffect;
     public float hitSoundPitch;
 
-
     private void Start()
     {
-        // TODO initialize base values for characters
     }
 
     public void Jump(float modifier)
@@ -82,9 +80,9 @@ public class CharacterClass : MonoBehaviour
         isJumping = false;
     }
 
-    public IEnumerator ResetAttackState(float additionalWaitTime = 0f)
+    public IEnumerator ResetAttackState()
     {
-        yield return new WaitForSeconds((animator.GetCurrentAnimatorStateInfo(0).length * 0.7f) + additionalWaitTime);
+        yield return new WaitForSeconds((animator.GetCurrentAnimatorStateInfo(0).length / attackSpeed));
         isAttacking = false; // Reset attacking state after the action is done
     }
 
