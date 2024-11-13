@@ -13,6 +13,7 @@ public class EnemyBase : CharacterClass
         Idle,
         InitiateAttack,
         Attacking,
+        Dead
     };
 
     [System.Serializable]
@@ -70,27 +71,33 @@ public class EnemyBase : CharacterClass
 
     public virtual void AIStateMachine()
     {
-        distanceToPlayer  = (transform.position - player.transform.position).magnitude;
-        switch (enemyState)
+        if(player)
         {
-        case EnemyState.Idle:
-            // Debug.Log("EnemyState: Idle");
-            if (distanceToPlayer > attackDistanceThreshold)
-                enemyState = EnemyState.ChasingPlayer;
-            break;
-        case EnemyState.ChasingPlayer:
-            // Debug.Log("EnemyState: ChasingPlayer");
-            if (distanceToPlayer > attackDistanceThreshold)
+            distanceToPlayer  = (transform.position - player.transform.position).magnitude;
+            switch (enemyState)
             {
-                navMeshAgent.SetDestination(player.transform.position);
+                case EnemyState.Idle:
+                    // Debug.Log("EnemyState: Idle");
+                    if (distanceToPlayer > attackDistanceThreshold)
+                        enemyState = EnemyState.ChasingPlayer;
+                    break;
+                case EnemyState.ChasingPlayer:
+                    // Debug.Log("EnemyState: ChasingPlayer");
+                    if (distanceToPlayer > attackDistanceThreshold)
+                    {
+                        navMeshAgent.SetDestination(player.transform.position);
+                    }
+                    else //TODO: if player is dead, enemy should go to idle. 
+                    {
+                        enemyState = EnemyState.InitiateAttack;
+                    }
+                    break;
+                case EnemyState.Dead:
+                    navMeshAgent.SetDestination(transform.position); // Stop enemy chasing player
+                    break;
+                default:
+                    break;
             }
-            else //TODO: if player is dead, enemy should go to idle. 
-            {
-                enemyState = EnemyState.InitiateAttack;
-            }
-            break;
-        default:
-            break;
         }
     }
 
@@ -124,7 +131,8 @@ public class EnemyBase : CharacterClass
 
     protected override void Die()
     {
-
+        enemyState = EnemyState.Dead;
+        
         int coinDrop = UnityEngine.Random.Range(goldValueMin, goldValueMax);
         playerController.UpdateCoins(coinDrop);
 
@@ -150,7 +158,6 @@ public class EnemyBase : CharacterClass
 
         OnEnemyDeath?.Invoke();
 
-        // Destroy game object from parent CharacterClass
-        base.Die();
+        // game object will be destroyed by DieCoroutine
     }
 }

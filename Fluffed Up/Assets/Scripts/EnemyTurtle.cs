@@ -61,7 +61,19 @@ public class EnemyTurtle : EnemyBase
     {
         base.TakeDamage(damage);
         actionDelay = ACTION_DELAY_DEFAULT;
+        if (health > 0)
+        {
+            animator.StopPlayback();
+            animator.Play("GetHit");
+        }
+    }
+
+    protected override void Die()
+    {
         animator.StopPlayback();
-        animator.Play("GetHit");
+        animator.Play("Die");
+        StartCoroutine(DieCoroutine(animator.GetCurrentAnimatorStateInfo(0).length*2));
+
+        base.Die();
     }
 }

@@ -218,12 +218,6 @@ public class PlayerController : CharacterClass
         }
         healthBar.SetHealth(health);
 
-        if (health <= 0)
-        {
-             SceneManager.LoadScene("DeathScene");
-        }
-        
-
         if (Input.GetKeyDown(KeyCode.Alpha1) && !isAttacking)
         {
             HealSelf();
@@ -233,9 +227,6 @@ public class PlayerController : CharacterClass
     void Shoot()
     {
         Debug.Log("Shoot() method is being called");
-
-        // Trigger the shooting animation (if you have one)
-        animator.Play("Defend");
 
         PlaySoundEffect(shootingSound);
 
