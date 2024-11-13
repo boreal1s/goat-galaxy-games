@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+
 
 public class CharacterClass : MonoBehaviour
 {
@@ -36,7 +39,6 @@ public class CharacterClass : MonoBehaviour
     public float freezeDuration;
     #endregion
 
-
     #region Grounded Attributes
     [Header("Grounded Attributes")]
     public bool isGrounded;
@@ -62,10 +64,8 @@ public class CharacterClass : MonoBehaviour
     public AudioClip hitSoundEffect;
     public float hitSoundPitch;
 
-
     private void Start()
     {
-        // TODO initialize base values for characters
     }
 
     public void Jump(float modifier)
@@ -82,7 +82,7 @@ public class CharacterClass : MonoBehaviour
 
     public IEnumerator ResetAttackState()
     {
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitForSeconds((animator.GetCurrentAnimatorStateInfo(0).length / attackSpeed));
         isAttacking = false; // Reset attacking state after the action is done
     }
 
@@ -128,6 +128,12 @@ public class CharacterClass : MonoBehaviour
         isFrozen = false; // Reset frozen state
     }
 
+    public IEnumerator DieCoroutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        Destroy(gameObject);
+    }
+
     public virtual void updateMaxHealth(float maxHealthChange)
     {
         maxHealth += maxHealthChange;
@@ -166,12 +172,6 @@ public class CharacterClass : MonoBehaviour
         }
     }
 
-    protected virtual void Die()
-    {
-        Debug.Log($"{gameObject.name} has died.");
-        Destroy(gameObject);
-    }
-
     public void PlaySoundEffect(AudioClip audioClip, float pitch = 1.0f)
     {
         if (sound3DPrefab)
@@ -186,5 +186,22 @@ public class CharacterClass : MonoBehaviour
 
             sound3DObject.audioSrc.Play();
         }
+    }
+
+    protected virtual void Die()
+    {
+        Debug.Log($"{gameObject.name} has died.");
+        if(gameObject.name == "PlayerSlayer(Clone)" || gameObject.name == "PlayerShooter(Clone)") {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("DeathScene");
+        }
+        Destroy(gameObject);
+    }
+    
+    public void UpdateAttackSpeed(float attackSpeedMultiplier)
+    {
+        attackSpeed = attackSpeed + (attackSpeed * attackSpeedMultiplier);
+        animator.SetFloat("attackSpeed", attackSpeed);
     }
 }

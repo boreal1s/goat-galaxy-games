@@ -27,6 +27,7 @@ public class PlayerController : CharacterClass
     private int coinFlushCounter;
     bool coinsAreFlushing;
     float timeSinceLastCoinChange;
+    float coinFlushWaitTime;
     #endregion
 
     [System.Serializable]
@@ -45,6 +46,18 @@ public class PlayerController : CharacterClass
     }
     private Dictionary<string, ItemProperties> inventory = new Dictionary<string, ItemProperties>();
 
+    [Header("Melee attack attibutes")]
+    private float attackComboCooldown;
+    private int attackComboMax;
+    public int CurrentAttackCounter
+    {
+        get => currentAttackCounter;
+        private set => currentAttackCounter = value >= attackComboMax ? 0 : value;
+    }
+    public int currentAttackCounter;
+    public bool ATTACK_1_BOOL;
+    public bool ATTACK_2_BOOL;
+
     [Header("Inputs")]
     [SerializeField]
     private InputMap inputs;
@@ -58,8 +71,10 @@ public class PlayerController : CharacterClass
     public TextMeshProUGUI coinCounterText; // For Unity UI Text
     public TextMeshProUGUI coinFlushCounterText; // For Unity UI Text
     public TextMeshProUGUI healthCounterText; // For Unity UI Text
-
-    
+    public TextMeshProUGUI attackPowerText; // For Unity UI Text
+    public TextMeshProUGUI attackSpeedText; // For Unity UI Text
+    public TextMeshProUGUI defenseText; // For Unity UI Text
+    public TextMeshProUGUI moveSpeedText; // For Unity UI Text
 
     private void Awake()
     {
@@ -83,6 +98,11 @@ public class PlayerController : CharacterClass
         health = 100f;
         maxHealth = 100f;
         attackDistanceThreshold = 3f;
+        CurrentAttackCounter = 0;
+        attackComboMax = 3;
+        attackComboCooldown = 1f;
+        attackSpeed = 1f;
+        coinFlushWaitTime = 2f;
 
         // Coin stuff
         coins = 0;
@@ -96,6 +116,7 @@ public class PlayerController : CharacterClass
         else
             Debug.Log("No HealthBar attached to PlayerController");
 
+        animator.SetFloat("attackSpeed", attackSpeed);
 
         UpdateAllCounters();
     }
@@ -136,7 +157,8 @@ public class PlayerController : CharacterClass
         isRunning = move != Vector3.zero && isGrounded;
         #endregion
 
-        if (Time.time - timeSinceLastCoinChange > 3 && coinFlushCounter != 0)
+        #region Coin Flush Handling
+        if (Time.time - timeSinceLastCoinChange > coinFlushWaitTime && coinFlushCounter != 0)
             coinsAreFlushing = true;
 
         if (coinsAreFlushing)
@@ -157,6 +179,14 @@ public class PlayerController : CharacterClass
 
         if (coinFlushCounter == 0)
             coinsAreFlushing = false;
+        #endregion
+
+        #region Stat UI
+        attackPowerText.text = attackPower.ToString();
+        attackSpeedText.text = attackSpeed.ToString();
+        defenseText.text = defense.ToString();
+        moveSpeedText.text = moveSpeed.ToString();
+        #endregion
     }
 
     // Update is called once per frame
@@ -166,11 +196,9 @@ public class PlayerController : CharacterClass
 
         if (SelectChar.characterID == 1) // If the shooter character is selected
         {
-            // default the shooter's position
-            animator.Play("Defend");
             if (Input.GetMouseButtonDown(0) && !isAttacking)
             {
-                Debug.Log("Right mouse button clicked - calling Shoot() for shooter character");
+                Debug.Log("Left mouse button clicked - calling Shoot() for shooter character");
                 Shoot();
             }
         }
@@ -178,8 +206,8 @@ public class PlayerController : CharacterClass
         {
             if (Input.GetMouseButtonDown(0) && !isAttacking)
             {
-                Debug.Log("Right mouse button clicked - calling attackEnemy() for sword character");
-                attackEnemy();
+                Debug.Log("Left mouse button clicked - calling meleeAttack() for sword character");
+                meleeAttack();
             }
         }
 
@@ -189,13 +217,6 @@ public class PlayerController : CharacterClass
             Jump(1f);
         }
         healthBar.SetHealth(health);
-
-        if (health <= 0)
-        {
-
-             SceneManager.LoadScene("DeathScene");
-        }
-        
 
         if (Input.GetKeyDown(KeyCode.Alpha1) && !isAttacking)
         {
@@ -253,10 +274,22 @@ void Shoot()
     }
 }
 
-    void attackEnemy()
+    void meleeAttack()
     {
-        animator.Play("Attack01");
         isAttacking = true;
+        switch (CurrentAttackCounter)
+        {
+            case 0:
+                animator.SetTrigger("attack01");
+                break;
+            case 1:
+                animator.SetTrigger("attack02");
+                break;
+            default:
+                break;
+        }
+        CurrentAttackCounter = (CurrentAttackCounter + 1) % 2;
+
         // Reset the attacking state after the attack animation finishes
         StartCoroutine(ResetAttackState());
 

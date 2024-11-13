@@ -36,9 +36,12 @@ public class ThirdPersonCameraController : MonoBehaviour
         #endregion
 
         #region Rotate player with camera
-        Transform player = waveManager.player.transform;
-        Vector3 viewDirection = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
-        waveManager.player.transform.forward = viewDirection.normalized;
+        if(waveManager.player)
+        {
+            Transform player = waveManager.player.transform;
+            Vector3 viewDirection = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
+            waveManager.player.transform.forward = viewDirection.normalized;
+        }
         #endregion
     }
 
