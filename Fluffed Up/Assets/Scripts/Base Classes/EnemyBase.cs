@@ -13,7 +13,8 @@ public class EnemyBase : CharacterClass
         Idle,
         InitiateAttack,
         Attacking,
-        Dead
+        Dead,
+        Dizzy
     };
 
     [System.Serializable]
