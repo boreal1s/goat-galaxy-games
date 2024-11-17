@@ -16,7 +16,7 @@ public class PlayerController : CharacterClass
     [Header("Shooting")]
     public GameObject projectilePrefab;       // The projectile prefab to instantiate
     public Transform projectileSpawnPoint;    // Where the projectile will spawn
-    public float projectileSpeed = 20f;       // Speed of the projectile
+    public float projectileSpeed =  50f;       // Speed of the projectile
     public float projectileDamage = 10f;      // Damage dealt by the projectile
     public AudioClip attackSound;
     public AudioClip shootingSound;
@@ -224,33 +224,55 @@ public class PlayerController : CharacterClass
         }
 
     }
-    void Shoot()
+
+void Shoot()
+{
+    Debug.Log("Shoot() method is being called");
+
+
+    PlaySoundEffect(shootingSound);
+
+    // Make projectile shoot towards camera's forward direction
+    Vector3 shootDirection = cameraTransform.forward;
+
+    // If you want to shoot slightly above the camera's forward direction, you can add cameraTransform.up
+    shootDirection += cameraTransform.up * 0.115f;  // Slightly shoot upward
+    shootDirection -= cameraTransform.right * 0.025f;  // This slightly shoots the projectile to the right or left if needed
+    
+    // Normalize the shoot direction to ensure consistent projectile speed
+    shootDirection.Normalize();
+
+    // Instantiate the projectile at the spawn point
+    GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
+
+    // Ignore collision between the projectile and the player
+    Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
+
+    // Set the projectile's speed and damage
+    Projectile projScript = projectile.GetComponent<Projectile>();
+    if (projScript != null)
     {
-        Debug.Log("Shoot() method is being called");
-
-        PlaySoundEffect(shootingSound);
-
-        // Instantiate the projectile at the spawn point
-        GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
-
-        // Ignore collision between the projectile and the player
-        Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
-
-        // Set the projectile's speed and damage
-        Projectile projScript = projectile.GetComponent<Projectile>();
-        if (projScript != null)
-        {
-            projScript.speed = projectileSpeed;
-            projScript.damage = projectileDamage;
-        }
-        else
-        {
-            Debug.LogError("Projectile script not found on the projectile prefab.");
-        }
-
-        // Set the projectile's direction
-        projectile.transform.forward = transform.forward;
+        projScript.speed = projectileSpeed;
+        projScript.damage = projectileDamage;
     }
+    else
+    {
+        Debug.LogError("Projectile script not found on the projectile prefab.");
+    }
+
+    // Set the projectile's direction based on the adjusted shoot direction
+    projectile.transform.forward = shootDirection;
+
+    // Apply velocity to the projectile using the Rigidbody component
+    Rigidbody rb = projectile.GetComponent<Rigidbody>();
+    if (rb != null)
+    {
+        rb.velocity = shootDirection * projectileSpeed; //Set velocity with direction and speed
+
+        // apply gravity
+        rb.useGravity = true;
+    }
+}
 
     void meleeAttack()
     {
