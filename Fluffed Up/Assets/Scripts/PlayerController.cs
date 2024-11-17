@@ -27,6 +27,7 @@ public class PlayerController : CharacterClass
     private int coinFlushCounter;
     bool coinsAreFlushing;
     float timeSinceLastCoinChange;
+    float coinFlushWaitTime;
     #endregion
 
     [System.Serializable]
@@ -70,8 +71,10 @@ public class PlayerController : CharacterClass
     public TextMeshProUGUI coinCounterText; // For Unity UI Text
     public TextMeshProUGUI coinFlushCounterText; // For Unity UI Text
     public TextMeshProUGUI healthCounterText; // For Unity UI Text
-
-
+    public TextMeshProUGUI attackPowerText; // For Unity UI Text
+    public TextMeshProUGUI attackSpeedText; // For Unity UI Text
+    public TextMeshProUGUI defenseText; // For Unity UI Text
+    public TextMeshProUGUI moveSpeedText; // For Unity UI Text
 
     private void Awake()
     {
@@ -99,6 +102,7 @@ public class PlayerController : CharacterClass
         attackComboMax = 3;
         attackComboCooldown = 1f;
         attackSpeed = 1f;
+        coinFlushWaitTime = 2f;
 
         // Coin stuff
         coins = 0;
@@ -153,7 +157,8 @@ public class PlayerController : CharacterClass
         isRunning = move != Vector3.zero && isGrounded;
         #endregion
 
-        if (Time.time - timeSinceLastCoinChange > 3 && coinFlushCounter != 0)
+        #region Coin Flush Handling
+        if (Time.time - timeSinceLastCoinChange > coinFlushWaitTime && coinFlushCounter != 0)
             coinsAreFlushing = true;
 
         if (coinsAreFlushing)
@@ -174,6 +179,14 @@ public class PlayerController : CharacterClass
 
         if (coinFlushCounter == 0)
             coinsAreFlushing = false;
+        #endregion
+
+        #region Stat UI
+        attackPowerText.text = attackPower.ToString();
+        attackSpeedText.text = attackSpeed.ToString();
+        defenseText.text = defense.ToString();
+        moveSpeedText.text = moveSpeed.ToString();
+        #endregion
     }
 
     // Update is called once per frame
@@ -205,8 +218,6 @@ public class PlayerController : CharacterClass
         }
         healthBar.SetHealth(health);
 
-        
-
         if (Input.GetKeyDown(KeyCode.Alpha1) && !isAttacking)
         {
             HealSelf();
@@ -216,9 +227,6 @@ public class PlayerController : CharacterClass
     void Shoot()
     {
         Debug.Log("Shoot() method is being called");
-
-        // Trigger the shooting animation (if you have one)
-        animator.Play("Defend");
 
         PlaySoundEffect(shootingSound);
 

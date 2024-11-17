@@ -267,7 +267,7 @@ public class ShopController : MonoBehaviour
                     player.defense += upgrade.statUpgrade.statValue;
                     break;
                 case StatType.AttackSpeed:
-                    player.attackSpeed = Math.Clamp(player.attackSpeed + upgrade.statUpgrade.statValue, 0.1f, player.maxAttackSpeed);
+                    player.UpdateAttackSpeed(upgrade.statUpgrade.statValue);
                     break;
                 case StatType.AttackPower:
                     player.attackPower += upgrade.statUpgrade.statValue;
