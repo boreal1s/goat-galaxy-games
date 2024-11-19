@@ -31,7 +31,7 @@ public class CharacterClass : MonoBehaviour
     #endregion
 
     #region Skills
-    ISkill dodgeSkill;
+    public ISkill dodgeSkill;
     #endregion
 
     #region Character Status Effects
@@ -57,10 +57,6 @@ public class CharacterClass : MonoBehaviour
     public float airSpeedMultiplier;
     public float gravityMultiplier;
     public bool isJumping;
-    #endregion
-
-    #region Dodge Attributes
-    ISkill dodgeSkill;
     #endregion
 
     // Character animator and rigidbody

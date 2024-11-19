@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum SkillType
+{
+    Dodge = 0,
+}
+
 public interface ISkill
 {
     void UseSkill();
@@ -12,5 +17,7 @@ public interface ISkill
 
     DropTables.Rarity GetRarity();
 
-    void SetCharacter(CharacterClass character);
+    void SetCharacter(PlayerController character);
+
+    SkillType GetSkillType();
 }

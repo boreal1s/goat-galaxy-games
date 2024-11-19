@@ -10,14 +10,15 @@ public class RollSkill : ISkill
     public DropTables.Rarity rarity;
     public float cooldown;
     private float lastUsedTime;
-    private CharacterClass character;
+    private CharacterClass player;
+    private SkillType skillType;
 
-    public RollSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn)
+    public RollSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn, SkillType skillType)
     {
         this.followingUpgrades = followingUpgrades;
         this.rarity = rarity;
         this.cooldown = cldwn;
-        this.character = character;
+        lastUsedTime = -1;
     }
 
     // Method to use the skill
@@ -26,9 +27,9 @@ public class RollSkill : ISkill
         if (CanUseSkill())
         {
             lastUsedTime = Time.time; // Update the last used time
-            character.isGrounded = false;
-            character.animator.SetTrigger("dodge");
-            ResetRollState();
+            player.isGrounded = false;
+            player.animator.SetTrigger("dodge");
+            ResetDodgeState();
             Debug.Log("Roll used.");
         }
         else
@@ -40,7 +41,7 @@ public class RollSkill : ISkill
     // Check if the skill can be used based on cooldown
     public bool CanUseSkill()
     {
-        return (Time.time >= lastUsedTime + cooldown) && character.isGrounded;
+        return (Time.time >= lastUsedTime + cooldown) && player.isGrounded;
     }
 
     public List<Upgrade> GetFollowingUprages()
@@ -53,14 +54,19 @@ public class RollSkill : ISkill
         return rarity;
     }
 
-    public void SetCharacter(CharacterClass character)
+    public void SetCharacter(PlayerController player)
     {
-        this.character = character;
+        this.player = player;
     }
 
-    private IEnumerator ResetRollState()
+    public SkillType GetSkillType()
     {
-        yield return new WaitForSeconds((character.animator.GetCurrentAnimatorStateInfo(0).length));
-        character.isGrounded = false;
+        return skillType;
+    }
+
+    private IEnumerator ResetDodgeState()
+    {
+        yield return new WaitForSeconds((player.animator.GetCurrentAnimatorStateInfo(0).length));
+        player.isGrounded = false;
     }
 }

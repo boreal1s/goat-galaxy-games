@@ -8,8 +8,10 @@ public class DashSkill : ISkill
     public DropTables.Rarity rarity;
     public float cooldown;
     private float lastUsedTime;
+    private PlayerController player;
+    private SkillType skillType;
 
-    public DashSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn)
+    public DashSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn, SkillType skillType)
     {
         this.followingUpgrades = followingUpgrades;
         this.rarity = rarity;
@@ -42,8 +44,17 @@ public class DashSkill : ISkill
         return followingUpgrades;
     }
 
+    public void SetCharacter(PlayerController player)
+    {
+        this.player = player;
+    }
+
     public DropTables.Rarity GetRarity()
     {
         return rarity;
+    }
+    public SkillType GetSkillType()
+    {
+        return skillType;
     }
 }
