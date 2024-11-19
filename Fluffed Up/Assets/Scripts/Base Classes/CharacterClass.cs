@@ -30,6 +30,10 @@ public class CharacterClass : MonoBehaviour
     public float defense;
     #endregion
 
+    #region Skills
+    ISkill dodgeSkill;
+    #endregion
+
     #region Character Status Effects
     // Status effects
     public bool isBurning;

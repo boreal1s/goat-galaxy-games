@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Runtime.Remoting.Metadata;
 using TMPro;
 using Unity.VisualScripting;
@@ -256,28 +257,68 @@ public class ShopController : MonoBehaviour
 
     private void HandleUpgrade(Upgrade upgrade)
     {
-        if (upgrade.upgradeType == UpgradeType.StatUpgrade)
+        switch (upgrade.upgradeType)
         {
-            switch (upgrade.statUpgrade.statType)
-            {
-                case StatType.Health:
-                    player.updateMaxHealth(upgrade.statUpgrade.statValue);
-                    break;
-                case StatType.Defense:
-                    player.defense += upgrade.statUpgrade.statValue;
-                    break;
-                case StatType.AttackSpeed:
-                    player.UpdateAttackSpeed(upgrade.statUpgrade.statValue);
-                    break;
-                case StatType.AttackPower:
-                    player.attackPower += upgrade.statUpgrade.statValue;
-                    player.projectileDamage += (upgrade.statUpgrade.statValue * .4f);
-                    break;
-                case StatType.MoveSpeed:
-                    player.moveSpeed += upgrade.statUpgrade.statValue;
-                    break;
-            }
+            case UpgradeType.StatUpgrade:
+                HandleStatUpgrade(upgrade.statUpgrade);
+                break;
+            case UpgradeType.Skill:
+                HandleSkillUpgrade(upgrade.skill);
+                break;
+            case UpgradeType.PlayerModification:
+                HandlePlayerModification(upgrade.playerMod);
+                break;
+            case UpgradeType.GameModification:
+                HandleGameModification(upgrade.gameMod);
+                break;
+            case UpgradeType.Consumable:
+                HandleConsumablePurchase(upgrade.consumable);
+                break;
+            default:
+                break;
         }
-        // Handle other cases
+    }
+
+    private void HandleStatUpgrade(StatUpgrade statUpgrade)
+    {
+        switch (statUpgrade.statType)
+        {
+            case StatType.Health:
+                player.updateMaxHealth(statUpgrade.statValue);
+                break;
+            case StatType.Defense:
+                player.defense += statUpgrade.statValue;
+                break;
+            case StatType.AttackSpeed:
+                player.UpdateAttackSpeed(statUpgrade.statValue);
+                break;
+            case StatType.AttackPower:
+                player.attackPower += statUpgrade.statValue;
+                player.projectileDamage += (statUpgrade.statValue * .4f);
+                break;
+            case StatType.MoveSpeed:
+                player.moveSpeed += statUpgrade.statValue;
+                break;
+        }
+    }
+
+    private void HandleSkillUpgrade(ISkill skill)
+    {
+        return;
+    }
+
+    private void HandlePlayerModification(PlayerModification mod)
+    {
+        return;
+    }
+
+    private void HandleGameModification (GameModification modl)
+    {
+        return;
+    }
+
+    private void HandleConsumablePurchase(Consumable consumable)
+    {
+        return;
     }
 }
