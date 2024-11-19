@@ -11,4 +11,6 @@ public interface ISkill
     List<Upgrade> GetFollowingUprages();
 
     DropTables.Rarity GetRarity();
+
+    void SetCharacter(CharacterClass character);
 }

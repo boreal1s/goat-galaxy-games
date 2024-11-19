@@ -20,7 +20,7 @@ public class PlayerController : CharacterClass
     public float projectileDamage = 10f;      // Damage dealt by the projectile
     public AudioClip attackSound;
     public AudioClip shootingSound;
-    public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not. 
+    public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not.
 
     #region Coin Attributes
     private int coins;
@@ -209,6 +209,11 @@ public class PlayerController : CharacterClass
                 Debug.Log("Left mouse button clicked - calling meleeAttack() for sword character");
                 meleeAttack();
             }
+        }
+
+        if (inputs.dodge)
+        {
+            Dodge();
         }
 
         if (inputs.jump && isGrounded && !isJumping)

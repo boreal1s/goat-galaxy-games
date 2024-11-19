@@ -9,6 +9,7 @@ public class InputMap : MonoBehaviour
     [Header("Player Input Values")]
     public bool aim;
     public bool jump;
+    public bool dodge;
 
     public void OnJump(InputValue value)
     {
@@ -28,5 +29,15 @@ public class InputMap : MonoBehaviour
     public void AimInput(bool aimState)
     {
         aim = aimState;
+    }
+
+    public void OnDodge(InputValue value)
+    {
+        DodgeInput(value.isPressed);
+    }
+
+    public void DodgeInput(bool dodgeState)
+    {
+        dodge = dodgeState;
     }
 }

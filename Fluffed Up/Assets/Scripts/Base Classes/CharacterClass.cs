@@ -55,6 +55,10 @@ public class CharacterClass : MonoBehaviour
     public bool isJumping;
     #endregion
 
+    #region Dodge Attributes
+    ISkill dodgeSkill;
+    #endregion
+
     // Character animator and rigidbody
     public Animator animator;
     public Rigidbody rb;
@@ -78,6 +82,12 @@ public class CharacterClass : MonoBehaviour
     public void ResetJump()
     {
         isJumping = false;
+    }
+
+    public void Dodge()
+    {
+        if(dodgeSkill != null)
+            dodgeSkill.UseSkill();
     }
 
     public IEnumerator ResetAttackState()
