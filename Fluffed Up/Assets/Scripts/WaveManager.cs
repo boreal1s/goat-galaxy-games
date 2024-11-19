@@ -173,10 +173,12 @@ public class WaveManager : MonoBehaviour
                 EnemyBase enemyScript = newEnemy.GetComponent<EnemyBase>();
 
                 // Add event listener: player attack ---> enemy takes damage
-                void onPlayerAttackAction(float damage, int delayInMilli) => StartPlayerAttack(enemyScript, damage, delayInMilli);
+                void onPlayerAttackAction(float damage, int delayInMilli) => InitiateAttackTimer(enemyScript, damage, delayInMilli, true);
                 player.AttackEvent.AddListener(onPlayerAttackAction);
 
-                enemyScript.AttackEvent.AddListener(player.TakeDamage);
+                // Add event listener: enemy attacks ---> player takes damage
+                void onEnemyAttackAction(float damage, int delayInMilli) => InitiateAttackTimer(enemyScript, damage, delayInMilli, false);
+                enemyScript.AttackEvent.AddListener(onEnemyAttackAction);
                 enemyScript.OnEnemyDeath += () => RemoveEnemyListener(onPlayerAttackAction, enemyScript);
                 enemyScript.player = player;
 
@@ -206,18 +208,18 @@ public class WaveManager : MonoBehaviour
         return spawnPosition;
     }
 
-    void StartPlayerAttack(EnemyBase enemy, float damage, int delayInMilli)
+    void InitiateAttackTimer(EnemyBase enemy, float damage, int delayInMilli, bool playerAttacks)
     {
-        StartCoroutine(DelayedPlayerAttack(enemy, damage, delayInMilli));
+        StartCoroutine(DelayedAttack(enemy, damage, delayInMilli, playerAttacks));
     }
 
-    IEnumerator DelayedPlayerAttack(EnemyBase enemy, float damage, int delayInMilli)
+    IEnumerator DelayedAttack(EnemyBase enemy, float damage, int delayInMilli, bool playerAttacks)
     {
         yield return new WaitForSeconds(delayInMilli/1000f);
-        HandlePlayerAttack(enemy, damage);
+        ExecuteAttack(enemy, damage, playerAttacks);
     }
 
-    void HandlePlayerAttack(EnemyBase enemy, float damage)
+    void ExecuteAttack(EnemyBase enemy, float damage, bool playerAttacks)
     {
         if (enemy != null)
         {
@@ -228,7 +230,10 @@ public class WaveManager : MonoBehaviour
             bool withinAngle = math.abs(Vector3.Angle(player.transform.forward, enemy.transform.position - player.transform.position)) < 90 ;
             if (withinDistance && withinAngle)
             {
-                enemy.TakeDamage(damage);
+                if (playerAttacks)
+                    enemy.TakeDamage(damage);
+                else
+                    player.TakeDamage(damage);
             }
         }
     }

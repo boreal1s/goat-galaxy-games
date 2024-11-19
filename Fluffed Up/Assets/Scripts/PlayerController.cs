@@ -19,8 +19,7 @@ public class PlayerController : CharacterClass
     public float projectileSpeed =  50f;       // Speed of the projectile
     public float projectileDamage = 10f;      // Damage dealt by the projectile
     public AudioClip attackSound;
-    public AudioClip shootingSound;
-    public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not. 
+    public AudioClip shootingSound;     
 
     #region Coin Attributes
     private int coins;

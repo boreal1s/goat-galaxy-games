@@ -7956,6 +7956,7 @@ MonoBehaviour:
   maxAttackSpeed: 0
   attackDistanceThreshold: 0
   isAttacking: 0
+  attackDelayInMilli: 0
   defense: 0
   isBurning: 0
   isFrozen: 0
@@ -7989,7 +7990,6 @@ MonoBehaviour:
   projectileDamage: 10
   attackSound: {fileID: 0}
   shootingSound: {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}
-  attackDelayInMilli: 300
   currentAttackCounter: 0
   ATTACK_1_BOOL: 0
   ATTACK_2_BOOL: 0

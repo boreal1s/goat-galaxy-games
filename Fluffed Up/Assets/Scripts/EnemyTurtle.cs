@@ -7,13 +7,11 @@ using JetBrains.Annotations;
 
 public class EnemyTurtle : EnemyBase
 {
-    private const int ACTION_DELAY_DEFAULT = 800;
-    private int actionDelay = ACTION_DELAY_DEFAULT; // give delay in action because slime is stupid!
+    private const double ACTION_DELAY_DEFAULT_MS = 800.0;
     public override void AIStateMachine()
     {
-        if (actionDelay > 0)
+        if (getTimePassedLastActionInMilli() < ACTION_DELAY_DEFAULT_MS)
         {
-            actionDelay--;
             return;
         }
 
@@ -26,18 +24,18 @@ public class EnemyTurtle : EnemyBase
             base.AIStateMachine();
             Attack();
             enemyState = EnemyState.Attacking;
-            actionDelay = ACTION_DELAY_DEFAULT;
+            markLastActionTimeStamp();
             break;
         case EnemyState.Attacking:
             base.AIStateMachine();
-            if (distanceToPlayer > 1)
+            if (distanceToPlayer > 2)
             {
-                actionDelay = ACTION_DELAY_DEFAULT;
+                markLastActionTimeStamp();
                 enemyState = EnemyState.ChasingPlayer;
             }
             else if (isAttacking == false)
             {
-                actionDelay = ACTION_DELAY_DEFAULT;
+                markLastActionTimeStamp();
                 enemyState = EnemyState.InitiateAttack;
             }
             break;
@@ -60,7 +58,7 @@ public class EnemyTurtle : EnemyBase
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
-        actionDelay = ACTION_DELAY_DEFAULT;
+        markLastActionTimeStamp();
         if (health > 0)
         {
             animator.StopPlayback();
