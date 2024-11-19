@@ -33,6 +33,7 @@ public class EnemyBase : CharacterClass
     public NavMeshAgent navMeshAgent;
     public EnemyState enemyState;
     public PlayerController player; // Player object to be set by WaveManager
+    public double actionDelayDefaultInMilli;
     protected float distanceToPlayer;
     protected DateTime lastActionTimestamp;
 

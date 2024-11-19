@@ -5,12 +5,11 @@ using UnityEngine.Events;
 using UnityEngine.AI;
 using JetBrains.Annotations;
 
-public class EnemyTurtle : EnemyBase
+public class EnemySlimeAndTurtle : EnemyBase
 {
-    private const double ACTION_DELAY_DEFAULT_MS = 800.0;
     public override void AIStateMachine()
     {
-        if (getTimePassedLastActionInMilli() < ACTION_DELAY_DEFAULT_MS)
+        if (getTimePassedLastActionInMilli() < actionDelayDefaultInMilli)
         {
             return;
         }
