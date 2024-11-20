@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class RollSkill : ISkill
 {
@@ -10,7 +11,7 @@ public class RollSkill : ISkill
     public DropTables.Rarity rarity;
     public float cooldown;
     private float lastUsedTime;
-    private CharacterClass player;
+    private PlayerController player;
     private SkillType skillType;
 
     public RollSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn, SkillType skillType)
@@ -22,19 +23,19 @@ public class RollSkill : ISkill
     }
 
     // Method to use the skill
-    public void UseSkill()
+    public bool UseSkill()
     {
         if (CanUseSkill())
         {
             lastUsedTime = Time.time; // Update the last used time
-            player.isGrounded = false;
             player.animator.SetTrigger("dodge");
-            ResetDodgeState();
             Debug.Log("Roll used.");
+            return true;
         }
         else
         {
             Debug.Log("Roll is on cooldown.");
+            return false;
         }
     }
 
@@ -54,7 +55,7 @@ public class RollSkill : ISkill
         return rarity;
     }
 
-    public void SetCharacter(PlayerController player)
+    public void SetCharacter(ref PlayerController player)
     {
         this.player = player;
     }
@@ -64,9 +65,5 @@ public class RollSkill : ISkill
         return skillType;
     }
 
-    private IEnumerator ResetDodgeState()
-    {
-        yield return new WaitForSeconds((player.animator.GetCurrentAnimatorStateInfo(0).length));
-        player.isGrounded = false;
-    }
+
 }

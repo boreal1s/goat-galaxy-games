@@ -30,8 +30,9 @@ public class CharacterClass : MonoBehaviour
     public float defense;
     #endregion
 
-    #region Skills
+    #region Dodging
     public ISkill dodgeSkill;
+    public bool isDodging;
     #endregion
 
     #region Character Status Effects
@@ -82,12 +83,6 @@ public class CharacterClass : MonoBehaviour
     public void ResetJump()
     {
         isJumping = false;
-    }
-
-    public void Dodge()
-    {
-        if(dodgeSkill != null)
-            dodgeSkill.UseSkill();
     }
 
     public IEnumerator ResetAttackState()

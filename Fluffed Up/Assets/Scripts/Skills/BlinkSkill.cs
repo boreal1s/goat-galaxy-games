@@ -20,17 +20,19 @@ public class BlinkSkill : ISkill
     }
 
     // Method to use the skill
-    public void UseSkill()
+    public bool UseSkill()
     {
         if (CanUseSkill())
         {
             lastUsedTime = Time.time; // Update the last used time
             // Ex. Handle animations and do damage to target here.
             Debug.Log("Blink used.");
+            return true;
         }
         else
         {
             Debug.Log("Blink is on cooldown.");
+            return false;
         }
     }
 
@@ -49,7 +51,7 @@ public class BlinkSkill : ISkill
     {
         return rarity;
     }
-    public void SetCharacter(PlayerController player)
+    public void SetCharacter(ref PlayerController player)
     {
         this.player = player;
     }

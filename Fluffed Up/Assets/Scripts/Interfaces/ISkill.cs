@@ -9,7 +9,7 @@ public enum SkillType
 
 public interface ISkill
 {
-    void UseSkill();
+    bool UseSkill();
 
     bool CanUseSkill();
 
@@ -17,7 +17,7 @@ public interface ISkill
 
     DropTables.Rarity GetRarity();
 
-    void SetCharacter(PlayerController character);
+    void SetCharacter(ref PlayerController character);
 
     SkillType GetSkillType();
 }

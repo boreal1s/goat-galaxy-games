@@ -90,10 +90,10 @@ public class PlayerController : CharacterClass
     {
         moveSpeed = 10f;
         rotationSpeed = 360f;
-        jumpForce = 100f;
+        jumpForce = 5f;
         jumpTime = 3f;
         jumpCooldown = 0.5f;
-        airSpeedMultiplier = 0.6f;
+        airSpeedMultiplier = 1f;
         attackPower = 70f;
         health = 100f;
         maxHealth = 100f;
@@ -103,6 +103,7 @@ public class PlayerController : CharacterClass
         attackComboCooldown = 1f;
         attackSpeed = 1f;
         coinFlushWaitTime = 2f;
+        isDodging = false;
 
         // Coin stuff
         coins = 0;
@@ -132,22 +133,9 @@ public class PlayerController : CharacterClass
 
         #region Movement Control
 
-        #region Configure Camera Relative Movement
+        Vector3 moveDir = GetCameraRelativeMovement(horizontal, vertical);
 
-        Vector3 camForward = cameraTransform.forward;
-        Vector3 camRight = cameraTransform.right;
-
-        camForward.y = 0;
-        camRight.y = 0;
-
-        Vector3 forwardRelative = vertical * camForward;
-        Vector3 rightRelataive = horizontal * camRight;
-
-        Vector3 moveDir = forwardRelative + rightRelataive;
-
-        #endregion
-
-        Vector3 move = new Vector3(moveDir.x, 0f, moveDir.z);
+        Vector3 move = isDodging ? Vector3.zero : new Vector3(moveDir.x, 0f, moveDir.z);
 
         if (isGrounded)
             rb.MovePosition(transform.position + move * moveSpeed * Time.deltaTime);
@@ -211,12 +199,12 @@ public class PlayerController : CharacterClass
             }
         }
 
-        if (inputs.dodge)
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             Dodge();
         }
 
-        if (inputs.jump && isGrounded && !isJumping)
+        if (inputs.jump && isGrounded && !isJumping && !isDodging)
         {
             isJumping = true;
             Jump(1f);
@@ -230,7 +218,41 @@ public class PlayerController : CharacterClass
 
     }
 
-void Shoot()
+    public Vector3 GetCameraRelativeMovement(float horizontal, float vertical)
+    {
+        Vector3 camForward = cameraTransform.forward;
+        Vector3 camRight = cameraTransform.right;
+
+        camForward.y = 0;
+        camRight.y = 0;
+
+        Vector3 forwardRelative = vertical * camForward;
+        Vector3 rightRelataive = horizontal * camRight;
+
+        return forwardRelative + rightRelataive;
+    }
+
+    public void Dodge()
+    {
+        if (dodgeSkill != null)
+            if (dodgeSkill.UseSkill())
+            {
+                isDodging = true;
+                Vector3 dodgeDir = Vector3.Normalize(GetCameraRelativeMovement(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
+                Debug.Log(dodgeDir);
+                rb.AddForce(dodgeDir * 200f, ForceMode.Impulse);
+                StartCoroutine(ResetDodgeState());
+            }
+    }
+
+    private IEnumerator ResetDodgeState()
+    {
+        yield return new WaitForSeconds((animator.GetCurrentAnimatorStateInfo(0).length));
+        isDodging = false;
+        Debug.Log("Dodge reset.");
+    }
+
+    void Shoot()
 {
     Debug.Log("Shoot() method is being called");
 

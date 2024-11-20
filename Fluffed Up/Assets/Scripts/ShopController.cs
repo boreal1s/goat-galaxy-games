@@ -304,7 +304,7 @@ public class ShopController : MonoBehaviour
 
     private void HandleSkillUpgrade(ISkill skill)
     {
-        skill.SetCharacter(player);
+        skill.SetCharacter(ref player);
         if (skill.GetSkillType() == SkillType.Dodge)
         {
             Debug.Log("Dodge purchased");
