@@ -1187,8 +1187,8 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   health: 120
   maxHealth: 0
-  attackPower: 30
-  attackSpeed: 0
+  attackPower: 15
+  attackSpeed: 1
   maxAttackSpeed: 0
   attackDistanceThreshold: 2
   isAttacking: 0
@@ -1223,7 +1223,7 @@ MonoBehaviour:
   navMeshAgent: {fileID: 0}
   enemyState: 0
   player: {fileID: 0}
-  actionDelayDefaultInMilli: 0
+  actionDelayDefaultInMilli: 900
   itemDrops:
   - prefab: {fileID: 0}
     dropChance: 0

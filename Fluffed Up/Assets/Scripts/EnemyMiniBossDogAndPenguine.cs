@@ -5,18 +5,12 @@ using UnityEngine.Events;
 using UnityEngine.AI;
 using JetBrains.Annotations;
 
-public class EnemyMiniBossDog : EnemyBase
+public class EnemyMiniBossDogAndPenguine : EnemyBase
 {
-    private const int ACTION_DELAY_DEFAULT = 500;
-    private const int DIZZY_DELAY_DEFAULT = 800;
-    private int actionDelay = ACTION_DELAY_DEFAULT; // give delay in action because minibossdog is stupid!
-    private int dizzyDelay = 0;
-
     public override void AIStateMachine()
     {
-        if (actionDelay > 0)
+        if (getTimePassedLastActionInMilli() < actionDelayDefaultInMilli)
         {
-            actionDelay--;
             return;
         }
 
@@ -30,32 +24,24 @@ public class EnemyMiniBossDog : EnemyBase
             isMoving = true;
             break;
         case EnemyState.InitiateAttack:
-            base.AIStateMachine();
             Attack();
             enemyState = EnemyState.Attacking;
-            actionDelay = ACTION_DELAY_DEFAULT;
+            markLastActionTimeStamp();
             break;
         case EnemyState.Attacking:
-            base.AIStateMachine();
-            if (distanceToPlayer > 1)
+            if (distanceToPlayer > attackDistanceThreshold)
             {
-                actionDelay = ACTION_DELAY_DEFAULT;
                 enemyState = EnemyState.ChasingPlayer;
             }
             else if (isAttacking == false)
             {
-                actionDelay = ACTION_DELAY_DEFAULT;
                 enemyState = EnemyState.InitiateAttack;
             }
             break;
         case EnemyState.Dizzy:
-            if (--dizzyDelay <= 0)
-            {
-                enemyState = EnemyState.Attacking;
-            }
+            enemyState = EnemyState.Attacking;
             break;
         default:
-            base.AIStateMachine();
             break;
         }
 
@@ -75,12 +61,12 @@ public class EnemyMiniBossDog : EnemyBase
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
+        markLastActionTimeStamp();
         if (health > 0)
         {
             animator.StopPlayback();
             animator.Play("GetHit");
             enemyState = EnemyState.Dizzy;
-            dizzyDelay = DIZZY_DELAY_DEFAULT;
         }
     }
 

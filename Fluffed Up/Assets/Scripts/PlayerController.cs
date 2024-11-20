@@ -96,7 +96,6 @@ public class PlayerController : CharacterClass
         attackPower = 70f;
         health = 100f;
         maxHealth = 100f;
-        attackDistanceThreshold = 3f;
         CurrentAttackCounter = 0;
         attackComboMax = 3;
         attackComboCooldown = 1f;

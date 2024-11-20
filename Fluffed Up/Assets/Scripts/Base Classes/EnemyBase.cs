@@ -177,4 +177,9 @@ public class EnemyBase : CharacterClass
         TimeSpan timePassed = currentTime - lastActionTimestamp;
         return timePassed.TotalMilliseconds;
     }
+
+    public bool isAttackInvalid()
+    {
+        return (enemyState == EnemyState.Dizzy) || (enemyState == EnemyState.Dead);
+    }
 }

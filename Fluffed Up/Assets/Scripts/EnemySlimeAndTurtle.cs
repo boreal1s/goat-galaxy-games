@@ -20,26 +20,24 @@ public class EnemySlimeAndTurtle : EnemyBase
         case EnemyState.ChasingPlayer:
             break;
         case EnemyState.InitiateAttack:
-            base.AIStateMachine();
             Attack();
             enemyState = EnemyState.Attacking;
             markLastActionTimeStamp();
             break;
-        case EnemyState.Attacking:
-            base.AIStateMachine();
-            if (distanceToPlayer > 2)
+        case EnemyState.Attacking:            
+            if (distanceToPlayer > attackDistanceThreshold)
             {
-                markLastActionTimeStamp();
                 enemyState = EnemyState.ChasingPlayer;
             }
             else if (isAttacking == false)
             {
-                markLastActionTimeStamp();
                 enemyState = EnemyState.InitiateAttack;
             }
             break;
+        case EnemyState.Dizzy:
+            enemyState = EnemyState.Attacking;
+            break;
         default:
-            base.AIStateMachine();
             break;
         }
     }
@@ -62,6 +60,7 @@ public class EnemySlimeAndTurtle : EnemyBase
         {
             animator.StopPlayback();
             animator.Play("GetHit");
+            enemyState = EnemyState.Dizzy;
         }
     }
 

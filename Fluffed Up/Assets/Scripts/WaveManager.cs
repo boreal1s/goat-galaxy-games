@@ -227,12 +227,12 @@ public class WaveManager : MonoBehaviour
 
             // Hit condition1: Distance smaller than threshold
             bool withinDistance = distance <= player.attackDistanceThreshold;
-            bool withinAngle = math.abs(Vector3.Angle(player.transform.forward, enemy.transform.position - player.transform.position)) < 90 ;
+            bool withinAngle = math.abs(Vector3.Angle(player.transform.forward, enemy.transform.position - player.transform.position)) < 30 ;
             if (withinDistance && withinAngle)
             {
                 if (playerAttacks)
                     enemy.TakeDamage(damage);
-                else
+                else if (enemy.isAttackInvalid() == false)
                     player.TakeDamage(damage);
             }
         }
