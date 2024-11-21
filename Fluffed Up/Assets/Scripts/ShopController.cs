@@ -271,7 +271,7 @@ public class ShopController : MonoBehaviour
                     break;
                 case StatType.AttackPower:
                     player.attackPower += upgrade.statUpgrade.statValue;
-                    player.projectileDamage += (upgrade.statUpgrade.statValue * .4f);
+                    player.projectileDamage += upgrade.statUpgrade.statValue * 0.4f;
                     break;
                 case StatType.MoveSpeed:
                     player.moveSpeed += upgrade.statUpgrade.statValue;
