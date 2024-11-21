@@ -16,11 +16,13 @@ public class PlayerController : CharacterClass
     [Header("Shooting")]
     public GameObject projectilePrefab;       // The projectile prefab to instantiate
     public Transform projectileSpawnPoint;    // Where the projectile will spawn
-    public float projectileSpeed =  50f;       // Speed of the projectile
-    public float projectileDamage = 10f;      // Damage dealt by the projectile
+    public float projectileSpeed =  55f;       // Speed of the projectile
+    public float projectileDamage = 5f;      // Damage dealt by the projectile
     public AudioClip attackSound;
     public AudioClip shootingSound;
     public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not. 
+    public float rateOfFire = 0.2f;  // Time between shots in seconds
+    private float nextFireTime = 0.5f;  // Tracks when the next shot can be fired
 
     #region Coin Attributes
     private int coins;
@@ -196,11 +198,15 @@ public class PlayerController : CharacterClass
 
         if (SelectChar.characterID == 1) // If the shooter character is selected
         {
-            if (Input.GetMouseButtonDown(0) && !isAttacking)
-            {
-                Debug.Log("Left mouse button clicked - calling Shoot() for shooter character");
-                Shoot();
-            }
+        // Check if the shooting button (left mouse button) is being held down and enough time has passed
+        if (Input.GetMouseButton(0) && Time.time >= nextFireTime && !isAttacking)
+        {
+            Debug.Log("Left mouse button held down - calling Shoot() for shooter character");
+            Shoot();
+
+            // Update the next fire time based on the rate of fire
+            nextFireTime = Time.time + rateOfFire;  // Set the time for the next shot
+        }
         }
         else // If the sword character is selected
         {
@@ -225,54 +231,65 @@ public class PlayerController : CharacterClass
 
     }
 
-void Shoot()
-{
-    Debug.Log("Shoot() method is being called");
-
-
-    PlaySoundEffect(shootingSound);
-
-    // Make projectile shoot towards camera's forward direction
-    Vector3 shootDirection = cameraTransform.forward;
-
-    // If you want to shoot slightly above the camera's forward direction, you can add cameraTransform.up
-    shootDirection += cameraTransform.up * 0.115f;  // Slightly shoot upward
-    shootDirection -= cameraTransform.right * 0.025f;  // This slightly shoots the projectile to the right or left if needed
-    
-    // Normalize the shoot direction to ensure consistent projectile speed
-    shootDirection.Normalize();
-
-    // Instantiate the projectile at the spawn point
-    GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
-
-    // Ignore collision between the projectile and the player
-    Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
-
-    // Set the projectile's speed and damage
-    Projectile projScript = projectile.GetComponent<Projectile>();
-    if (projScript != null)
+    void Shoot()
     {
-        projScript.speed = projectileSpeed;
-        projScript.damage = projectileDamage;
+        isAttacking = true;
+        Debug.Log("Shoot() method is being called");
+
+
+        PlaySoundEffect(shootingSound);
+
+        // Make projectile shoot towards camera's forward direction
+        Vector3 shootDirection = cameraTransform.forward;
+
+        // If you want to shoot slightly above the camera's forward direction, you can add cameraTransform.up
+        shootDirection += cameraTransform.up * 0.1f;  // Slightly shoot upward
+        shootDirection -= cameraTransform.right * 0.035f;  // This slightly shoots the projectile to the right or left if needed
+        
+        // Normalize the shoot direction to ensure consistent projectile speed
+        shootDirection.Normalize();
+
+        // Instantiate the projectile at the spawn point
+        GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
+
+        // Ignore collision between the projectile and the player
+        Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
+
+        // Set the projectile's speed and damage
+        Projectile projScript = projectile.GetComponent<Projectile>();
+        if (projScript != null)
+        {
+            projScript.speed = projectileSpeed;
+            projScript.damage = projectileDamage;
+        }
+        else
+        {
+            Debug.LogError("Projectile script not found on the projectile prefab.");
+        }
+
+        // Set the projectile's direction based on the adjusted shoot direction
+        projectile.transform.forward = shootDirection;
+
+        // Apply velocity to the projectile using the Rigidbody component
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.velocity = shootDirection * projectileSpeed; //Set velocity with direction and speed
+
+            // apply gravity
+            rb.useGravity = true;
+        }
+
+        StartCoroutine(ResetAttackFlag());
     }
-    else
+
+    private IEnumerator ResetAttackFlag()
     {
-        Debug.LogError("Projectile script not found on the projectile prefab.");
+        // Wait for a moment before allowing another shot (this delay should match your cooldown time)
+        yield return new WaitForSeconds(rateOfFire);
+        
+        isAttacking = false; // Reset the attacking flag to allow shooting again
     }
-
-    // Set the projectile's direction based on the adjusted shoot direction
-    projectile.transform.forward = shootDirection;
-
-    // Apply velocity to the projectile using the Rigidbody component
-    Rigidbody rb = projectile.GetComponent<Rigidbody>();
-    if (rb != null)
-    {
-        rb.velocity = shootDirection * projectileSpeed; //Set velocity with direction and speed
-
-        // apply gravity
-        rb.useGravity = true;
-    }
-}
 
     void meleeAttack()
     {
