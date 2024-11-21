@@ -1955,7 +1955,7 @@ MonoBehaviour:
   healthSlider: {fileID: 5362168310700077975}
   easeHealthSlider: {fileID: 5362168311157096997}
   character: {fileID: 3922853091793134780}
-  healthHeightOffset: 1.5
+  healthHeightOffset: 2
   healthText: {fileID: 0}
 --- !u!114 &5362168310349424956
 MonoBehaviour:

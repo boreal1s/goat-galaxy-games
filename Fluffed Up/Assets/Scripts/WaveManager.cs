@@ -103,7 +103,7 @@ public class WaveManager : MonoBehaviour
         waveList = new List<List<EnemySpawnInfo>>
         {            
             new(){// First wave
-                new(enemyPrefabSlime, 3)                
+                new(enemyPrefabSlime, 3)        
             },
             new(){// Second wave
                 new(enemyPrefabTurtle, 2)
