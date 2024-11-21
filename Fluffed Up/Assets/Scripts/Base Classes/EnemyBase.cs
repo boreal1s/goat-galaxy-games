@@ -53,6 +53,7 @@ public class EnemyBase : CharacterClass
         animator = GetComponent<Animator>();
         enemyState = EnemyState.Idle;
         navMeshAgent = GetComponent<NavMeshAgent>();
+        invincibilityFrames = 0;
 
         // Temporary initialization since this is the base.
         // However, we can utilize this method for inherited classes.

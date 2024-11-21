@@ -28,7 +28,7 @@ public class RollSkill : ISkill
         if (CanUseSkill())
         {
             lastUsedTime = Time.time; // Update the last used time
-            player.animator.SetTrigger("dodge");
+            player.currInvincibilityFrames = player.invincibilityFrames;
             Debug.Log("Roll used.");
             return true;
         }

@@ -21,6 +21,7 @@ public class PlayerController : CharacterClass
     public AudioClip attackSound;
     public AudioClip shootingSound;
     public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not.
+    Vector3 dodgeDir = Vector3.zero;
 
     #region Coin Attributes
     private int coins;
@@ -104,6 +105,8 @@ public class PlayerController : CharacterClass
         attackSpeed = 1f;
         coinFlushWaitTime = 2f;
         isDodging = false;
+        invincibilityFrames = 10;
+        currInvincibilityFrames = 0;
 
         // Coin stuff
         coins = 0;
@@ -135,14 +138,22 @@ public class PlayerController : CharacterClass
 
         Vector3 moveDir = GetCameraRelativeMovement(horizontal, vertical);
 
-        Vector3 move = isDodging ? Vector3.zero : new Vector3(moveDir.x, 0f, moveDir.z);
+        Vector3 move = isDodging ? dodgeDir * 1.3f : new Vector3(moveDir.x, 0f, moveDir.z);
 
         if (isGrounded)
             rb.MovePosition(transform.position + move * moveSpeed * Time.deltaTime);
         else
             rb.MovePosition(transform.position + move * moveSpeed * airSpeedMultiplier * Time.deltaTime);
 
-        isRunning = move != Vector3.zero && isGrounded;
+        isRunning = move != Vector3.zero && isGrounded && !isDodging;
+
+        #endregion
+
+        #region Rotate player with camera
+        if (!isDodging) {
+            Vector3 viewDirection = transform.position - new Vector3(cameraTransform.position.x, transform.position.y, cameraTransform.position.z);
+            transform.forward = viewDirection.normalized;
+        }
         #endregion
 
         #region Coin Flush Handling
@@ -216,20 +227,26 @@ public class PlayerController : CharacterClass
             HealSelf();
         }
 
+        if (currInvincibilityFrames > 0)
+            currInvincibilityFrames--;
     }
 
     public Vector3 GetCameraRelativeMovement(float horizontal, float vertical)
     {
-        Vector3 camForward = cameraTransform.forward;
         Vector3 camRight = cameraTransform.right;
 
-        camForward.y = 0;
         camRight.y = 0;
 
-        Vector3 forwardRelative = vertical * camForward;
         Vector3 rightRelataive = horizontal * camRight;
 
-        return forwardRelative + rightRelataive;
+        return GetCameraForwardRelative(vertical) + rightRelataive;
+    }
+
+    public Vector3 GetCameraForwardRelative(float vertical)
+    {
+        Vector3 camForward = cameraTransform.forward;
+        camForward.y = 0;
+        return vertical * camForward;
     }
 
     public void Dodge()
@@ -238,10 +255,17 @@ public class PlayerController : CharacterClass
             if (dodgeSkill.UseSkill())
             {
                 isDodging = true;
-                Vector3 dodgeDir = Vector3.Normalize(GetCameraRelativeMovement(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
-                Debug.Log(dodgeDir);
-                rb.AddForce(dodgeDir * 200f, ForceMode.Impulse);
                 StartCoroutine(ResetDodgeState());
+                if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
+                {
+                    dodgeDir = transform.forward;
+                }
+                else
+                {
+                    dodgeDir = Vector3.Normalize(GetCameraRelativeMovement(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
+                    transform.forward = dodgeDir.normalized;
+                }
+                animator.SetTrigger("dodge");
             }
     }
 

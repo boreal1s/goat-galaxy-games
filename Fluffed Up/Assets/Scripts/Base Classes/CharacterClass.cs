@@ -33,6 +33,8 @@ public class CharacterClass : MonoBehaviour
     #region Dodging
     public ISkill dodgeSkill;
     public bool isDodging;
+    public int invincibilityFrames;
+    public int currInvincibilityFrames;
     #endregion
 
     #region Character Status Effects
@@ -68,10 +70,6 @@ public class CharacterClass : MonoBehaviour
     // Sound Effect Audio Clip
     public AudioClip hitSoundEffect;
     public float hitSoundPitch;
-
-    private void Start()
-    {
-    }
 
     public void Jump(float modifier)
     {
@@ -159,21 +157,24 @@ public class CharacterClass : MonoBehaviour
 
     public virtual void TakeDamage(float damage)
     {
-        PlaySoundEffect(hitSoundEffect, hitSoundPitch);
-
-        float mitigatedDamage = Mathf.Clamp(damage - defense, 0, damage);
-        //Debug.Log($"{gameObject.name} is taking {damage} damage.");
-        health = health - mitigatedDamage;
-        //Debug.Log($"{gameObject.name} health is now {health}");
-
-        if (health <= 0)
+        if (currInvincibilityFrames < 1)
         {
-            Die();
-        }
+            PlaySoundEffect(hitSoundEffect, hitSoundPitch);
 
-        if (healthBar != null)
-        {
-            healthBar.SetHealth(health);
+            float mitigatedDamage = Mathf.Clamp(damage - defense, 0, damage);
+            //Debug.Log($"{gameObject.name} is taking {damage} damage.");
+            health = health - mitigatedDamage;
+            //Debug.Log($"{gameObject.name} health is now {health}");
+
+            if (health <= 0)
+            {
+                Die();
+            }
+
+            if (healthBar != null)
+            {
+                healthBar.SetHealth(health);
+            }
         }
     }
 
