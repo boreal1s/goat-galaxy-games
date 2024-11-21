@@ -772,13 +772,10 @@ MonoBehaviour:
   AttackEvent:
     m_PersistentCalls:
       m_Calls: []
-  DamageEvent:
-    m_PersistentCalls:
-      m_Calls: []
   navMeshAgent: {fileID: 0}
   enemyState: 0
   player: {fileID: 0}
-  actionDelayDefaultInMilli: 700
+  actionDelayDefaultInMilli: 0
   itemDrops:
   - prefab: {fileID: 378334508266577950, guid: e94711451283b5e4ea97dd9bec1c8506, type: 3}
     dropChance: 20

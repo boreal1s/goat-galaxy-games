@@ -231,9 +231,9 @@ public class WaveManager : MonoBehaviour
             if (withinDistance && withinAngle)
             {
                 if (playerAttacks)
-                    enemy.TakeDamage(damage);
+                    enemy.TakeDamage(damage, player.enemyStunDelayMilli);
                 else if (enemy.isAttackInvalid() == false)
-                    player.TakeDamage(damage);
+                    player.TakeDamage(damage, 0);
             }
         }
     }

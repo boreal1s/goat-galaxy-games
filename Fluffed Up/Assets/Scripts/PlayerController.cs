@@ -56,6 +56,7 @@ public class PlayerController : CharacterClass
     public int currentAttackCounter;
     public bool ATTACK_1_BOOL;
     public bool ATTACK_2_BOOL;
+    public int enemyStunDelayMilli;
 
     [Header("Inputs")]
     [SerializeField]
@@ -340,9 +341,9 @@ void Shoot()
         UpdateHealthPackCounter();
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, int additionalDelay)
     {
-        base.TakeDamage(damage);
+        base.TakeDamage(damage, additionalDelay);
 
         animator.Play("GetHit");
     }

@@ -4107,6 +4107,7 @@ MonoBehaviour:
   currentAttackCounter: 0
   ATTACK_1_BOOL: 0
   ATTACK_2_BOOL: 0
+  enemyStunDelayMilli: 500
   inputs: {fileID: 0}
   cameraTransform: {fileID: 0}
   coinCounterText: {fileID: 8317859749317322553}

@@ -9,9 +9,13 @@ public class EnemyMiniBossDogAndPenguine : EnemyBase
 {
     public override void AIStateMachine()
     {
-        if (getTimePassedLastActionInMilli() < actionDelayDefaultInMilli)
+        if (getTimePassedLastActionInMilli() < actionDelayDefaultInMilli + additionalDelayInMilli)
         {
             return;
+        }
+        else
+        {
+            additionalDelayInMilli = 0.0f;
         }
 
         base.AIStateMachine();
@@ -58,9 +62,9 @@ public class EnemyMiniBossDogAndPenguine : EnemyBase
         base.Attack();
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, int additionalDelay)
     {
-        base.TakeDamage(damage);
+        base.TakeDamage(damage, additionalDelay);
         markLastActionTimeStamp();
         if (health > 0)
         {

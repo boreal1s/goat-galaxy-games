@@ -102,7 +102,7 @@ public class CharacterClass : MonoBehaviour
 
         while (elapsedTime < duration)
         {
-            TakeDamage(burnDamage * Time.deltaTime);
+            TakeDamage(burnDamage * Time.deltaTime, 0);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -153,7 +153,7 @@ public class CharacterClass : MonoBehaviour
         }
     }
 
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage, int additionalDelay)
     {
         PlaySoundEffect(hitSoundEffect, hitSoundPitch);
 

@@ -26,7 +26,6 @@ public class EnemyBase : CharacterClass
 
     // Enemy Events
     public UnityEvent<float, int> AttackEvent; // input: damage and attack time delay
-    public UnityEvent<float> DamageEvent;
     public UnityAction OnEnemyDeath; // Trigger to remove event listner in player
 
     // AI to track player
@@ -34,6 +33,7 @@ public class EnemyBase : CharacterClass
     public EnemyState enemyState;
     public PlayerController player; // Player object to be set by WaveManager
     public double actionDelayDefaultInMilli;
+    protected double additionalDelayInMilli; // Delay dealt by player's type
     protected float distanceToPlayer;
     protected DateTime lastActionTimestamp;
 
@@ -118,10 +118,10 @@ public class EnemyBase : CharacterClass
         AttackEvent?.Invoke(attackPower, attackDelayInMilli);
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, int additionalDelay)
     {
         navMeshAgent.SetDestination(transform.position);
-        base.TakeDamage(damage);
+        base.TakeDamage(damage, additionalDelay);
 
         if (FloatingTextPrefab) {
             ShowFloatingText(damage);

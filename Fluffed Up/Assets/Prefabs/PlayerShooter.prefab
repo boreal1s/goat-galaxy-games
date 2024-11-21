@@ -7954,7 +7954,7 @@ MonoBehaviour:
   attackPower: 0
   attackSpeed: 0
   maxAttackSpeed: 0
-  attackDistanceThreshold: 0
+  attackDistanceThreshold: 5
   isAttacking: 0
   attackDelayInMilli: 0
   defense: 0
@@ -7993,6 +7993,7 @@ MonoBehaviour:
   currentAttackCounter: 0
   ATTACK_1_BOOL: 0
   ATTACK_2_BOOL: 0
+  enemyStunDelayMilli: 0
   inputs: {fileID: 0}
   cameraTransform: {fileID: 0}
   coinCounterText: {fileID: 7715781574746876224}
