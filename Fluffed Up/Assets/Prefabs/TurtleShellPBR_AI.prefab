@@ -1229,7 +1229,7 @@ MonoBehaviour:
     dropChance: 0
   goldValueMin: 10
   goldValueMax: 15
-  FloatingTextPrefab: {fileID: 0}
+  FloatingTextPrefab: {fileID: 7094480470114473468, guid: 349e3df807dc37045b275eaffd38a36f, type: 3}
 --- !u!1 &5232567365979340287
 GameObject:
   m_ObjectHideFlags: 0
