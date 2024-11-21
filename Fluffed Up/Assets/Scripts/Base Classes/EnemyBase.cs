@@ -70,6 +70,7 @@ public class EnemyBase : CharacterClass
     void Update()
     {
         AIStateMachine();
+        navMeshAgent.speed = moveSpeed;
     }
 
     public virtual void AIStateMachine()

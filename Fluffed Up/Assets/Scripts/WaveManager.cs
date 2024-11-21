@@ -14,11 +14,15 @@ public class WaveManager : MonoBehaviour
     {
         public GameObject enemyPrefab;
         public int quantity;
+        public int speed;
+        public int attackPower;
 
-        public EnemySpawnInfo(GameObject go, int quantity)
+        public EnemySpawnInfo(GameObject go, int quantity, int speed, int attackPower)
         {
             this.enemyPrefab = go;
             this.quantity = quantity;
+            this.speed = speed;
+            this.attackPower = attackPower;
         }
     }
 
@@ -103,36 +107,36 @@ public class WaveManager : MonoBehaviour
         waveList = new List<List<EnemySpawnInfo>>
         {            
             new(){// First wave
-                new(enemyPrefabSlime, 3)        
+                new(enemyPrefabSlime, 3, 7, 5)
             },
             new(){// Second wave
-                new(enemyPrefabTurtle, 2)
+                new(enemyPrefabTurtle, 2, 8, 10)
             },
             new(){// Third wave
-                new(enemyPrefabMiniBossDog, 1),
+                new(enemyPrefabMiniBossDog, 1, 8, 15)
             },
             new(){// Fourth wave
-                new(enemyPrefabTurtle, 4)
+                new(enemyPrefabTurtle, 4, 9, 15)
             },
             new(){// Fifth wave
-                new(enemyPrefabSlime, 6)
+                new(enemyPrefabSlime, 6, 11, 10)
             },
             new(){// Sixth wave
-                new(enemyPrefabSlime, 3),
-                new(enemyPrefabTurtle, 3)
-            },
-            new(){// Sixth wave
-                new(enemyPrefabMiniBossPenguin, 1)
+                new(enemyPrefabSlime, 3, 10, 12),
+                new(enemyPrefabTurtle, 3, 12, 17)
             },
             new(){// Seventh wave
-                new(enemyPrefabSlime, 10)
+                new(enemyPrefabMiniBossPenguin, 1, 15, 30)
             },
             new(){// Eigth wave
-                new(enemyPrefabTurtle, 9)
+                new(enemyPrefabSlime, 10, 13, 15)
             },
             new(){// Ninth wave
-                new(enemyPrefabSlime, 7),
-                new(enemyPrefabTurtle, 5)
+                new(enemyPrefabTurtle, 9, 13, 20)
+            },
+            new(){// Tenth wave
+                new(enemyPrefabMiniBossDog, 1, 17, 30),
+                new(enemyPrefabMiniBossPenguin, 1, 15, 40)
             },
         };
     }
@@ -171,6 +175,8 @@ public class WaveManager : MonoBehaviour
                 Vector3 randomPosition = GetRandomPosition();
                 GameObject newEnemy = Instantiate(spawnInfo.enemyPrefab, randomPosition, Quaternion.identity);
                 EnemyBase enemyScript = newEnemy.GetComponent<EnemyBase>();
+                enemyScript.attackPower = spawnInfo.attackPower;
+                enemyScript.moveSpeed = spawnInfo.speed;
 
                 // Add event listener: player attack ---> enemy takes damage
                 void onPlayerAttackAction(float damage, int delayInMilli) => InitiateAttackTimer(enemyScript, damage, delayInMilli, true);

@@ -64,8 +64,10 @@ public class EnemyMiniBossDogAndPenguine : EnemyBase
 
     public override void TakeDamage(float damage, int additionalDelay)
     {
+        additionalDelayInMilli = (double)additionalDelay;
         base.TakeDamage(damage, additionalDelay);
         markLastActionTimeStamp();
+        animator.SetBool("isMoving", false);
         if (health > 0)
         {
             animator.StopPlayback();
