@@ -101,11 +101,11 @@ public class DropTables : MonoBehaviour
         Debug.Log("Upgrade type table populated");
 
         // Stat Upgrades
-        Upgrade attackPower = new Upgrade("Attack Power", "Increase attack power by 10", UpgradeType.StatUpgrade, 10, attackPowerShopSprite, attackPowerToolbarSprite, new StatUpgrade(10f, StatType.AttackPower));
-        Upgrade healthIncrease = new Upgrade("Max Health Increase", "Increase max health by 20", UpgradeType.StatUpgrade, 10, healthIncreaseShopSprite, healthIncreaseToolbarSprite, new StatUpgrade(20f, StatType.Health));
-        Upgrade defenseUpgrade = new Upgrade("Defense Up!", "Become a little tougher", UpgradeType.StatUpgrade, 10, defenseUpgradeShopSprite, defenseUpgradeToolbarSprite, new StatUpgrade(2f, StatType.Defense));
-        Upgrade moveSpeedUpgrade = new Upgrade("Move Speed Increase", "Zoooooom!", UpgradeType.StatUpgrade, 10, moveSpeedShopSprite, moveSpeedUpgradeToolbarSprite, new StatUpgrade(10f, StatType.MoveSpeed));
-        Upgrade attackSpeedUpgrade = new Upgrade("Attack Speed Increase", "Increase attack speed by 7%", UpgradeType.StatUpgrade, 10, attackSpeedUpgradeShopSprite, attackSpeedUpgradeToolbarSprite, new StatUpgrade(0.07f, StatType.AttackSpeed));
+        Upgrade attackPower = new Upgrade("Attack Power", "Increase attack power by 10", UpgradeType.StatUpgrade, 20, attackPowerShopSprite, attackPowerToolbarSprite, new StatUpgrade(10f, StatType.AttackPower));
+        Upgrade healthIncrease = new Upgrade("Max Health Increase", "Increase max health by 20", UpgradeType.StatUpgrade, 20, healthIncreaseShopSprite, healthIncreaseToolbarSprite, new StatUpgrade(20f, StatType.Health));
+        Upgrade defenseUpgrade = new Upgrade("Defense Up!", "Become a little tougher", UpgradeType.StatUpgrade, 20, defenseUpgradeShopSprite, defenseUpgradeToolbarSprite, new StatUpgrade(2f, StatType.Defense));
+        Upgrade moveSpeedUpgrade = new Upgrade("Move Speed Increase", "Zoooooom!", UpgradeType.StatUpgrade, 20, moveSpeedShopSprite, moveSpeedUpgradeToolbarSprite, new StatUpgrade(2.5f, StatType.MoveSpeed));
+        Upgrade attackSpeedUpgrade = new Upgrade("Attack Speed Increase", "Increase attack speed by 7%", UpgradeType.StatUpgrade, 20, attackSpeedUpgradeShopSprite, attackSpeedUpgradeToolbarSprite, new StatUpgrade(0.07f, StatType.AttackSpeed));
         statUpgrades = new WeightedList<Upgrade>()
         {
             {attackPower, uncommonWeight},
@@ -116,30 +116,30 @@ public class DropTables : MonoBehaviour
         };
 
         // Skill
-        Upgrade blinkSkill = new Upgrade("Blink", "Instantaneously teleport a short distance", UpgradeType.Skill, 20, blinkSkillShopSprite, blinkSkillToolbarSprite, new BlinkSkill(new List<Upgrade>(), Rarity.Rare, 4f, SkillType.Dodge));
-        Upgrade dashSkill = new Upgrade("Dash", "A faster way to dodge", UpgradeType.Skill, 20, blinkSkillShopSprite, blinkSkillToolbarSprite, new DashSkill(new List<Upgrade>(), Rarity.Uncommon, 3f, SkillType.Dodge));
-        Upgrade dodgeSkill = new Upgrade("Roll", "Swiftly roll out of harms way", UpgradeType.Skill, 10, dodgeSkillShopSprite, dodgeSkillToolbarSprite, new RollSkill(new List<Upgrade>() { blinkSkill, dashSkill }, Rarity.Common, 1.2f, SkillType.Dodge));
+        Upgrade blinkSkill = new Upgrade("Blink", "Instantaneously teleport a short distance", UpgradeType.Skill, 200, blinkSkillShopSprite, blinkSkillToolbarSprite, new BlinkSkill(new List<Upgrade>(), Rarity.Rare, 4f, SkillType.Dodge));
+        Upgrade dashSkill = new Upgrade("Dash", "A faster way to dodge", UpgradeType.Skill, 100, blinkSkillShopSprite, blinkSkillToolbarSprite, new DashSkill(new List<Upgrade>(), Rarity.Uncommon, 3f, SkillType.Dodge));
+        Upgrade dodgeSkill = new Upgrade("Roll", "Swiftly roll out of harms way", UpgradeType.Skill, 55, dodgeSkillShopSprite, dodgeSkillToolbarSprite, new RollSkill(new List<Upgrade>() { blinkSkill, dashSkill }, Rarity.Common, 1.2f, SkillType.Dodge));
         skills = new WeightedList<Upgrade>()
         {
             { dodgeSkill, commonWeight},
         };
 
         // Player Modifications
-        Upgrade fleshWoundMod = new Upgrade("Flesh Wound", "Occassionally negate a small amount of damage.", UpgradeType.PlayerModification, 20, fleshWoundModShopSprite, fleshWoundModToolbarSprite, new PlayerModification(new List<Upgrade>(), Rarity.Rare));
+        Upgrade fleshWoundMod = new Upgrade("Flesh Wound", "Occassionally negate a small amount of damage.", UpgradeType.PlayerModification, 175, fleshWoundModShopSprite, fleshWoundModToolbarSprite, new PlayerModification(new List<Upgrade>(), Rarity.Rare));
         playerModifications = new WeightedList<Upgrade>()
         {
             {fleshWoundMod, rareWeight},
         };
 
         // Game Modifications
-        Upgrade restockMod = new Upgrade("Restock", "The shop now restocks on purchase.", UpgradeType.GameModification, 20, restockModShopSprite, restockModToolbarSprite, new GameModification(new List<Upgrade>(), Rarity.Rare));
+        Upgrade restockMod = new Upgrade("Restock", "The shop now restocks on purchase.", UpgradeType.GameModification, 120, restockModShopSprite, restockModToolbarSprite, new GameModification(new List<Upgrade>(), Rarity.Rare));
         gameModifications = new WeightedList<Upgrade>()
         {
             {restockMod, rareWeight},
         };
 
         // Consumables
-        Upgrade healthPotion = new Upgrade("Health Potion", "Heal a small amount of missing health.", UpgradeType.Consumable, 5, healthPotionShopSprite, healthPotionToolbarSprite, new Consumable(25f, ConsumableType.Health));
+        Upgrade healthPotion = new Upgrade("Health Potion", "Heal a small amount of missing health.", UpgradeType.Consumable, 15, healthPotionShopSprite, healthPotionToolbarSprite, new Consumable(25f, ConsumableType.Health));
         consumables = new WeightedList<Upgrade>()
         {
             {healthPotion, commonWeight},
@@ -236,6 +236,9 @@ public class DropTables : MonoBehaviour
         List<Upgrade> followingUpgrades;
         switch (upgrade.upgradeType)
         {
+            case UpgradeType.StatUpgrade:
+                statUpgrades[statUpgrades.IndexOf(upgrade)].cost = (int) Math.Round(statUpgrades[statUpgrades.IndexOf(upgrade)].cost * 1.5f);
+                break;
             case UpgradeType.Skill:
                 followingUpgrades = upgrade.skill.GetFollowingUprages();
                 for (int i = 0; i < followingUpgrades.Count; i++)
