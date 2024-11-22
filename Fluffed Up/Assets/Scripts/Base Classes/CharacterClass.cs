@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 public class CharacterClass : MonoBehaviour
@@ -61,6 +62,15 @@ public class CharacterClass : MonoBehaviour
     public float airSpeedMultiplier;
     public float gravityMultiplier;
     public bool isJumping;
+    #endregion
+
+    #region Shooting Attributes
+    protected int maxAmmo = 13;
+    protected int currAmmo;
+    protected float reloadTime = 2f;
+    protected float shotTime = 0.2f;
+    public bool isReloading;
+    protected Dictionary<int, Image> ammoIndicators;
     #endregion
 
     // Character animator and rigidbody
@@ -210,5 +220,8 @@ public class CharacterClass : MonoBehaviour
     {
         attackSpeed = attackSpeed + (attackSpeed * attackSpeedMultiplier);
         animator.SetFloat("attackSpeed", attackSpeed);
+
+        reloadTime = Mathf.Max(0.1f, reloadTime - (reloadTime * attackSpeedMultiplier));
+        shotTime = Mathf.Max(0.01f, shotTime - (shotTime * attackSpeedMultiplier));
     }
 }
