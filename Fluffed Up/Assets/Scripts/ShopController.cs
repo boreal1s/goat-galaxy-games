@@ -104,6 +104,7 @@ public class ShopController : MonoBehaviour
     {
         bgmPlayer.LoudAndClear();
         shopComponent.SetActive(false);
+        Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         shopIsOpen = false;
@@ -135,6 +136,7 @@ public class ShopController : MonoBehaviour
     private void activateShop()
     {
         shopComponent.SetActive(true);
+        Time.timeScale = 0;
 
         if (!upgrade1Purchased)
         {
