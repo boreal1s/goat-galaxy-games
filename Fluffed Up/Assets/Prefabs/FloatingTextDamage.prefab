@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -7599068628415704457}
   - component: {fileID: -5619415638650009244}
   m_Layer: 0
-  m_Name: FloatingTextSlime
+  m_Name: FloatingTextDamage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
