@@ -21,7 +21,6 @@ public class PlayerController : CharacterClass
     public AudioClip attackSound;
     public AudioClip shootingSound;
     public AudioClip reloadSound;
-    public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not. 
 
     #region Coin Attributes
     private int coins;
@@ -116,6 +115,7 @@ public class PlayerController : CharacterClass
         currAmmo = maxAmmo;
         isReloading = false;
         projectileDamage = 30f;
+        attackDelayInMilli = 300; 
 
         ammoIndicators = new Dictionary<int, Image>()
         {

@@ -7,8 +7,6 @@ public class Projectile : MonoBehaviour
     public int enemyStunDelayInMilli = 0;
     private Rigidbody rb;
 
-    [SerializeField]
-    public PlayerController player;
 
     private void Start()
     {
@@ -24,18 +22,12 @@ public class Projectile : MonoBehaviour
 
         // Destroy the projectile after 5 seconds to prevent clutter
         Destroy(gameObject, 5f);
-        
-        player = GetComponentInParent<PlayerController>();
-        if (player == null)
-        {
-            Debug.LogError("No player controller assigned to project.");
-        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         // Ignore collision with the player
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") || other.CompareTag("DroppableItem"))
             return;
 
         // Check if the projectile hit an enemy
