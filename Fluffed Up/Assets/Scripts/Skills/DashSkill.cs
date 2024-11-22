@@ -1,11 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Playables;
 
-public class RollSkill : ISkill
+public class DashSkill : ISkill
 {
     public List<Upgrade> followingUpgrades;
     public DropTables.Rarity rarity;
@@ -14,12 +11,11 @@ public class RollSkill : ISkill
     private PlayerController player;
     private SkillType skillType;
 
-    public RollSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn, SkillType skillType)
+    public DashSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn, SkillType skillType)
     {
         this.followingUpgrades = followingUpgrades;
         this.rarity = rarity;
         this.cooldown = cldwn;
-        lastUsedTime = -1;
     }
 
     // Method to use the skill
@@ -28,7 +24,7 @@ public class RollSkill : ISkill
         if (CanUseSkill())
         {
             lastUsedTime = Time.time; // Update the last used time
-            player.currInvincibilityFrames = player.invincibilityFrames;
+            // Ex. Handle animations and do damage to target here.
             Debug.Log("Roll used.");
             return true;
         }
@@ -42,7 +38,7 @@ public class RollSkill : ISkill
     // Check if the skill can be used based on cooldown
     public bool CanUseSkill()
     {
-        return (Time.time >= lastUsedTime + cooldown) && player.isGrounded;
+        return (Time.time >= lastUsedTime + cooldown);
     }
 
     public List<Upgrade> GetFollowingUprages()
@@ -50,20 +46,17 @@ public class RollSkill : ISkill
         return followingUpgrades;
     }
 
-    public DropTables.Rarity GetRarity()
-    {
-        return rarity;
-    }
-
     public void SetCharacter(ref PlayerController player)
     {
         this.player = player;
     }
 
+    public DropTables.Rarity GetRarity()
+    {
+        return rarity;
+    }
     public SkillType GetSkillType()
     {
         return skillType;
     }
-
-
 }

@@ -34,15 +34,6 @@ public class ThirdPersonCameraController : MonoBehaviour
             aimCamera.gameObject.SetActive(false);
         }
         #endregion
-
-        #region Rotate player with camera
-        if(waveManager.player)
-        {
-            Transform player = waveManager.player.transform;
-            Vector3 viewDirection = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
-            waveManager.player.transform.forward = viewDirection.normalized;
-        }
-        #endregion
     }
 
     void OnApplicationFocus(bool focus)

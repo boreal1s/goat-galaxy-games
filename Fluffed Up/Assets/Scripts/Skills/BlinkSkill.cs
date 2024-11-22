@@ -8,26 +8,31 @@ public class BlinkSkill : ISkill
     public DropTables.Rarity rarity;
     public float cooldown;
     private float lastUsedTime;
+    private PlayerController player;
+    private SkillType skillType;
 
-    public BlinkSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn)
+    public BlinkSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn, SkillType skillType)
     {
         this.followingUpgrades = followingUpgrades;
         this.rarity = rarity;
         this.cooldown = cldwn;
+        this.skillType = skillType;
     }
 
     // Method to use the skill
-    public void UseSkill()
+    public bool UseSkill()
     {
         if (CanUseSkill())
         {
             lastUsedTime = Time.time; // Update the last used time
             // Ex. Handle animations and do damage to target here.
             Debug.Log("Blink used.");
+            return true;
         }
         else
         {
             Debug.Log("Blink is on cooldown.");
+            return false;
         }
     }
 
@@ -45,5 +50,14 @@ public class BlinkSkill : ISkill
     public DropTables.Rarity GetRarity()
     {
         return rarity;
+    }
+    public void SetCharacter(ref PlayerController player)
+    {
+        this.player = player;
+    }
+
+    public SkillType GetSkillType()
+    {
+        return skillType;
     }
 }

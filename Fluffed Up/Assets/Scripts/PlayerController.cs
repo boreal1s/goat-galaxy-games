@@ -20,6 +20,7 @@ public class PlayerController : CharacterClass
     public float projectileDamage;
     public AudioClip attackSound;
     public AudioClip shootingSound;
+    Vector3 dodgeDir = Vector3.zero;
     public AudioClip reloadSound;
 
     #region Coin Attributes
@@ -100,10 +101,10 @@ public class PlayerController : CharacterClass
     {
         moveSpeed = 10f;
         rotationSpeed = 360f;
-        jumpForce = 100f;
+        jumpForce = 5f;
         jumpTime = 3f;
         jumpCooldown = 0.5f;
-        airSpeedMultiplier = 0.6f;
+        airSpeedMultiplier = 1f;
         attackPower = 70f;
         health = 100f;
         maxHealth = 100f;
@@ -112,6 +113,9 @@ public class PlayerController : CharacterClass
         attackComboCooldown = 1f;
         attackSpeed = 1f;
         coinFlushWaitTime = 2f;
+        isDodging = false;
+        invincibilityFrames = 10;
+        currInvincibilityFrames = 0;
         currAmmo = maxAmmo;
         isReloading = false;
         projectileDamage = 30f;
@@ -165,29 +169,24 @@ public class PlayerController : CharacterClass
 
         #region Movement Control
 
-        #region Configure Camera Relative Movement
+        Vector3 moveDir = GetCameraRelativeMovement(horizontal, vertical);
 
-        Vector3 camForward = cameraTransform.forward;
-        Vector3 camRight = cameraTransform.right;
-
-        camForward.y = 0;
-        camRight.y = 0;
-
-        Vector3 forwardRelative = vertical * camForward;
-        Vector3 rightRelataive = horizontal * camRight;
-
-        Vector3 moveDir = forwardRelative + rightRelataive;
-
-        #endregion
-
-        Vector3 move = new Vector3(moveDir.x, 0f, moveDir.z);
+        Vector3 move = isDodging ? dodgeDir * 1.3f : new Vector3(moveDir.x, 0f, moveDir.z);
 
         if (isGrounded)
             rb.MovePosition(transform.position + move * moveSpeed * Time.deltaTime);
         else
             rb.MovePosition(transform.position + move * moveSpeed * airSpeedMultiplier * Time.deltaTime);
 
-        isRunning = move != Vector3.zero && isGrounded;
+        isRunning = move != Vector3.zero && isGrounded && !isDodging;
+
+        #endregion
+
+        #region Rotate player with camera
+        if (!isDodging) {
+            Vector3 viewDirection = transform.position - new Vector3(cameraTransform.position.x, transform.position.y, cameraTransform.position.z);
+            transform.forward = viewDirection.normalized;
+        }
         #endregion
 
         #region Coin Flush Handling
@@ -250,7 +249,12 @@ public class PlayerController : CharacterClass
             }
         }
 
-        if (inputs.jump && isGrounded && !isJumping)
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            Dodge();
+        }
+
+        if (inputs.jump && isGrounded && !isJumping && !isDodging)
         {
             isJumping = true;
             Jump(1f);
@@ -268,6 +272,53 @@ public class PlayerController : CharacterClass
             StartCoroutine(WaitToReload(reloadTime));
         }
 
+        if (currInvincibilityFrames > 0)
+            currInvincibilityFrames--;
+    }
+
+    public Vector3 GetCameraRelativeMovement(float horizontal, float vertical)
+    {
+        Vector3 camRight = cameraTransform.right;
+
+        camRight.y = 0;
+
+        Vector3 rightRelataive = horizontal * camRight;
+
+        return GetCameraForwardRelative(vertical) + rightRelataive;
+    }
+
+    public Vector3 GetCameraForwardRelative(float vertical)
+    {
+        Vector3 camForward = cameraTransform.forward;
+        camForward.y = 0;
+        return vertical * camForward;
+    }
+
+    public void Dodge()
+    {
+        if (dodgeSkill != null)
+            if (dodgeSkill.UseSkill())
+            {
+                isDodging = true;
+                StartCoroutine(ResetDodgeState());
+                if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
+                {
+                    dodgeDir = transform.forward;
+                }
+                else
+                {
+                    dodgeDir = Vector3.Normalize(GetCameraRelativeMovement(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
+                    transform.forward = dodgeDir.normalized;
+                }
+                animator.SetTrigger("dodge");
+            }
+    }
+
+    private IEnumerator ResetDodgeState()
+    {
+        yield return new WaitForSeconds((animator.GetCurrentAnimatorStateInfo(0).length));
+        isDodging = false;
+        Debug.Log("Dodge reset.");
     }
 
     void Shoot()
