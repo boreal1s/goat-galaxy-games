@@ -2139,6 +2139,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: SciFiHandGun
       objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 53cf163f2190a914c9dee014e9dc95a4, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.2822
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 53cf163f2190a914c9dee014e9dc95a4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.000000071702
+      objectReference: {fileID: 0}
+    - target: {fileID: 400004, guid: 53cf163f2190a914c9dee014e9dc95a4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.0697
+      objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: 53cf163f2190a914c9dee014e9dc95a4, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -2149,19 +2161,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: 53cf163f2190a914c9dee014e9dc95a4, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.8894949
+      value: 1.4916888
       objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: 53cf163f2190a914c9dee014e9dc95a4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.0006545168
+      value: -0.004
       objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: 53cf163f2190a914c9dee014e9dc95a4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.14454326
+      value: 0.184
       objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: 53cf163f2190a914c9dee014e9dc95a4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.013935612
+      value: -0.026
       objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: 53cf163f2190a914c9dee014e9dc95a4, type: 3}
       propertyPath: m_LocalRotation.w
