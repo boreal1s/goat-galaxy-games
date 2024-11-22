@@ -216,7 +216,7 @@ public class PlayerController : CharacterClass
             reloadSpeedText.text = reloadTime.ToString();
             bulletChamberSpeed.text = shotTime.ToString();
         } 
-        else if (SelectChar.characterID == 2)
+        else if (SelectChar.characterID == 0)
         {
             attackSpeedText.text = attackSpeed.ToString();
         }
