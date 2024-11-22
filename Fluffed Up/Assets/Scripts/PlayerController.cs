@@ -21,7 +21,6 @@ public class PlayerController : CharacterClass
     public AudioClip attackSound;
     public AudioClip shootingSound;
     public AudioClip reloadSound;
-    public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not. 
 
     #region Coin Attributes
     private int coins;
@@ -67,6 +66,7 @@ public class PlayerController : CharacterClass
     public int currentAttackCounter;
     public bool ATTACK_1_BOOL;
     public bool ATTACK_2_BOOL;
+    public int enemyStunDelayMilli;
 
     [Header("Inputs")]
     [SerializeField]
@@ -107,7 +107,6 @@ public class PlayerController : CharacterClass
         attackPower = 70f;
         health = 100f;
         maxHealth = 100f;
-        attackDistanceThreshold = 3f;
         CurrentAttackCounter = 0;
         attackComboMax = 3;
         attackComboCooldown = 1f;
@@ -116,6 +115,7 @@ public class PlayerController : CharacterClass
         currAmmo = maxAmmo;
         isReloading = false;
         projectileDamage = 30f;
+        attackDelayInMilli = 300; 
 
         ammoIndicators = new Dictionary<int, Image>()
         {
@@ -394,9 +394,9 @@ public class PlayerController : CharacterClass
         UpdateHealthPackCounter();
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, int additionalDelay)
     {
-        base.TakeDamage(damage);
+        base.TakeDamage(damage, additionalDelay);
 
         animator.Play("GetHit");
     }

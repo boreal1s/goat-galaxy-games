@@ -2,12 +2,11 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    private float speed = 50f;      // Speed of the projectile
-    private float damage;
+    public float speed = 20f;      // Speed of the projectile
+    public float damage = 10f;     // Damage dealt to enemies
+    public int enemyStunDelayInMilli = 0;
     private Rigidbody rb;
 
-    [SerializeField]
-    public PlayerController player;
 
     private void Start()
     {
@@ -23,25 +22,19 @@ public class Projectile : MonoBehaviour
 
         // Destroy the projectile after 5 seconds to prevent clutter
         Destroy(gameObject, 5f);
-        
-        player = GetComponentInParent<PlayerController>();
-        if (player == null)
-        {
-            Debug.LogError("No player controller assigned to project.");
-        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         // Ignore collision with the player
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") || other.CompareTag("DroppableItem"))
             return;
 
         // Check if the projectile hit an enemy
         EnemyBase enemy = other.GetComponent<EnemyBase>();
         if (enemy != null)
         {
-            enemy.TakeDamage(damage);
+            enemy.TakeDamage(damage, enemyStunDelayInMilli);
             Destroy(gameObject); // Destroy the projectile after hitting an enemy
         }
         else

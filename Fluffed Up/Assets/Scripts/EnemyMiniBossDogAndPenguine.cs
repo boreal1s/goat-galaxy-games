@@ -5,46 +5,51 @@ using UnityEngine.Events;
 using UnityEngine.AI;
 using JetBrains.Annotations;
 
-public class EnemyTurtle : EnemyBase
+public class EnemyMiniBossDogAndPenguine : EnemyBase
 {
-    private const int ACTION_DELAY_DEFAULT = 800;
-    private int actionDelay = ACTION_DELAY_DEFAULT; // give delay in action because slime is stupid!
     public override void AIStateMachine()
     {
-        if (actionDelay > 0)
+        if (getTimePassedLastActionInMilli() < actionDelayDefaultInMilli + additionalDelayInMilli)
         {
-            actionDelay--;
             return;
+        }
+        else
+        {
+            additionalDelayInMilli = 0.0f;
         }
 
         base.AIStateMachine();
+
+        bool isMoving = false;
+
         switch (enemyState)
         {
         case EnemyState.ChasingPlayer:
+            isMoving = true;
             break;
         case EnemyState.InitiateAttack:
-            base.AIStateMachine();
             Attack();
             enemyState = EnemyState.Attacking;
-            actionDelay = ACTION_DELAY_DEFAULT;
+            markLastActionTimeStamp();
             break;
         case EnemyState.Attacking:
-            base.AIStateMachine();
-            if (distanceToPlayer > 1)
+            if (distanceToPlayer > attackDistanceThreshold)
             {
-                actionDelay = ACTION_DELAY_DEFAULT;
                 enemyState = EnemyState.ChasingPlayer;
             }
             else if (isAttacking == false)
             {
-                actionDelay = ACTION_DELAY_DEFAULT;
                 enemyState = EnemyState.InitiateAttack;
             }
             break;
+        case EnemyState.Dizzy:
+            enemyState = EnemyState.Attacking;
+            break;
         default:
-            base.AIStateMachine();
             break;
         }
+
+        animator.SetBool("isMoving", isMoving);
     }
 
     public override void Attack()
@@ -57,21 +62,24 @@ public class EnemyTurtle : EnemyBase
         base.Attack();
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, int additionalDelay)
     {
-        base.TakeDamage(damage);
-        actionDelay = ACTION_DELAY_DEFAULT;
+        additionalDelayInMilli = (double)additionalDelay;
+        base.TakeDamage(damage, additionalDelay);
+        markLastActionTimeStamp();
+        animator.SetBool("isMoving", false);
         if (health > 0)
         {
             animator.StopPlayback();
             animator.Play("GetHit");
+            enemyState = EnemyState.Dizzy;
         }
     }
 
     protected override void Die()
     {
         animator.StopPlayback();
-        animator.Play("Die");
+        animator.Play("Die01");
         StartCoroutine(DieCoroutine(animator.GetCurrentAnimatorStateInfo(0).length*2));
 
         base.Die();

@@ -25,6 +25,7 @@ public class CharacterClass : MonoBehaviour
     public float maxAttackSpeed;
     public float attackDistanceThreshold;
     public bool isAttacking = false;
+    public int attackDelayInMilli;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not.
 
     // Defense
     public float defense;
@@ -101,7 +102,7 @@ public class CharacterClass : MonoBehaviour
 
         while (elapsedTime < duration)
         {
-            TakeDamage(burnDamage * Time.deltaTime);
+            TakeDamage(burnDamage * Time.deltaTime, 0);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -152,7 +153,7 @@ public class CharacterClass : MonoBehaviour
         }
     }
 
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage, int additionalDelay)
     {
         PlaySoundEffect(hitSoundEffect, hitSoundPitch);
 
