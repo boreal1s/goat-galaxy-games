@@ -117,22 +117,25 @@ public class PlayerController : CharacterClass
         projectileDamage = 30f;
         attackDelayInMilli = 300; 
 
-        ammoIndicators = new Dictionary<int, Image>()
+        if (SelectChar.characterID == 1) // If the shooter character is selected
         {
-            { 1, GameObject.Find("Ammo1").GetComponent<Image>() },
-            { 2, GameObject.Find("Ammo2").GetComponent<Image>() },
-            { 3, GameObject.Find("Ammo3").GetComponent<Image>() },
-            { 4, GameObject.Find("Ammo4").GetComponent<Image>() },
-            { 5, GameObject.Find("Ammo5").GetComponent<Image>() },
-            { 6, GameObject.Find("Ammo6").GetComponent<Image>() },
-            { 7, GameObject.Find("Ammo7").GetComponent<Image>() },
-            { 8, GameObject.Find("Ammo8").GetComponent<Image>() },
-            { 9, GameObject.Find("Ammo9").GetComponent<Image>() },
-            { 10, GameObject.Find("Ammo10").GetComponent<Image>() },
-            { 11, GameObject.Find("Ammo11").GetComponent<Image>() },
-            { 12, GameObject.Find("Ammo12").GetComponent<Image>() },
-            { 13, GameObject.Find("Ammo13").GetComponent<Image>() },
-        };
+            ammoIndicators = new Dictionary<int, Image>()
+            {
+                { 1, GameObject.Find("Ammo1").GetComponent<Image>() },
+                { 2, GameObject.Find("Ammo2").GetComponent<Image>() },
+                { 3, GameObject.Find("Ammo3").GetComponent<Image>() },
+                { 4, GameObject.Find("Ammo4").GetComponent<Image>() },
+                { 5, GameObject.Find("Ammo5").GetComponent<Image>() },
+                { 6, GameObject.Find("Ammo6").GetComponent<Image>() },
+                { 7, GameObject.Find("Ammo7").GetComponent<Image>() },
+                { 8, GameObject.Find("Ammo8").GetComponent<Image>() },
+                { 9, GameObject.Find("Ammo9").GetComponent<Image>() },
+                { 10, GameObject.Find("Ammo10").GetComponent<Image>() },
+                { 11, GameObject.Find("Ammo11").GetComponent<Image>() },
+                { 12, GameObject.Find("Ammo12").GetComponent<Image>() },
+                { 13, GameObject.Find("Ammo13").GetComponent<Image>() },
+            };
+        }
 
         // Coin stuff
         coins = 0;

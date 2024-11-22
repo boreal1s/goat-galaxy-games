@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public float speed = 20f;      // Speed of the projectile
-    public float damage = 10f;     // Damage dealt to enemies
+    private float speed = 50f;      // Speed of the projectile
+    private float damage;
     public int enemyStunDelayInMilli = 0;
-    private Rigidbody rb;
 
+    private Rigidbody rb;
 
     private void Start()
     {
@@ -27,7 +27,7 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // Ignore collision with the player
-        if (other.CompareTag("Player") || other.CompareTag("DroppableItem"))
+        if (other.CompareTag("Player"))
             return;
 
         // Check if the projectile hit an enemy

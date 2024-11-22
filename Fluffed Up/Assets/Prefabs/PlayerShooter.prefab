@@ -5645,6 +5645,7 @@ MonoBehaviour:
   attackSound: {fileID: 0}
   shootingSound: {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}
   reloadSound: {fileID: 8300000, guid: 1e76ab8760b76fd479cf5a15ef01c108, type: 3}
+  attackDelayInMilli: 300
   currentAttackCounter: 0
   ATTACK_1_BOOL: 0
   ATTACK_2_BOOL: 0
