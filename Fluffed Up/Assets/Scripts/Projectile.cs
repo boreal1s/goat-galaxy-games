@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public float speed = 20f;      // Speed of the projectile
-    public float damage = 10f;     // Damage dealt to enemies
+    private float speed = 50f;      // Speed of the projectile
+    private float damage;
     public int enemyStunDelayInMilli = 0;
+
     private Rigidbody rb;
 
     private void Start()
@@ -21,6 +22,7 @@ public class Projectile : MonoBehaviour
 
         // Destroy the projectile after 5 seconds to prevent clutter
         Destroy(gameObject, 5f);
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -41,5 +43,15 @@ public class Projectile : MonoBehaviour
             // Destroy the projectile if it hits any other object
             Destroy(gameObject);
         }
+    }
+
+    public float GetSpeed()
+    {
+        return speed;
+    }
+
+    public void SetDamage(float damage)
+    {
+        this.damage = damage;
     }
 }
