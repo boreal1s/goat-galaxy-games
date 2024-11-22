@@ -25,15 +25,17 @@ public class EnemyBase : CharacterClass
     }
 
     // Enemy Events
-    public UnityEvent<float> AttackEvent;
-    public UnityEvent<float> DamageEvent;
+    public UnityEvent<float, int> AttackEvent; // input: damage and attack time delay
     public UnityAction OnEnemyDeath; // Trigger to remove event listner in player
 
     // AI to track player
     public NavMeshAgent navMeshAgent;
     public EnemyState enemyState;
     public PlayerController player; // Player object to be set by WaveManager
+    public double actionDelayDefaultInMilli;
+    protected double additionalDelayInMilli; // Delay dealt by player's type
     protected float distanceToPlayer;
+    protected DateTime lastActionTimestamp;
 
     // Enemy Drops
     [SerializeField]
@@ -69,6 +71,7 @@ public class EnemyBase : CharacterClass
     void Update()
     {
         AIStateMachine();
+        navMeshAgent.speed = moveSpeed;
     }
 
     public virtual void AIStateMachine()
@@ -87,10 +90,12 @@ public class EnemyBase : CharacterClass
                     // Debug.Log("EnemyState: ChasingPlayer");
                     if (distanceToPlayer > attackDistanceThreshold)
                     {
+                        navMeshAgent.isStopped = false;
                         navMeshAgent.SetDestination(player.transform.position);
                     }
                     else //TODO: if player is dead, enemy should go to idle. 
                     {
+                        navMeshAgent.isStopped = true;
                         enemyState = EnemyState.InitiateAttack;
                     }
                     break;
@@ -112,13 +117,13 @@ public class EnemyBase : CharacterClass
 
     public virtual void Attack()
     {
-        AttackEvent?.Invoke(attackPower);
+        AttackEvent?.Invoke(attackPower, attackDelayInMilli);
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, int additionalDelay)
     {
         navMeshAgent.SetDestination(transform.position);
-        base.TakeDamage(damage);
+        base.TakeDamage(damage, additionalDelay);
 
         if (FloatingTextPrefab) {
             ShowFloatingText(damage);
@@ -161,5 +166,22 @@ public class EnemyBase : CharacterClass
         OnEnemyDeath?.Invoke();
 
         // game object will be destroyed by DieCoroutine
+    }
+
+    protected void markLastActionTimeStamp()
+    {
+        lastActionTimestamp = DateTime.Now;
+    }
+
+    protected double getTimePassedLastActionInMilli()
+    {
+        DateTime currentTime = DateTime.Now;
+        TimeSpan timePassed = currentTime - lastActionTimestamp;
+        return timePassed.TotalMilliseconds;
+    }
+
+    public bool isAttackInvalid()
+    {
+        return (enemyState == EnemyState.Dizzy) || (enemyState == EnemyState.Dead);
     }
 }

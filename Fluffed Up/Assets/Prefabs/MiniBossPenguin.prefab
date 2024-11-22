@@ -2254,14 +2254,15 @@ MonoBehaviour:
   moveSpeed: 0
   rotationSpeed: 0
   isRunning: 0
-  healthBar: {fileID: 0}
+  healthBar: {fileID: 7250275017268456727}
   health: 800
   maxHealth: 0
-  attackPower: 20
-  attackSpeed: 0
+  attackPower: 30
+  attackSpeed: 1
   maxAttackSpeed: 0
-  attackDistanceThreshold: 2
+  attackDistanceThreshold: 3
   isAttacking: 0
+  attackDelayInMilli: 167
   defense: 0
   isBurning: 0
   isFrozen: 0
@@ -2286,12 +2287,10 @@ MonoBehaviour:
   AttackEvent:
     m_PersistentCalls:
       m_Calls: []
-  DamageEvent:
-    m_PersistentCalls:
-      m_Calls: []
   navMeshAgent: {fileID: 0}
   enemyState: 0
   player: {fileID: 0}
+  actionDelayDefaultInMilli: 0
   itemDrops:
   - prefab: {fileID: 0}
     dropChance: 0
@@ -2305,7 +2304,7 @@ MonoBehaviour:
     dropChance: 0
   goldValueMin: 50
   goldValueMax: 75
-  FloatingTextPrefab: {fileID: 0}
+  FloatingTextPrefab: {fileID: 7094480470114473468, guid: 349e3df807dc37045b275eaffd38a36f, type: 3}
 --- !u!195 &6722868417841180654
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2316,11 +2315,11 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 2
-  m_Speed: 3.5
+  m_Speed: 8
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 3
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -3059,7 +3058,7 @@ MonoBehaviour:
   healthSlider: {fileID: 751504668061833308}
   easeHealthSlider: {fileID: 989472157524808319}
   character: {fileID: 5159228069126568913}
-  healthHeightOffset: 1.5
+  healthHeightOffset: 2.5
   healthText: {fileID: 0}
 --- !u!114 &449399812220511151
 MonoBehaviour:
