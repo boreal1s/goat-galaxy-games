@@ -22,7 +22,6 @@ public class Projectile : MonoBehaviour
 
         // Destroy the projectile after 5 seconds to prevent clutter
         Destroy(gameObject, 5f);
-
     }
 
     private void OnTriggerEnter(Collider other)
