@@ -7,6 +7,9 @@ public class Projectile : MonoBehaviour
     public int enemyStunDelayInMilli = 0;
     private Rigidbody rb;
 
+    [SerializeField]
+    public PlayerController player;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -21,6 +24,12 @@ public class Projectile : MonoBehaviour
 
         // Destroy the projectile after 5 seconds to prevent clutter
         Destroy(gameObject, 5f);
+        
+        player = GetComponentInParent<PlayerController>();
+        if (player == null)
+        {
+            Debug.LogError("No player controller assigned to project.");
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -41,5 +50,15 @@ public class Projectile : MonoBehaviour
             // Destroy the projectile if it hits any other object
             Destroy(gameObject);
         }
+    }
+
+    public float GetSpeed()
+    {
+        return speed;
+    }
+
+    public void SetDamage(float damage)
+    {
+        this.damage = damage;
     }
 }

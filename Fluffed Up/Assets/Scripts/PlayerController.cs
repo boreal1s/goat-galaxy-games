@@ -6,7 +6,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
+using System.Xml;
 
 public class PlayerController : CharacterClass
 {
@@ -16,10 +17,11 @@ public class PlayerController : CharacterClass
     [Header("Shooting")]
     public GameObject projectilePrefab;       // The projectile prefab to instantiate
     public Transform projectileSpawnPoint;    // Where the projectile will spawn
-    public float projectileSpeed =  50f;       // Speed of the projectile
-    public float projectileDamage = 10f;      // Damage dealt by the projectile
+    public float projectileDamage;
     public AudioClip attackSound;
-    public AudioClip shootingSound;     
+    public AudioClip shootingSound;
+    public AudioClip reloadSound;
+    public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not. 
 
     #region Coin Attributes
     private int coins;
@@ -27,6 +29,15 @@ public class PlayerController : CharacterClass
     bool coinsAreFlushing;
     float timeSinceLastCoinChange;
     float coinFlushWaitTime;
+    #endregion
+
+    #region Shooting Attributes
+    int maxAmmo = 13;
+    int currAmmo;
+    float reloadTime = 2f;
+    float shotTime = 0.2f;
+    bool isReloading;
+    Dictionary<int, Image> ammoIndicators;
     #endregion
 
     [System.Serializable]
@@ -102,6 +113,26 @@ public class PlayerController : CharacterClass
         attackComboCooldown = 1f;
         attackSpeed = 1f;
         coinFlushWaitTime = 2f;
+        currAmmo = maxAmmo;
+        isReloading = false;
+        projectileDamage = 30f;
+
+        ammoIndicators = new Dictionary<int, Image>()
+        {
+            { 1, GameObject.Find("Ammo1").GetComponent<Image>() },
+            { 2, GameObject.Find("Ammo2").GetComponent<Image>() },
+            { 3, GameObject.Find("Ammo3").GetComponent<Image>() },
+            { 4, GameObject.Find("Ammo4").GetComponent<Image>() },
+            { 5, GameObject.Find("Ammo5").GetComponent<Image>() },
+            { 6, GameObject.Find("Ammo6").GetComponent<Image>() },
+            { 7, GameObject.Find("Ammo7").GetComponent<Image>() },
+            { 8, GameObject.Find("Ammo8").GetComponent<Image>() },
+            { 9, GameObject.Find("Ammo9").GetComponent<Image>() },
+            { 10, GameObject.Find("Ammo10").GetComponent<Image>() },
+            { 11, GameObject.Find("Ammo11").GetComponent<Image>() },
+            { 12, GameObject.Find("Ammo12").GetComponent<Image>() },
+            { 13, GameObject.Find("Ammo13").GetComponent<Image>() },
+        };
 
         // Coin stuff
         coins = 0;
@@ -192,12 +223,18 @@ public class PlayerController : CharacterClass
     void Update()
     {
         animator.SetBool("isRunning", isRunning);
+        if (currAmmo < 1 && !isReloading)
+        {
+            PlaySoundEffect(reloadSound);
+            StartCoroutine(WaitToReload(reloadTime));
+        }
 
         if (SelectChar.characterID == 1) // If the shooter character is selected
         {
-            if (Input.GetMouseButtonDown(0) && !isAttacking)
+            if (Input.GetMouseButtonDown(0) && !isAttacking && !isReloading && currAmmo > 0)
             {
                 Debug.Log("Left mouse button clicked - calling Shoot() for shooter character");
+                StartCoroutine(WaitToChamber(shotTime));
                 Shoot();
             }
         }
@@ -222,56 +259,72 @@ public class PlayerController : CharacterClass
             HealSelf();
         }
 
+        if (Input.GetKeyDown(KeyCode.R) && currAmmo < maxAmmo)
+        {
+            PlaySoundEffect(reloadSound);
+            StartCoroutine(WaitToReload(reloadTime));
+        }
+
     }
 
-void Shoot()
-{
-    Debug.Log("Shoot() method is being called");
-
-
-    PlaySoundEffect(shootingSound);
-
-    // Make projectile shoot towards camera's forward direction
-    Vector3 shootDirection = cameraTransform.forward;
-
-    // If you want to shoot slightly above the camera's forward direction, you can add cameraTransform.up
-    shootDirection += cameraTransform.up * 0.115f;  // Slightly shoot upward
-    shootDirection -= cameraTransform.right * 0.025f;  // This slightly shoots the projectile to the right or left if needed
-    
-    // Normalize the shoot direction to ensure consistent projectile speed
-    shootDirection.Normalize();
-
-    // Instantiate the projectile at the spawn point
-    GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
-
-    // Ignore collision between the projectile and the player
-    Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
-
-    // Set the projectile's speed and damage
-    Projectile projScript = projectile.GetComponent<Projectile>();
-    if (projScript != null)
+    void Shoot()
     {
-        projScript.speed = projectileSpeed;
-        projScript.damage = projectileDamage;
+        Debug.Log("Shoot() method is being called");
+
+        PlaySoundEffect(shootingSound);
+
+        // Make projectile shoot towards camera's forward direction
+        Vector3 shootDirection = cameraTransform.forward;
+
+        // If you want to shoot slightly above the camera's forward direction, you can add cameraTransform.up
+        shootDirection += cameraTransform.up * 0.115f;  // Slightly shoot upward
+        shootDirection -= cameraTransform.right * 0.025f;  // This slightly shoots the projectile to the right or left if needed
+
+        // Normalize the shoot direction to ensure consistent projectile speed
+        shootDirection.Normalize();
+
+        // Instantiate the projectile at the spawn point
+        GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
+
+        // Ignore collision between the projectile and the player
+        Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
+        projectile.GetComponent<Projectile>().SetDamage(projectileDamage);
+
+        // Set the projectile's direction based on the adjusted shoot direction
+        projectile.transform.forward = shootDirection;
+
+        // Apply velocity to the projectile using the Rigidbody component
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.velocity = shootDirection * projectile.GetComponent<Projectile>().GetSpeed(); //Set velocity with direction and speed
+
+            // apply gravity
+            rb.useGravity = true;
+        }
+
+        ammoIndicators[currAmmo].canvasRenderer.SetAlpha(0.2f);
+        currAmmo -= 1;
     }
-    else
+
+    public IEnumerator WaitToReload(float duration)
     {
-        Debug.LogError("Projectile script not found on the projectile prefab.");
+        isReloading = true;
+        yield return new WaitForSeconds(duration);
+        foreach (KeyValuePair<int, Image> ammo in ammoIndicators)
+        {
+            ammo.Value.canvasRenderer.SetAlpha(1f);
+        }
+        isReloading = false;
+        currAmmo = maxAmmo;
     }
 
-    // Set the projectile's direction based on the adjusted shoot direction
-    projectile.transform.forward = shootDirection;
-
-    // Apply velocity to the projectile using the Rigidbody component
-    Rigidbody rb = projectile.GetComponent<Rigidbody>();
-    if (rb != null)
+    public IEnumerator WaitToChamber(float duration)
     {
-        rb.velocity = shootDirection * projectileSpeed; //Set velocity with direction and speed
-
-        // apply gravity
-        rb.useGravity = true;
+        isAttacking = true;
+        yield return new WaitForSeconds(duration);
+        isAttacking = false;
     }
-}
 
     void meleeAttack()
     {

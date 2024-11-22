@@ -143,18 +143,7 @@ public class OtherPlayer : CharacterClass
 
         // Ignore collision between the projectile and the player
         Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
-
-        // Set the projectile's speed and damage
-        Projectile projScript = projectile.GetComponent<Projectile>();
-        if (projScript != null)
-        {
-            projScript.speed = projectileSpeed;
-            projScript.damage = projectileDamage;
-        }
-        else
-        {
-            Debug.LogError("Projectile script not found on the projectile prefab.");
-        }
+        projectile.GetComponent<Projectile>().SetDamage(projectileDamage);
 
         // Set the projectile's direction
         projectile.transform.forward = transform.forward;
