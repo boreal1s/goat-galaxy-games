@@ -31,15 +31,6 @@ public class PlayerController : CharacterClass
     float coinFlushWaitTime;
     #endregion
 
-    #region Shooting Attributes
-    int maxAmmo = 13;
-    int currAmmo;
-    float reloadTime = 2f;
-    float shotTime = 0.2f;
-    bool isReloading;
-    Dictionary<int, Image> ammoIndicators;
-    #endregion
-
     [System.Serializable]
     public class ItemProperties
     {
@@ -79,13 +70,15 @@ public class PlayerController : CharacterClass
 
     [Header("UI")]
     [SerializeField]
-    public TextMeshProUGUI coinCounterText; // For Unity UI Text
-    public TextMeshProUGUI coinFlushCounterText; // For Unity UI Text
-    public TextMeshProUGUI healthCounterText; // For Unity UI Text
-    public TextMeshProUGUI attackPowerText; // For Unity UI Text
-    public TextMeshProUGUI attackSpeedText; // For Unity UI Text
-    public TextMeshProUGUI defenseText; // For Unity UI Text
-    public TextMeshProUGUI moveSpeedText; // For Unity UI Text
+    public TextMeshProUGUI coinCounterText;
+    public TextMeshProUGUI coinFlushCounterText;
+    public TextMeshProUGUI healthCounterText;
+    public TextMeshProUGUI attackPowerText;
+    public TextMeshProUGUI attackSpeedText;
+    public TextMeshProUGUI reloadSpeedText;
+    public TextMeshProUGUI bulletChamberSpeed; 
+    public TextMeshProUGUI defenseText;
+    public TextMeshProUGUI moveSpeedText;
 
     private void Awake()
     {
@@ -215,9 +208,18 @@ public class PlayerController : CharacterClass
 
         #region Stat UI
         attackPowerText.text = attackPower.ToString();
-        attackSpeedText.text = attackSpeed.ToString();
         defenseText.text = defense.ToString();
         moveSpeedText.text = moveSpeed.ToString();
+
+        if (SelectChar.characterID == 1)
+        {
+            reloadSpeedText.text = reloadTime.ToString();
+            bulletChamberSpeed.text = shotTime.ToString();
+        } 
+        else if (SelectChar.characterID == 2)
+        {
+            attackSpeedText.text = attackSpeed.ToString();
+        }
         #endregion
     }
 
