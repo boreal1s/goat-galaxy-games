@@ -26,10 +26,10 @@ public class EnemySlimeAndTurtle : EnemyBase
         case EnemyState.InitiateAttack:
             Attack();
             enemyState = EnemyState.Attacking;
-            markLastActionTimeStamp();
+            markLastActionTimeStamp(attackDelayInMilli);
             break;
         case EnemyState.Attacking:            
-            if (distanceToPlayer > attackDistanceThreshold)
+            if (IsEnemyFarFromPlayer() || IsPlayerOutOfRange())
             {
                 enemyState = EnemyState.ChasingPlayer;
             }

@@ -749,6 +749,9 @@ MonoBehaviour:
   isAttacking: 0
   attackDelayInMilli: 266
   defense: 0
+  isDodging: 0
+  invincibilityFrames: 0
+  currInvincibilityFrames: 0
   isBurning: 0
   isFrozen: 0
   burnDamage: 0
@@ -764,6 +767,7 @@ MonoBehaviour:
   airSpeedMultiplier: 0
   gravityMultiplier: 0
   isJumping: 0
+  isReloading: 0
   animator: {fileID: 0}
   rb: {fileID: 0}
   sound3DPrefab: {fileID: 1719587315714716692, guid: 58873906edcd842929a41e8353bb38b0, type: 3}
