@@ -9,8 +9,10 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("Select character");
     }
 
-   
-
+    public void StartTutorial()
+    {
+        SceneManager.LoadScene("Tutorial");
+    }
    
     public void QuitGame()
     {
