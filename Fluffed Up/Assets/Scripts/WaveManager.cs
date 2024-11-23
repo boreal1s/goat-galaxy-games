@@ -113,7 +113,7 @@ public class WaveManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currentEnemies.RemoveAll(enemy => enemy == null);
+        //currentEnemies.RemoveAll(enemy => enemy == null);
         ResponsiveShopLight(shopController.canTriggerShop);
         waveEvent.Invoke();
     }
@@ -273,9 +273,12 @@ public class WaveManager : MonoBehaviour
         countdownText.text = "";
 
         // Increment wave & apply scaling 
+        if (currentWave % 3 == 0)
+        {
+            ScaleEnemyDifficulty();
+        }
         currentWave += 1;
-        waveCounterText.text = "Wave " + currentWave.ToString();// Update wave counter
-        ScaleEnemyDifficulty();
+        waveCounterText.text = "Wave " + currentWave.ToString(); // Update wave counter
 
         enemyQueue = new Queue<string>(nextEnemyQueue);
         StartCoroutine(ComputeOnslaught());
@@ -296,7 +299,6 @@ public class WaveManager : MonoBehaviour
 
     private IEnumerator EnemyLoader(List<string> group)
     {
-        yield return new WaitForSeconds(3);
         Debug.Log("Spawning group of enemies");
         foreach (string enemyId in group)
         {
@@ -319,7 +321,7 @@ public class WaveManager : MonoBehaviour
 
             currentEnemies.Add(newEnemy);
         }
-        yield return null;
+        yield return new WaitForSeconds(3);
     }
 
     Vector3 GetRandomPosition()
@@ -430,8 +432,7 @@ public class WaveManager : MonoBehaviour
 
     IEnumerator StartNextWave()
     {
-        isSpawningWave = true; // Set the flag to true to prevent multiple triggers
-        
+        isSpawningWave = true; // Set the flag to true to prevent multiple triggers        
         // Start the rest timer and wait for it to finish
         if (restTimerCoroutine != null)
         {
@@ -440,8 +441,8 @@ public class WaveManager : MonoBehaviour
         restTimerCoroutine = StartCoroutine(StartRestTimer());
         
         yield return restTimerCoroutine; // Wait for the timer to finish
-        isSpawningWave = false; // Reset the flag after spawning the wave
         StartWave();
+        isSpawningWave = false; // Reset the flag after spawning the wave
     }
 
     void RemoveEnemyListener(UnityEngine.Events.UnityAction<float, int> action, EnemyBase enemy)
