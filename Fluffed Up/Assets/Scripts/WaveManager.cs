@@ -7,22 +7,27 @@ using TMPro;
 using System.Linq.Expressions;
 using Cinemachine;
 using System.Security.Cryptography.X509Certificates;
+using KaimiraGames;
+using System.Drawing.Text;
+using TMPro.EditorUtilities;
 
 public class WaveManager : MonoBehaviour
 {
     public struct EnemySpawnInfo
     {
-        public GameObject enemyPrefab;
-        public int quantity;
         public int speed;
-        public int attackPower;
+        public float attackPower;
+        public float health;
+        public GameObject enemyPrefab;
+        public int difficultyCoefficient;
 
-        public EnemySpawnInfo(GameObject go, int quantity, int speed, int attackPower)
+        public EnemySpawnInfo(GameObject enemyPrefab, int dc, int speed, int attackPower, float health)
         {
-            this.enemyPrefab = go;
-            this.quantity = quantity;
             this.speed = speed;
             this.attackPower = attackPower;
+            this.health = health;
+            this.enemyPrefab = enemyPrefab;
+            this.difficultyCoefficient = dc;
         }
     }
 
@@ -33,8 +38,8 @@ public class WaveManager : MonoBehaviour
     public Transform cameraTransform;
 
     // List of enemies
-    public GameObject enemyPrefabSlime;
-    public GameObject enemyPrefabTurtle;
+    public static GameObject enemyPrefabSlime;
+    public static GameObject enemyPrefabTurtle;
     public GameObject enemyPrefabMiniBossDog;
     public GameObject enemyPrefabMiniBossPenguin;
     [SerializeField] public GameObject enemySpawnArea;
@@ -59,6 +64,23 @@ public class WaveManager : MonoBehaviour
     private Coroutine restTimerCoroutine;
 
     private List<List<EnemySpawnInfo>> waveList;
+
+    private int currentDifficulty = 3;
+    private Queue<GameObject> enemyQueue;
+    private Queue<GameObject> nextEnemyQueue;
+    private Dictionary<string, EnemySpawnInfo> enemyScaleInfo = new Dictionary<string, EnemySpawnInfo>()
+    {
+        {"Slime", new(enemyPrefabSlime, 1, 7, 10, 70) },
+        {"Turtle", new(enemyPrefabTurtle, 3, 4, 20, 180)},
+    };
+    private Dictionary<string, float> scalingConfig = new Dictionary<string, float>()
+    {
+        { "Health", 0.04f},
+        { "AttackPower", 0.02f},
+        { "GoldMin", 0.05f},
+        { "GoldMax", 0.05f},
+        { "Difficulty", 0.33f},
+    };
 
     private void Awake()
     {
@@ -102,44 +124,40 @@ public class WaveManager : MonoBehaviour
         countdownText = playerGameObject.transform.Find("PlayerUI/TimerCountdown").GetComponent<TextMeshProUGUI>();
     }
 
-    void PopulateWave()
+    /// <summary>
+    /// 
+    /// </summary>
+
+    private void ScaleEnemyDifficulty()
     {
-        waveList = new List<List<EnemySpawnInfo>>
-        {            
-            new(){// First wave
-                new(enemyPrefabSlime, 3, 7, 5)
-            },
-            new(){// Second wave
-                new(enemyPrefabTurtle, 2, 8, 10)
-            },
-            new(){// Third wave
-                new(enemyPrefabMiniBossDog, 1, 8, 15)
-            },
-            new(){// Fourth wave
-                new(enemyPrefabTurtle, 4, 9, 15)
-            },
-            new(){// Fifth wave
-                new(enemyPrefabSlime, 6, 11, 10)
-            },
-            new(){// Sixth wave
-                new(enemyPrefabSlime, 3, 10, 12),
-                new(enemyPrefabTurtle, 3, 12, 17)
-            },
-            new(){// Seventh wave
-                new(enemyPrefabMiniBossPenguin, 1, 15, 30)
-            },
-            new(){// Eigth wave
-                new(enemyPrefabSlime, 10, 13, 15)
-            },
-            new(){// Ninth wave
-                new(enemyPrefabTurtle, 9, 13, 20)
-            },
-            new(){// Tenth wave
-                new(enemyPrefabMiniBossDog, 1, 17, 30),
-                new(enemyPrefabMiniBossPenguin, 1, 15, 40)
-            },
-        };
+        foreach(var enemyKey in enemyScaleInfo.Keys)
+        {
+            EnemySpawnInfo spawnInfo = enemyScaleInfo[enemyKey];
+            EnemyBase enemyBase = spawnInfo.enemyPrefab.GetComponent<EnemyBase>();
+            spawnInfo.health = enemyBase.baseHealth + (enemyBase.baseHealth * currentWave * scalingConfig["Health"]);
+            spawnInfo.attackPower = enemyBase.baseAttackPower + (enemyBase.baseAttackPower * currentWave * scalingConfig["AttackPower"]);
+            enemyBase.goldValueMin = (int)(enemyBase.goldValueMinBase + (enemyBase.goldValueMinBase * currentWave * scalingConfig["GoldMin"]));
+            enemyBase.goldValueMax = (int)(enemyBase.goldValueMaxBase + (enemyBase.goldValueMaxBase * currentWave * scalingConfig["GoldMax"]));
+        }
+
+        currentDifficulty = (int)(currentDifficulty + (currentDifficulty * scalingConfig["Difficulty"]));
     }
+
+    private void ComputeOnslaught()
+    {
+        List<KeyValuePair<int, string>> enemyDifficultyPairs = new List<KeyValuePair<int, string>>();
+        foreach (string enemy in enemyScaleInfo.Keys)
+        {
+            enemyDifficultyPairs.Add(new KeyValuePair<int, string>(enemyScaleInfo[enemy].difficultyCoefficient, enemy));
+        }
+        List<string> enemiesToSpawn = OnslaughtMinion(currentDifficulty, enemyDifficultyPairs);
+        nextEnemyQueue = new Queue(enemiesToSpawn[UnityEngine.Random.Range(0, enemiesToSpawn.Count)]);
+    }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
 
     public void StartWave()
     {
@@ -160,7 +178,7 @@ public class WaveManager : MonoBehaviour
         countdownText.text = "";
 
         // Increment Wave
-        currentWave = (currentWave + 1)%waveList.Count;
+        currentWave = (currentWave + 1) % waveList.Count;
 
         waveCounterText.text = "Wave " + (currentWave + 1).ToString();// Update wave counter
         EnemyLoader(waveList[currentWave]);// Spawn enemy
