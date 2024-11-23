@@ -9,6 +9,13 @@ public class InputMap : MonoBehaviour
     [Header("Player Input Values")]
     public bool aim;
     public bool jump;
+    public InputActionReference dodge;
+
+    void Start()
+    {
+        //dodge.action.started += DodgeDown;
+        //dodge.action.canceled += DodgeUp;
+    }
 
     public void OnJump(InputValue value)
     {
@@ -28,5 +35,15 @@ public class InputMap : MonoBehaviour
     public void AimInput(bool aimState)
     {
         aim = aimState;
+    }
+
+    public void DodgeDown(InputAction.CallbackContext context)
+    {
+        Debug.Log("Dodge Pressed");
+    }
+
+    public void DodgeUp(InputAction.CallbackContext context)
+    {
+        Debug.Log("Dodge Released");
     }
 }

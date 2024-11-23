@@ -14,11 +14,15 @@ public class WaveManager : MonoBehaviour
     {
         public GameObject enemyPrefab;
         public int quantity;
+        public int speed;
+        public int attackPower;
 
-        public EnemySpawnInfo(GameObject go, int quantity)
+        public EnemySpawnInfo(GameObject go, int quantity, int speed, int attackPower)
         {
             this.enemyPrefab = go;
             this.quantity = quantity;
+            this.speed = speed;
+            this.attackPower = attackPower;
         }
     }
 
@@ -31,6 +35,8 @@ public class WaveManager : MonoBehaviour
     // List of enemies
     public GameObject enemyPrefabSlime;
     public GameObject enemyPrefabTurtle;
+    public GameObject enemyPrefabMiniBossDog;
+    public GameObject enemyPrefabMiniBossPenguin;
     [SerializeField] public GameObject enemySpawnArea;
     public BoxCollider[] enemySpawnBoxes;
 
@@ -101,38 +107,36 @@ public class WaveManager : MonoBehaviour
         waveList = new List<List<EnemySpawnInfo>>
         {            
             new(){// First wave
-                new(enemyPrefabSlime, 3)
+                new(enemyPrefabSlime, 3, 7, 5)
             },
             new(){// Second wave
-                new(enemyPrefabTurtle, 2)
+                new(enemyPrefabTurtle, 2, 8, 10)
             },
             new(){// Third wave
-                new(enemyPrefabSlime, 2),
-                new(enemyPrefabTurtle, 2)
+                new(enemyPrefabMiniBossDog, 1, 8, 15)
             },
             new(){// Fourth wave
-                new(enemyPrefabTurtle, 4)
+                new(enemyPrefabTurtle, 4, 9, 15)
             },
             new(){// Fifth wave
-                new(enemyPrefabSlime, 6)
+                new(enemyPrefabSlime, 6, 11, 10)
             },
             new(){// Sixth wave
-                new(enemyPrefabSlime, 3),
-                new(enemyPrefabTurtle, 3)
-            },
-            new(){// Sixth wave
-                new(enemyPrefabSlime, 4),
-                new(enemyPrefabTurtle, 4)
+                new(enemyPrefabSlime, 3, 10, 12),
+                new(enemyPrefabTurtle, 3, 12, 17)
             },
             new(){// Seventh wave
-                new(enemyPrefabSlime, 10)
+                new(enemyPrefabMiniBossPenguin, 1, 15, 30)
             },
             new(){// Eigth wave
-                new(enemyPrefabTurtle, 9)
+                new(enemyPrefabSlime, 10, 13, 15)
             },
             new(){// Ninth wave
-                new(enemyPrefabSlime, 7),
-                new(enemyPrefabTurtle, 5)
+                new(enemyPrefabTurtle, 9, 13, 20)
+            },
+            new(){// Tenth wave
+                new(enemyPrefabMiniBossDog, 1, 17, 30),
+                new(enemyPrefabMiniBossPenguin, 1, 15, 40)
             },
         };
     }
@@ -171,12 +175,16 @@ public class WaveManager : MonoBehaviour
                 Vector3 randomPosition = GetRandomPosition();
                 GameObject newEnemy = Instantiate(spawnInfo.enemyPrefab, randomPosition, Quaternion.identity);
                 EnemyBase enemyScript = newEnemy.GetComponent<EnemyBase>();
+                enemyScript.attackPower = spawnInfo.attackPower;
+                enemyScript.moveSpeed = spawnInfo.speed;
 
                 // Add event listener: player attack ---> enemy takes damage
-                void onPlayerAttackAction(float damage, int delayInMilli) => StartPlayerAttack(enemyScript, damage, delayInMilli);
+                void onPlayerAttackAction(float damage, int delayInMilli) => InitiateAttackTimer(enemyScript, damage, delayInMilli, true);
                 player.AttackEvent.AddListener(onPlayerAttackAction);
 
-                enemyScript.AttackEvent.AddListener(player.TakeDamage);
+                // Add event listener: enemy attacks ---> player takes damage
+                void onEnemyAttackAction(float damage, int delayInMilli) => InitiateAttackTimer(enemyScript, damage, delayInMilli, false);
+                enemyScript.AttackEvent.AddListener(onEnemyAttackAction);
                 enemyScript.OnEnemyDeath += () => RemoveEnemyListener(onPlayerAttackAction, enemyScript);
                 enemyScript.player = player;
 
@@ -206,29 +214,41 @@ public class WaveManager : MonoBehaviour
         return spawnPosition;
     }
 
-    void StartPlayerAttack(EnemyBase enemy, float damage, int delayInMilli)
+    void InitiateAttackTimer(EnemyBase enemy, float damage, int delayInMilli, bool playerAttacks)
     {
-        StartCoroutine(DelayedPlayerAttack(enemy, damage, delayInMilli));
+        StartCoroutine(DelayedAttack(enemy, damage, delayInMilli, playerAttacks));
     }
 
-    IEnumerator DelayedPlayerAttack(EnemyBase enemy, float damage, int delayInMilli)
+    IEnumerator DelayedAttack(EnemyBase enemy, float damage, int delayInMilli, bool playerAttacks)
     {
         yield return new WaitForSeconds(delayInMilli/1000f);
-        HandlePlayerAttack(enemy, damage);
+        ExecuteAttack(enemy, damage, playerAttacks);
     }
 
-    void HandlePlayerAttack(EnemyBase enemy, float damage)
+    void ExecuteAttack(EnemyBase enemy, float damage, bool playerAttacks)
     {
         if (enemy != null)
         {
             float distance = Vector3.Distance(player.transform.position, enemy.transform.position);
 
             // Hit condition1: Distance smaller than threshold
-            bool withinDistance = distance <= player.attackDistanceThreshold;
-            bool withinAngle = math.abs(Vector3.Angle(player.transform.forward, enemy.transform.position - player.transform.position)) < 90 ;
-            if (withinDistance && withinAngle)
+            if (playerAttacks)
             {
-                enemy.TakeDamage(damage);
+                bool withinDistance = distance <= player.attackDistanceThreshold;
+                bool withinAngle = math.abs(Vector3.Angle(player.transform.forward, enemy.transform.position - player.transform.position)) < 30 ;
+                if (withinDistance && withinAngle)
+                {
+                    enemy.TakeDamage(damage, player.enemyStunDelayMilli);
+                }
+            }
+            else if (enemy.isAttackInvalid() == false)
+            {
+                bool withinDistance = distance <= enemy.attackDistanceThreshold;
+                bool withinAngle = math.abs(Vector3.Angle(enemy.transform.forward, player.transform.position - enemy.transform.position)) < 30 ;
+                if (withinDistance && withinAngle)
+                {
+                    player.TakeDamage(damage, 0);
+                }
             }
         }
     }

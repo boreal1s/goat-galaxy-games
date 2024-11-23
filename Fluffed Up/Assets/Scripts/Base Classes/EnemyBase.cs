@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.AI;
 using System;
+using Unity.Mathematics;
 
 public class EnemyBase : CharacterClass
 {
@@ -13,6 +14,8 @@ public class EnemyBase : CharacterClass
         Idle,
         InitiateAttack,
         Attacking,
+        Dead,
+        Dizzy
     };
 
     [System.Serializable]
@@ -23,15 +26,17 @@ public class EnemyBase : CharacterClass
     }
 
     // Enemy Events
-    public UnityEvent<float> AttackEvent;
-    public UnityEvent<float> DamageEvent;
+    public UnityEvent<float, int> AttackEvent; // input: damage and attack time delay
     public UnityAction OnEnemyDeath; // Trigger to remove event listner in player
 
     // AI to track player
     public NavMeshAgent navMeshAgent;
     public EnemyState enemyState;
     public PlayerController player; // Player object to be set by WaveManager
+    public double actionDelayDefaultInMilli;
+    protected double additionalDelayInMilli; // Delay dealt by player's type
     protected float distanceToPlayer;
+    protected DateTime lastActionTimestamp;
 
     // Enemy Drops
     [SerializeField]
@@ -51,6 +56,7 @@ public class EnemyBase : CharacterClass
         animator = GetComponent<Animator>();
         enemyState = EnemyState.Idle;
         navMeshAgent = GetComponent<NavMeshAgent>();
+        invincibilityFrames = 0;
 
         // Temporary initialization since this is the base.
         // However, we can utilize this method for inherited classes.
@@ -66,32 +72,60 @@ public class EnemyBase : CharacterClass
     void Update()
     {
         AIStateMachine();
+        navMeshAgent.speed = moveSpeed;
     }
 
     public virtual void AIStateMachine()
     {
-        distanceToPlayer  = (transform.position - player.transform.position).magnitude;
-        switch (enemyState)
+        if(player)
         {
-        case EnemyState.Idle:
-            // Debug.Log("EnemyState: Idle");
-            if (distanceToPlayer > attackDistanceThreshold)
-                enemyState = EnemyState.ChasingPlayer;
-            break;
-        case EnemyState.ChasingPlayer:
-            // Debug.Log("EnemyState: ChasingPlayer");
-            if (distanceToPlayer > attackDistanceThreshold)
+            distanceToPlayer  = (transform.position - player.transform.position).magnitude;
+            switch (enemyState)
             {
-                navMeshAgent.SetDestination(player.transform.position);
+                case EnemyState.Idle:
+                    // Debug.Log("EnemyState: Idle");
+                    if (IsEnemyFarFromPlayer() || IsPlayerOutOfRange())
+                        enemyState = EnemyState.ChasingPlayer;
+                    break;
+                case EnemyState.ChasingPlayer:
+                    // Debug.Log("EnemyState: ChasingPlayer");
+                    if (IsEnemyFarFromPlayer())
+                    {
+                        navMeshAgent.isStopped = false;
+                        navMeshAgent.SetDestination(player.transform.position);
+                    }
+                    else if (IsPlayerOutOfRange())
+                    {
+                        // Rotate to face the player
+                        navMeshAgent.isStopped = false;
+                        Vector3 direction = (player.transform.position - transform.position).normalized;
+                        direction.y = 0; // Keep the rotation on the horizontal plane
+                        Quaternion lookRotation = Quaternion.LookRotation(direction);
+                        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 4);
+                    }
+                    else //TODO: if player is dead, enemy should go to idle. 
+                    {
+                        navMeshAgent.isStopped = true;
+                        enemyState = EnemyState.InitiateAttack;
+                    }
+                    break;
+                case EnemyState.Dead:
+                    navMeshAgent.SetDestination(transform.position); // Stop enemy chasing player
+                    break;
+                default:
+                    break;
             }
-            else //TODO: if player is dead, enemy should go to idle. 
-            {
-                enemyState = EnemyState.InitiateAttack;
-            }
-            break;
-        default:
-            break;
         }
+    }
+
+    protected bool IsEnemyFarFromPlayer()
+    {
+        return distanceToPlayer > attackDistanceThreshold;
+    }
+
+    protected bool IsPlayerOutOfRange()
+    {
+        return math.abs(Vector3.Angle(transform.forward, player.transform.position - transform.position)) > 28 ;
     }
 
     public void InitializeStat(float health, float attackPower)
@@ -103,13 +137,13 @@ public class EnemyBase : CharacterClass
 
     public virtual void Attack()
     {
-        AttackEvent?.Invoke(attackPower);
+        AttackEvent?.Invoke(attackPower, attackDelayInMilli);
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, int additionalDelay)
     {
         navMeshAgent.SetDestination(transform.position);
-        base.TakeDamage(damage);
+        base.TakeDamage(damage, additionalDelay);
 
         if (FloatingTextPrefab) {
             ShowFloatingText(damage);
@@ -124,7 +158,8 @@ public class EnemyBase : CharacterClass
 
     protected override void Die()
     {
-
+        enemyState = EnemyState.Dead;
+        
         int coinDrop = UnityEngine.Random.Range(goldValueMin, goldValueMax);
         playerController.UpdateCoins(coinDrop);
 
@@ -150,7 +185,25 @@ public class EnemyBase : CharacterClass
 
         OnEnemyDeath?.Invoke();
 
-        // Destroy game object from parent CharacterClass
-        base.Die();
+        // game object will be destroyed by DieCoroutine
+    }
+
+    protected void markLastActionTimeStamp(int additionalMilliToAdd = 0)
+    {
+        lastActionTimestamp = DateTime.Now;
+        lastActionTimestamp = lastActionTimestamp.AddMilliseconds(additionalMilliToAdd);
+
+    }
+
+    protected double getTimePassedLastActionInMilli()
+    {
+        DateTime currentTime = DateTime.Now;
+        TimeSpan timePassed = currentTime - lastActionTimestamp;
+        return timePassed.TotalMilliseconds;
+    }
+
+    public bool isAttackInvalid()
+    {
+        return (enemyState == EnemyState.Dizzy) || (enemyState == EnemyState.Dead);
     }
 }

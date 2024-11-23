@@ -6,14 +6,14 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Main Menu.unity
+    guid: 02be856b7fd808442ae4389f500c0032
+  - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: d1c3109bdb54ad54c8a2b2838528e640
   - enabled: 1
     path: Assets/Scenes/PauseScreen.unity
-    guid: 2220886201c565d4d8447ee85d7b17a5
-  - enabled: 1
-    path: Assets/Scenes/Main Menu.unity
-    guid: 02be856b7fd808442ae4389f500c0032
+    guid: 560253703f492af41867dc71982e031d
   - enabled: 1
     path: Assets/Scenes/Select character.unity
     guid: 416ae60ad8bfa1a4a9c2d484ad00fa5d
@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/OtherCharacter.unity
     guid: 29de47dc1c4dae842acb047e1eafe023
+  - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+    guid: d66dd41812a553640bfc8d48327e123c
   m_configObjects: {}

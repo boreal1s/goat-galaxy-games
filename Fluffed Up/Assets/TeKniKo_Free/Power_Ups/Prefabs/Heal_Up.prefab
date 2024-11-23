@@ -115,7 +115,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: 
-  amount: 0
+  totalAmount: 0
+  quantity: 0
+  value: 0
 --- !u!135 &6066667722457134278
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -158,19 +160,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5773399876510048669, guid: 84221c5d9e2cf0b488ddb37026596b45, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.9897028
       objectReference: {fileID: 0}
     - target: {fileID: 5773399876510048669, guid: 84221c5d9e2cf0b488ddb37026596b45, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5773399876510048669, guid: 84221c5d9e2cf0b488ddb37026596b45, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.14313734
       objectReference: {fileID: 0}
     - target: {fileID: 5773399876510048669, guid: 84221c5d9e2cf0b488ddb37026596b45, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5773399876510048669, guid: 84221c5d9e2cf0b488ddb37026596b45, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -178,7 +180,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5773399876510048669, guid: 84221c5d9e2cf0b488ddb37026596b45, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 16.459
       objectReference: {fileID: 0}
     - target: {fileID: 5773399876510048669, guid: 84221c5d9e2cf0b488ddb37026596b45, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z

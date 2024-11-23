@@ -1,7 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
 
 public class CharacterClass : MonoBehaviour
 {
@@ -22,9 +26,17 @@ public class CharacterClass : MonoBehaviour
     public float maxAttackSpeed;
     public float attackDistanceThreshold;
     public bool isAttacking = false;
+    public int attackDelayInMilli;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not.
 
     // Defense
     public float defense;
+    #endregion
+
+    #region Dodging
+    public ISkill dodgeSkill;
+    public bool isDodging;
+    public int invincibilityFrames;
+    public int currInvincibilityFrames;
     #endregion
 
     #region Character Status Effects
@@ -35,7 +47,6 @@ public class CharacterClass : MonoBehaviour
     public float burnDuration;
     public float freezeDuration;
     #endregion
-
 
     #region Grounded Attributes
     [Header("Grounded Attributes")]
@@ -53,6 +64,15 @@ public class CharacterClass : MonoBehaviour
     public bool isJumping;
     #endregion
 
+    #region Shooting Attributes
+    protected int maxAmmo = 13;
+    protected int currAmmo;
+    protected float reloadTime = 2f;
+    protected float shotTime = 0.2f;
+    public bool isReloading;
+    protected Dictionary<int, Image> ammoIndicators;
+    #endregion
+
     // Character animator and rigidbody
     public Animator animator;
     public Rigidbody rb;
@@ -61,12 +81,6 @@ public class CharacterClass : MonoBehaviour
     // Sound Effect Audio Clip
     public AudioClip hitSoundEffect;
     public float hitSoundPitch;
-
-
-    private void Start()
-    {
-        // TODO initialize base values for characters
-    }
 
     public void Jump(float modifier)
     {
@@ -82,7 +96,7 @@ public class CharacterClass : MonoBehaviour
 
     public IEnumerator ResetAttackState()
     {
-        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitForSeconds((animator.GetCurrentAnimatorStateInfo(0).length / attackSpeed));
         isAttacking = false; // Reset attacking state after the action is done
     }
 
@@ -101,7 +115,7 @@ public class CharacterClass : MonoBehaviour
 
         while (elapsedTime < duration)
         {
-            TakeDamage(burnDamage * Time.deltaTime);
+            TakeDamage(burnDamage * Time.deltaTime, 0);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -128,6 +142,12 @@ public class CharacterClass : MonoBehaviour
         isFrozen = false; // Reset frozen state
     }
 
+    public IEnumerator DieCoroutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        Destroy(gameObject);
+    }
+
     public virtual void updateMaxHealth(float maxHealthChange)
     {
         maxHealth += maxHealthChange;
@@ -146,30 +166,27 @@ public class CharacterClass : MonoBehaviour
         }
     }
 
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage, int additionalDelay)
     {
-        PlaySoundEffect(hitSoundEffect, hitSoundPitch);
-
-        float mitigatedDamage = Mathf.Clamp(damage - defense, 0, damage);
-        //Debug.Log($"{gameObject.name} is taking {damage} damage.");
-        health = health - mitigatedDamage;
-        //Debug.Log($"{gameObject.name} health is now {health}");
-
-        if (health <= 0)
+        if (currInvincibilityFrames < 1)
         {
-            Die();
-        }
+            PlaySoundEffect(hitSoundEffect, hitSoundPitch);
 
-        if (healthBar != null)
-        {
-            healthBar.SetHealth(health);
-        }
-    }
+            float mitigatedDamage = Mathf.Clamp(damage - defense, 0, damage);
+            //Debug.Log($"{gameObject.name} is taking {damage} damage.");
+            health = health - mitigatedDamage;
+            //Debug.Log($"{gameObject.name} health is now {health}");
 
-    protected virtual void Die()
-    {
-        Debug.Log($"{gameObject.name} has died.");
-        Destroy(gameObject);
+            if (health <= 0)
+            {
+                Die();
+            }
+
+            if (healthBar != null)
+            {
+                healthBar.SetHealth(health);
+            }
+        }
     }
 
     public void PlaySoundEffect(AudioClip audioClip, float pitch = 1.0f)
@@ -186,5 +203,25 @@ public class CharacterClass : MonoBehaviour
 
             sound3DObject.audioSrc.Play();
         }
+    }
+
+    protected virtual void Die()
+    {
+        Debug.Log($"{gameObject.name} has died.");
+        if(gameObject.name == "PlayerSlayer(Clone)" || gameObject.name == "PlayerShooter(Clone)") {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("DeathScene");
+        }
+        Destroy(gameObject);
+    }
+    
+    public void UpdateAttackSpeed(float attackSpeedMultiplier)
+    {
+        attackSpeed = attackSpeed + (attackSpeed * attackSpeedMultiplier);
+        animator.SetFloat("attackSpeed", attackSpeed);
+
+        reloadTime = Mathf.Max(0.1f, reloadTime - (reloadTime * attackSpeedMultiplier));
+        shotTime = Mathf.Max(0.01f, shotTime - (shotTime * attackSpeedMultiplier));
     }
 }

@@ -6,7 +6,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
+using System.Xml;
 
 public class PlayerController : CharacterClass
 {
@@ -16,17 +17,18 @@ public class PlayerController : CharacterClass
     [Header("Shooting")]
     public GameObject projectilePrefab;       // The projectile prefab to instantiate
     public Transform projectileSpawnPoint;    // Where the projectile will spawn
-    public float projectileSpeed = 20f;       // Speed of the projectile
-    public float projectileDamage = 10f;      // Damage dealt by the projectile
+    public float projectileDamage;
     public AudioClip attackSound;
     public AudioClip shootingSound;
-    public int attackDelayInMilli = 300;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not. 
+    Vector3 dodgeDir = Vector3.zero;
+    public AudioClip reloadSound;
 
     #region Coin Attributes
     private int coins;
     private int coinFlushCounter;
     bool coinsAreFlushing;
     float timeSinceLastCoinChange;
+    float coinFlushWaitTime;
     #endregion
 
     [System.Serializable]
@@ -45,6 +47,19 @@ public class PlayerController : CharacterClass
     }
     private Dictionary<string, ItemProperties> inventory = new Dictionary<string, ItemProperties>();
 
+    [Header("Melee attack attibutes")]
+    private float attackComboCooldown;
+    private int attackComboMax;
+    public int CurrentAttackCounter
+    {
+        get => currentAttackCounter;
+        private set => currentAttackCounter = value >= attackComboMax ? 0 : value;
+    }
+    public int currentAttackCounter;
+    public bool ATTACK_1_BOOL;
+    public bool ATTACK_2_BOOL;
+    public int enemyStunDelayMilli;
+
     [Header("Inputs")]
     [SerializeField]
     private InputMap inputs;
@@ -55,11 +70,15 @@ public class PlayerController : CharacterClass
 
     [Header("UI")]
     [SerializeField]
-    public TextMeshProUGUI coinCounterText; // For Unity UI Text
-    public TextMeshProUGUI coinFlushCounterText; // For Unity UI Text
-    public TextMeshProUGUI healthCounterText; // For Unity UI Text
-
-
+    public TextMeshProUGUI coinCounterText;
+    public TextMeshProUGUI coinFlushCounterText;
+    public TextMeshProUGUI healthCounterText;
+    public TextMeshProUGUI attackPowerText;
+    public TextMeshProUGUI attackSpeedText;
+    public TextMeshProUGUI reloadSpeedText;
+    public TextMeshProUGUI bulletChamberSpeed; 
+    public TextMeshProUGUI defenseText;
+    public TextMeshProUGUI moveSpeedText;
 
     private void Awake()
     {
@@ -75,14 +94,45 @@ public class PlayerController : CharacterClass
     {
         moveSpeed = 10f;
         rotationSpeed = 360f;
-        jumpForce = 100f;
+        jumpForce = 5f;
         jumpTime = 3f;
         jumpCooldown = 0.5f;
-        airSpeedMultiplier = 0.6f;
+        airSpeedMultiplier = 1f;
         attackPower = 70f;
         health = 100f;
         maxHealth = 100f;
-        attackDistanceThreshold = 3f;
+        CurrentAttackCounter = 0;
+        attackComboMax = 3;
+        attackComboCooldown = 1f;
+        attackSpeed = 1f;
+        coinFlushWaitTime = 2f;
+        isDodging = false;
+        invincibilityFrames = 10;
+        currInvincibilityFrames = 0;
+        currAmmo = maxAmmo;
+        isReloading = false;
+        projectileDamage = 30f;
+        attackDelayInMilli = 300; 
+
+        if (SelectChar.characterID == 1) // If the shooter character is selected
+        {
+            ammoIndicators = new Dictionary<int, Image>()
+            {
+                { 1, GameObject.Find("Ammo1").GetComponent<Image>() },
+                { 2, GameObject.Find("Ammo2").GetComponent<Image>() },
+                { 3, GameObject.Find("Ammo3").GetComponent<Image>() },
+                { 4, GameObject.Find("Ammo4").GetComponent<Image>() },
+                { 5, GameObject.Find("Ammo5").GetComponent<Image>() },
+                { 6, GameObject.Find("Ammo6").GetComponent<Image>() },
+                { 7, GameObject.Find("Ammo7").GetComponent<Image>() },
+                { 8, GameObject.Find("Ammo8").GetComponent<Image>() },
+                { 9, GameObject.Find("Ammo9").GetComponent<Image>() },
+                { 10, GameObject.Find("Ammo10").GetComponent<Image>() },
+                { 11, GameObject.Find("Ammo11").GetComponent<Image>() },
+                { 12, GameObject.Find("Ammo12").GetComponent<Image>() },
+                { 13, GameObject.Find("Ammo13").GetComponent<Image>() },
+            };
+        }
 
         // Coin stuff
         coins = 0;
@@ -96,6 +146,7 @@ public class PlayerController : CharacterClass
         else
             Debug.Log("No HealthBar attached to PlayerController");
 
+        animator.SetFloat("attackSpeed", attackSpeed);
 
         UpdateAllCounters();
     }
@@ -111,32 +162,28 @@ public class PlayerController : CharacterClass
 
         #region Movement Control
 
-        #region Configure Camera Relative Movement
+        Vector3 moveDir = GetCameraRelativeMovement(horizontal, vertical);
 
-        Vector3 camForward = cameraTransform.forward;
-        Vector3 camRight = cameraTransform.right;
-
-        camForward.y = 0;
-        camRight.y = 0;
-
-        Vector3 forwardRelative = vertical * camForward;
-        Vector3 rightRelataive = horizontal * camRight;
-
-        Vector3 moveDir = forwardRelative + rightRelataive;
-
-        #endregion
-
-        Vector3 move = new Vector3(moveDir.x, 0f, moveDir.z);
+        Vector3 move = isDodging ? dodgeDir * 1.3f : new Vector3(moveDir.x, 0f, moveDir.z);
 
         if (isGrounded)
             rb.MovePosition(transform.position + move * moveSpeed * Time.deltaTime);
         else
             rb.MovePosition(transform.position + move * moveSpeed * airSpeedMultiplier * Time.deltaTime);
 
-        isRunning = move != Vector3.zero && isGrounded;
+        isRunning = move != Vector3.zero && isGrounded && !isDodging;
+
         #endregion
 
-        if (Time.time - timeSinceLastCoinChange > 3 && coinFlushCounter != 0)
+        #region Rotate player with camera
+        if (!isDodging) {
+            Vector3 viewDirection = transform.position - new Vector3(cameraTransform.position.x, transform.position.y, cameraTransform.position.z);
+            transform.forward = viewDirection.normalized;
+        }
+        #endregion
+
+        #region Coin Flush Handling
+        if (Time.time - timeSinceLastCoinChange > coinFlushWaitTime && coinFlushCounter != 0)
             coinsAreFlushing = true;
 
         if (coinsAreFlushing)
@@ -157,18 +204,41 @@ public class PlayerController : CharacterClass
 
         if (coinFlushCounter == 0)
             coinsAreFlushing = false;
+        #endregion
+
+        #region Stat UI
+        attackPowerText.text = attackPower.ToString();
+        defenseText.text = defense.ToString();
+        moveSpeedText.text = moveSpeed.ToString();
+
+        if (SelectChar.characterID == 1)
+        {
+            reloadSpeedText.text = reloadTime.ToString();
+            bulletChamberSpeed.text = shotTime.ToString();
+        } 
+        else if (SelectChar.characterID == 0)
+        {
+            attackSpeedText.text = attackSpeed.ToString();
+        }
+        #endregion
     }
 
     // Update is called once per frame
     void Update()
     {
         animator.SetBool("isRunning", isRunning);
+        if (currAmmo < 1 && !isReloading)
+        {
+            PlaySoundEffect(reloadSound);
+            StartCoroutine(WaitToReload(reloadTime));
+        }
 
         if (SelectChar.characterID == 1) // If the shooter character is selected
         {
-            if (Input.GetMouseButtonDown(0) && !isAttacking)
+            if (Input.GetMouseButtonDown(0) && !isAttacking && !isReloading && currAmmo > 0)
             {
-                Debug.Log("Right mouse button clicked - calling Shoot() for shooter character");
+                Debug.Log("Left mouse button clicked - calling Shoot() for shooter character");
+                StartCoroutine(WaitToChamber(shotTime));
                 Shoot();
             }
         }
@@ -176,66 +246,158 @@ public class PlayerController : CharacterClass
         {
             if (Input.GetMouseButtonDown(0) && !isAttacking)
             {
-                Debug.Log("Right mouse button clicked - calling attackEnemy() for sword character");
-                attackEnemy();
+                Debug.Log("Left mouse button clicked - calling meleeAttack() for sword character");
+                meleeAttack();
             }
         }
 
-        if (inputs.jump && isGrounded && !isJumping)
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            Dodge();
+        }
+
+        if (inputs.jump && isGrounded && !isJumping && !isDodging)
         {
             isJumping = true;
             Jump(1f);
         }
         healthBar.SetHealth(health);
 
-        if (health <= 0)
-        {
-
-             SceneManager.LoadScene("DeathScene");
-        }
-        
-
         if (Input.GetKeyDown(KeyCode.Alpha1) && !isAttacking)
         {
             HealSelf();
         }
 
+        if (Input.GetKeyDown(KeyCode.R) && currAmmo < maxAmmo)
+        {
+            PlaySoundEffect(reloadSound);
+            StartCoroutine(WaitToReload(reloadTime));
+        }
+
+        if (currInvincibilityFrames > 0)
+            currInvincibilityFrames--;
     }
+
+    public Vector3 GetCameraRelativeMovement(float horizontal, float vertical)
+    {
+        Vector3 camRight = cameraTransform.right;
+
+        camRight.y = 0;
+
+        Vector3 rightRelataive = horizontal * camRight;
+
+        return GetCameraForwardRelative(vertical) + rightRelataive;
+    }
+
+    public Vector3 GetCameraForwardRelative(float vertical)
+    {
+        Vector3 camForward = cameraTransform.forward;
+        camForward.y = 0;
+        return vertical * camForward;
+    }
+
+    public void Dodge()
+    {
+        if (dodgeSkill != null)
+            if (dodgeSkill.UseSkill())
+            {
+                isDodging = true;
+                StartCoroutine(ResetDodgeState());
+                if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
+                {
+                    dodgeDir = transform.forward;
+                }
+                else
+                {
+                    dodgeDir = Vector3.Normalize(GetCameraRelativeMovement(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
+                    transform.forward = dodgeDir.normalized;
+                }
+                animator.SetTrigger("dodge");
+            }
+    }
+
+    private IEnumerator ResetDodgeState()
+    {
+        yield return new WaitForSeconds((animator.GetCurrentAnimatorStateInfo(0).length));
+        isDodging = false;
+        Debug.Log("Dodge reset.");
+    }
+
     void Shoot()
     {
         Debug.Log("Shoot() method is being called");
 
-        // Trigger the shooting animation (if you have one)
-        animator.Play("Defend");
-
         PlaySoundEffect(shootingSound);
+
+        // Make projectile shoot towards camera's forward direction
+        Vector3 shootDirection = cameraTransform.forward;
+
+        // If you want to shoot slightly above the camera's forward direction, you can add cameraTransform.up
+        shootDirection += cameraTransform.up * 0.115f;  // Slightly shoot upward
+        shootDirection -= cameraTransform.right * 0.025f;  // This slightly shoots the projectile to the right or left if needed
+
+        // Normalize the shoot direction to ensure consistent projectile speed
+        shootDirection.Normalize();
 
         // Instantiate the projectile at the spawn point
         GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
 
         // Ignore collision between the projectile and the player
         Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
+        projectile.GetComponent<Projectile>().SetDamage(projectileDamage);
 
-        // Set the projectile's speed and damage
-        Projectile projScript = projectile.GetComponent<Projectile>();
-        if (projScript != null)
+        // Set the projectile's direction based on the adjusted shoot direction
+        projectile.transform.forward = shootDirection;
+
+        // Apply velocity to the projectile using the Rigidbody component
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        if (rb != null)
         {
-            projScript.speed = projectileSpeed;
-            projScript.damage = projectileDamage;
-        }
-        else
-        {
-            Debug.LogError("Projectile script not found on the projectile prefab.");
+            rb.velocity = shootDirection * projectile.GetComponent<Projectile>().GetSpeed(); //Set velocity with direction and speed
+
+            // apply gravity
+            rb.useGravity = true;
         }
 
-        // Set the projectile's direction
-        projectile.transform.forward = transform.forward;
+        ammoIndicators[currAmmo].canvasRenderer.SetAlpha(0.2f);
+        currAmmo -= 1;
     }
 
-    void attackEnemy()
+    public IEnumerator WaitToReload(float duration)
     {
-        animator.Play("Attack01");
+        isReloading = true;
+        yield return new WaitForSeconds(duration);
+        foreach (KeyValuePair<int, Image> ammo in ammoIndicators)
+        {
+            ammo.Value.canvasRenderer.SetAlpha(1f);
+        }
+        isReloading = false;
+        currAmmo = maxAmmo;
+    }
+
+    public IEnumerator WaitToChamber(float duration)
+    {
         isAttacking = true;
+        yield return new WaitForSeconds(duration);
+        isAttacking = false;
+    }
+
+    void meleeAttack()
+    {
+        isAttacking = true;
+        switch (CurrentAttackCounter)
+        {
+            case 0:
+                animator.SetTrigger("attack01");
+                break;
+            case 1:
+                animator.SetTrigger("attack02");
+                break;
+            default:
+                break;
+        }
+        CurrentAttackCounter = (CurrentAttackCounter + 1) % 2;
+
         // Reset the attacking state after the attack animation finishes
         StartCoroutine(ResetAttackState());
 
@@ -288,9 +450,9 @@ public class PlayerController : CharacterClass
         UpdateHealthPackCounter();
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, int additionalDelay)
     {
-        base.TakeDamage(damage);
+        base.TakeDamage(damage, additionalDelay);
 
         animator.Play("GetHit");
     }

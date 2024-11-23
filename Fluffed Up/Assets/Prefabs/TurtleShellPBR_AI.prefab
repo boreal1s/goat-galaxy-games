@@ -1158,11 +1158,11 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 2.5
+  m_Speed: 7
   m_Acceleration: 8
   avoidancePriority: 50
-  m_AngularSpeed: 80
-  m_StoppingDistance: 0
+  m_AngularSpeed: 120
+  m_StoppingDistance: 2
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -1179,7 +1179,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5232562413803862215}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d842eca262d04645b53345c59fb5c60, type: 3}
+  m_Script: {fileID: 11500000, guid: 07ac5b953b939475dbb69e29571a5765, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 0
@@ -1188,12 +1188,16 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   health: 120
   maxHealth: 0
-  attackPower: 2
-  attackSpeed: 0
+  attackPower: 15
+  attackSpeed: 1
   maxAttackSpeed: 0
   attackDistanceThreshold: 2
   isAttacking: 0
+  attackDelayInMilli: 266
   defense: 0
+  isDodging: 0
+  invincibilityFrames: 0
+  currInvincibilityFrames: 0
   isBurning: 0
   isFrozen: 0
   burnDamage: 0
@@ -1209,6 +1213,7 @@ MonoBehaviour:
   airSpeedMultiplier: 0
   gravityMultiplier: 0
   isJumping: 0
+  isReloading: 0
   animator: {fileID: 0}
   rb: {fileID: 0}
   sound3DPrefab: {fileID: 1719587315714716692, guid: 58873906edcd842929a41e8353bb38b0, type: 3}
@@ -1217,18 +1222,16 @@ MonoBehaviour:
   AttackEvent:
     m_PersistentCalls:
       m_Calls: []
-  DamageEvent:
-    m_PersistentCalls:
-      m_Calls: []
   navMeshAgent: {fileID: 0}
   enemyState: 0
   player: {fileID: 0}
+  actionDelayDefaultInMilli: 0
   itemDrops:
-  - prefab: {fileID: 378334508266577950, guid: e94711451283b5e4ea97dd9bec1c8506, type: 3}
-    dropChance: 20
-  goldValueMin: 12
-  goldValueMax: 18
-  FloatingTextPrefab: {fileID: 7094480470114473468, guid: 30af797ce4be6234b96581d2f79fa94b, type: 3}
+  - prefab: {fileID: 0}
+    dropChance: 0
+  goldValueMin: 10
+  goldValueMax: 15
+  FloatingTextPrefab: {fileID: 7094480470114473468, guid: 349e3df807dc37045b275eaffd38a36f, type: 3}
 --- !u!1 &5232567365979340287
 GameObject:
   m_ObjectHideFlags: 0
