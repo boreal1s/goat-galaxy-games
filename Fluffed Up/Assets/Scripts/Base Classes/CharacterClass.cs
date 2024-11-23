@@ -30,9 +30,6 @@ public class CharacterClass : MonoBehaviour
 
     // Defense
     public float defense;
-
-    // Scaling
-    int level;
     #endregion
 
     #region Dodging
