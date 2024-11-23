@@ -107,7 +107,7 @@ public class WaveManager : MonoBehaviour
         waveList = new List<List<EnemySpawnInfo>>
         {            
             new(){// First wave
-                new(enemyPrefabSlime, 3, 7, 5)
+                new(enemyPrefabMiniBossDog, 1, 8, 15)//new(enemyPrefabSlime, 3, 7, 5)
             },
             new(){// Second wave
                 new(enemyPrefabTurtle, 2, 8, 10)
@@ -232,14 +232,23 @@ public class WaveManager : MonoBehaviour
             float distance = Vector3.Distance(player.transform.position, enemy.transform.position);
 
             // Hit condition1: Distance smaller than threshold
-            bool withinDistance = distance <= player.attackDistanceThreshold;
-            bool withinAngle = math.abs(Vector3.Angle(player.transform.forward, enemy.transform.position - player.transform.position)) < 30 ;
-            if (withinDistance && withinAngle)
+            if (playerAttacks)
             {
-                if (playerAttacks)
+                bool withinDistance = distance <= player.attackDistanceThreshold;
+                bool withinAngle = math.abs(Vector3.Angle(player.transform.forward, enemy.transform.position - player.transform.position)) < 30 ;
+                if (withinDistance && withinAngle)
+                {
                     enemy.TakeDamage(damage, player.enemyStunDelayMilli);
-                else if (enemy.isAttackInvalid() == false)
+                }
+            }
+            else if (enemy.isAttackInvalid() == false)
+            {
+                bool withinDistance = distance <= enemy.attackDistanceThreshold;
+                bool withinAngle = math.abs(Vector3.Angle(enemy.transform.forward, player.transform.position - enemy.transform.position)) < 30 ;
+                if (withinDistance && withinAngle)
+                {
                     player.TakeDamage(damage, 0);
+                }
             }
         }
     }
