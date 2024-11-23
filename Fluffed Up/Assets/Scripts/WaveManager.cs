@@ -66,6 +66,7 @@ public class WaveManager : MonoBehaviour
 
     private int currentDifficulty = 3;
     public bool isComputingOnslaught;
+    public bool isRunningWave;
     private Queue<string> enemyQueue = new Queue<string>();
     private Queue<string> nextEnemyQueue = new Queue<string>();
     private List<List<string>> possibleStagedOnslaughts;
@@ -83,10 +84,10 @@ public class WaveManager : MonoBehaviour
     {
         enemyScaleInfo = new Dictionary<string, EnemySpawnInfo>()
         {
-            {"Slime", new(enemyPrefabSlime, 1, 8, 10, 70) },
+            {"Slime", new(enemyPrefabSlime, 1, 6, 10, 70) },
             {"Turtle", new(enemyPrefabTurtle, 3, 4, 20, 180)},
-            {"BossDog", new(enemyPrefabMiniBossDog, 10, 7, 40, 400)},
-            {"BossPenguin", new(enemyPrefabMiniBossPenguin, 20, 5, 60, 600)},
+            {"BossDog", new(enemyPrefabMiniBossDog, 10, 5, 40, 400)},
+            {"BossPenguin", new(enemyPrefabMiniBossPenguin, 20, 4, 60, 600)},
         };
 
         SpawnPlayer();
@@ -97,7 +98,7 @@ public class WaveManager : MonoBehaviour
     {
         // Prepare Enemies
         enemySpawnBoxes = enemySpawnArea.GetComponents<BoxCollider>();
-        ComputeOnslaught();
+        StartCoroutine(ComputeOnslaught());
         Debug.Log("Initial Spawn Generated: " + nextEnemyQueue.Count + " enemies");
         StartWave();
         waveEvent.AddListener(RequestNextWave);
@@ -191,7 +192,7 @@ public class WaveManager : MonoBehaviour
         Debug.Log(nextEnemyQueue.Count);
         isComputingOnslaught = false;
 
-        Debug.Log("Onslaught Computed");
+        Debug.Log("Onslaught Computed for difficulty: " + currentDifficulty);
         yield return null;
     }
 
@@ -217,11 +218,13 @@ public class WaveManager : MonoBehaviour
         {
             dp[a] = new List<List<string>>();
         }
-        dp[0] = new List<List<string>>() { new List<string>() { "Slime" } };
+        dp[0] = new List<List<string>>() { new List<string>() { } };
+
         List<List<List<string>>> nextDP = new List<List<List<string>>>(dp);
 
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
+            Debug.Log("Computing dp for enemy: " + enemies[i].Value);
             for (int d = 1; d <= difficulty; d++)
             {
                 nextDP[d] = dp[d];
@@ -246,19 +249,12 @@ public class WaveManager : MonoBehaviour
             }
         }
 
-        for (int k = nextDP.Count - 1; k >= 0; k--)
-        {
-            if (nextDP[k].Count > 0)
-            {
-                return nextDP[k];
-            }
-        }
-
         return new List<List<string>>();
     }
 
     public void StartWave()
     {
+        isRunningWave = true;
         // Stop the rest timer if it's running
         if (restTimerCoroutine != null)
         {
@@ -298,6 +294,7 @@ public class WaveManager : MonoBehaviour
             var doneSpawningGroup = StartCoroutine(EnemyLoader(enemyIds));
             // yield return doneSpawningGroup; // Spawn chunk of up to 4 enemies
         }
+        isRunningWave = false;
     }
 
     private IEnumerator EnemyLoader(List<string> group)
@@ -406,7 +403,7 @@ public class WaveManager : MonoBehaviour
 
     private void RequestNextWave()
     {
-        if (currentEnemies.Count == 0 && !isSpawningWave && enemyQueue.Count == 0)
+        if (currentEnemies.Count == 0 && !isSpawningWave && enemyQueue.Count == 0 && !isRunningWave)
         {
             StartCoroutine(StartNextWave());
         }
