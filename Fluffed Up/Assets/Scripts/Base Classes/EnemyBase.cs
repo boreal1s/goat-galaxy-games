@@ -25,6 +25,10 @@ public class EnemyBase : CharacterClass
         public float dropChance; // Probability as a percentage (0 to 100)
     }
 
+    // Enemy base stats
+    public float baseHealth;
+    public float baseAttackPower;
+
     // Enemy Events
     public UnityEvent<float, int> AttackEvent; // input: damage and attack time delay
     public UnityAction OnEnemyDeath; // Trigger to remove event listner in player
@@ -43,10 +47,12 @@ public class EnemyBase : CharacterClass
     private List<ItemDrop> itemDrops; // List of item drops with chances
 
     [SerializeField]
-    private int goldValueMin;
+    public int goldValueMin;
+    public int goldValueMinBase;
 
     [SerializeField]
-    private int goldValueMax;
+    public int goldValueMax;
+    public int goldValueMaxBase;
 
     private PlayerController playerController;
     public GameObject FloatingTextPrefab;
