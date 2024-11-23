@@ -2264,6 +2264,9 @@ MonoBehaviour:
   isAttacking: 0
   attackDelayInMilli: 167
   defense: 0
+  isDodging: 0
+  invincibilityFrames: 0
+  currInvincibilityFrames: 0
   isBurning: 0
   isFrozen: 0
   burnDamage: 0
@@ -2279,11 +2282,14 @@ MonoBehaviour:
   airSpeedMultiplier: 0
   gravityMultiplier: 0
   isJumping: 0
+  isReloading: 0
   animator: {fileID: 0}
   rb: {fileID: 0}
   sound3DPrefab: {fileID: 1719587315714716692, guid: 58873906edcd842929a41e8353bb38b0, type: 3}
   hitSoundEffect: {fileID: 8300000, guid: 8ddf957b24c9445dc9811f11e3a16a76, type: 3}
   hitSoundPitch: 4
+  baseHealth: 0
+  baseAttackPower: 0
   AttackEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -2302,8 +2308,10 @@ MonoBehaviour:
     dropChance: 0
   - prefab: {fileID: 0}
     dropChance: 0
-  goldValueMin: 50
-  goldValueMax: 75
+  goldValueMin: 100
+  goldValueMinBase: 100
+  goldValueMax: 150
+  goldValueMaxBase: 150
   FloatingTextPrefab: {fileID: 7094480470114473468, guid: 349e3df807dc37045b275eaffd38a36f, type: 3}
 --- !u!195 &6722868417841180654
 NavMeshAgent:

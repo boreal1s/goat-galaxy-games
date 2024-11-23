@@ -749,6 +749,9 @@ MonoBehaviour:
   isAttacking: 0
   attackDelayInMilli: 266
   defense: 0
+  isDodging: 0
+  invincibilityFrames: 0
+  currInvincibilityFrames: 0
   isBurning: 0
   isFrozen: 0
   burnDamage: 0
@@ -764,11 +767,14 @@ MonoBehaviour:
   airSpeedMultiplier: 0
   gravityMultiplier: 0
   isJumping: 0
+  isReloading: 0
   animator: {fileID: 0}
   rb: {fileID: 0}
   sound3DPrefab: {fileID: 1719587315714716692, guid: 58873906edcd842929a41e8353bb38b0, type: 3}
   hitSoundEffect: {fileID: 8300000, guid: 8ddf957b24c9445dc9811f11e3a16a76, type: 3}
   hitSoundPitch: 2
+  baseHealth: 0
+  baseAttackPower: 0
   AttackEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -780,7 +786,9 @@ MonoBehaviour:
   - prefab: {fileID: 378334508266577950, guid: e94711451283b5e4ea97dd9bec1c8506, type: 3}
     dropChance: 20
   goldValueMin: 7
+  goldValueMinBase: 7
   goldValueMax: 12
+  goldValueMaxBase: 12
   FloatingTextPrefab: {fileID: 7094480470114473468, guid: 349e3df807dc37045b275eaffd38a36f, type: 3}
 --- !u!1 &9095607449275565481
 GameObject:

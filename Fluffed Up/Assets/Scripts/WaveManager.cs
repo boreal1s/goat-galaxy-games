@@ -65,7 +65,7 @@ public class WaveManager : MonoBehaviour
     private Coroutine restTimerCoroutine;
 
     private int currentDifficulty = 3;
-    public bool isComputingOnslaught;
+    public bool enemiesAreSpawning = false;
     public bool isRunningWave;
     private Queue<string> enemyQueue = new Queue<string>();
     private Queue<string> nextEnemyQueue = new Queue<string>();
@@ -148,33 +148,31 @@ public class WaveManager : MonoBehaviour
                 EnemyBase enemyBase = spawnInfo.enemyPrefab.GetComponent<EnemyBase>();
                 spawnInfo.health = enemyBase.baseHealth + (enemyBase.baseHealth * currentWave * scalingConfig["Health"]);
                 spawnInfo.attackPower = enemyBase.baseAttackPower + (enemyBase.baseAttackPower * currentWave * scalingConfig["AttackPower"]);
-                enemyBase.goldValueMin = (int)(enemyBase.goldValueMinBase + (enemyBase.goldValueMinBase * currentWave * scalingConfig["GoldMin"]));
-                enemyBase.goldValueMax = (int)(enemyBase.goldValueMaxBase + (enemyBase.goldValueMaxBase * currentWave * scalingConfig["GoldMax"]));
+                enemyBase.goldValueMin = (int)Mathf.Ceil(enemyBase.goldValueMinBase + (enemyBase.goldValueMinBase * currentWave * scalingConfig["GoldMin"]));
+                enemyBase.goldValueMax = (int)Mathf.Ceil(enemyBase.goldValueMaxBase + (enemyBase.goldValueMaxBase * currentWave * scalingConfig["GoldMax"]));
             }
         }
 
-        currentDifficulty = (int)(currentDifficulty + (currentDifficulty * scalingConfig["Difficulty"]));
+        currentDifficulty = (int)Mathf.Ceil(currentDifficulty + (currentDifficulty * scalingConfig["Difficulty"]));
+        Debug.Log("New difficulty: " + currentDifficulty);
     }
 
     private IEnumerator ComputeOnslaught()
     {
         Debug.Log("Computing Onslaught");
-        isComputingOnslaught = true;
 
-        if (currentWave == 3)
+        if (currentWave + 1 == 3)
         {
             nextEnemyQueue.Clear();
             nextEnemyQueue = new Queue<string>(new List<string>() { "BossDog", "Slime", "Slime" });
-            isComputingOnslaught = false;
             Debug.Log("Onslaught Computed");
             yield break;
         }
 
-        if (currentWave == 6)
+        if (currentWave + 1 == 6)
         {
             nextEnemyQueue.Clear();
             nextEnemyQueue = new Queue<string>( new List<string>(){"BossPenguin", "Turtle", "Turtle"});
-            isComputingOnslaught = false;
             Debug.Log("Onslaught Computed");
             yield break;
         }
@@ -190,7 +188,6 @@ public class WaveManager : MonoBehaviour
         Debug.Log(possibleStagedOnslaughts);
         nextEnemyQueue = new Queue<string>(possibleStagedOnslaughts[UnityEngine.Random.Range(0, possibleStagedOnslaughts.Count)]);
         Debug.Log(nextEnemyQueue.Count);
-        isComputingOnslaught = false;
 
         Debug.Log("Onslaught Computed for difficulty: " + currentDifficulty);
         yield return null;
@@ -220,25 +217,25 @@ public class WaveManager : MonoBehaviour
         }
         dp[0] = new List<List<string>>() { new List<string>() { } };
 
-        List<List<List<string>>> nextDP = new List<List<List<string>>>(dp);
+        List<List<List<string>>> nextDP = DeepCopyTriplyNestedList(dp);
 
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
             Debug.Log("Computing dp for enemy: " + enemies[i].Value);
-            for (int d = 1; d <= difficulty; d++)
+            for (int d = enemies[i].Key; d < difficulty + 1; d++)
             {
-                nextDP[d] = dp[d];
+                nextDP[d] = DeepCopyDoublyNestedList(dp[d]);
                 if (d - enemies[i].Key >= 0)
                 {
                     foreach (List<string> possibleEnemyList in nextDP[d - enemies[i].Key])
                     {
-                        List<string> newList = possibleEnemyList;
+                        List<string> newList = new List<string>(possibleEnemyList);
                         newList.Add(enemies[i].Value);
                         nextDP[d].Add(newList);
                     }
                 }
             }
-            dp = new List<List<List<string>>>(nextDP); 
+            dp = DeepCopyTriplyNestedList(nextDP);
         }
 
         for (int j = dp.Count - 1; j >= 0; j--)
@@ -281,6 +278,14 @@ public class WaveManager : MonoBehaviour
         StartCoroutine(ComputeOnslaught());
 
         Debug.Log("Loading enemies");
+        StartCoroutine(EnemyGroupHandler(enemyQueue));
+        isRunningWave = false;
+    }
+
+    private IEnumerator EnemyGroupHandler(Queue<string> enemyQueue)
+    {
+        enemiesAreSpawning = true;
+        float secondsToWait = 3f;
         while (enemyQueue.Count > 0)
         {
             List<string> enemyIds = new List<string>();
@@ -291,13 +296,14 @@ public class WaveManager : MonoBehaviour
                 enemyIds.Add(enemyQueue.Dequeue());
             }
 
-            var doneSpawningGroup = StartCoroutine(EnemyLoader(enemyIds));
-            // yield return doneSpawningGroup; // Spawn chunk of up to 4 enemies
+            EnemyLoader(enemyIds);
+            yield return new WaitForSeconds(secondsToWait);
+            secondsToWait = Mathf.Min(secondsToWait + 1f, 12f);
         }
-        isRunningWave = false;
+        enemiesAreSpawning = false;
     }
 
-    private IEnumerator EnemyLoader(List<string> group)
+    private void EnemyLoader(List<string> group)
     {
         Debug.Log("Spawning group of enemies");
         foreach (string enemyId in group)
@@ -321,9 +327,6 @@ public class WaveManager : MonoBehaviour
 
             currentEnemies.Add(newEnemy);
         }
-
-        yield return new WaitForSeconds(4);
-        yield return true;
     }
 
     Vector3 GetRandomPosition()
@@ -403,7 +406,7 @@ public class WaveManager : MonoBehaviour
 
     private void RequestNextWave()
     {
-        if (currentEnemies.Count == 0 && !isSpawningWave && enemyQueue.Count == 0 && !isRunningWave)
+        if (currentEnemies.Count == 0 && !isSpawningWave && enemyQueue.Count == 0 && !isRunningWave && !enemiesAreSpawning)
         {
             StartCoroutine(StartNextWave());
         }
@@ -451,5 +454,40 @@ public class WaveManager : MonoBehaviour
     {
         player.AttackEvent.RemoveListener(action);
         currentEnemies.Remove(enemy.gameObject); // Safely remove the enemy from the list
+    }
+
+    public static List<List<List<string>>> DeepCopyTriplyNestedList(List<List<List<string>>> originalList)
+    {
+        if (originalList == null)
+            return null;
+
+        List<List<List<string>>> copy = new List<List<List<string>>>();
+        foreach (var innerList1 in originalList)
+        {
+            List<List<string>> innerCopy1 = new List<List<string>>();
+            foreach (var innerList2 in innerList1)
+            {
+                List<string> innerCopy2 = new List<string>(innerList2);
+                innerCopy1.Add(innerCopy2);
+            }
+            copy.Add(innerCopy1);
+        }
+
+        return copy;
+    }
+
+    public static List<List<string>> DeepCopyDoublyNestedList(List<List<string>> originalList)
+    {
+        if (originalList == null)
+            return null;
+
+        List<List<string>> copy = new List<List<string>>();
+        foreach (var innerList in originalList)
+        {
+            List<string> innerCopy = new List<string>(innerList);
+            copy.Add(innerCopy);
+        }
+
+        return copy;
     }
 }

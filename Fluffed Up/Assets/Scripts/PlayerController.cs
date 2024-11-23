@@ -105,7 +105,7 @@ public class PlayerController : CharacterClass
         attackComboMax = 3;
         attackComboCooldown = 1f;
         attackSpeed = 1f;
-        coinFlushWaitTime = 2f;
+        coinFlushWaitTime = 1f;
         isDodging = false;
         invincibilityFrames = 10;
         currInvincibilityFrames = 0;
