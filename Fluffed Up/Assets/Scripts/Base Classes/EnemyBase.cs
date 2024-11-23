@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.AI;
 using System;
+using Unity.Mathematics;
 
 public class EnemyBase : CharacterClass
 {
@@ -89,15 +90,24 @@ public class EnemyBase : CharacterClass
             {
                 case EnemyState.Idle:
                     // Debug.Log("EnemyState: Idle");
-                    if (distanceToPlayer > attackDistanceThreshold)
+                    if (IsEnemyFarFromPlayer() || IsPlayerOutOfRange())
                         enemyState = EnemyState.ChasingPlayer;
                     break;
                 case EnemyState.ChasingPlayer:
                     // Debug.Log("EnemyState: ChasingPlayer");
-                    if (distanceToPlayer > attackDistanceThreshold)
+                    if (IsEnemyFarFromPlayer())
                     {
                         navMeshAgent.isStopped = false;
                         navMeshAgent.SetDestination(player.transform.position);
+                    }
+                    else if (IsPlayerOutOfRange())
+                    {
+                        // Rotate to face the player
+                        navMeshAgent.isStopped = false;
+                        Vector3 direction = (player.transform.position - transform.position).normalized;
+                        direction.y = 0; // Keep the rotation on the horizontal plane
+                        Quaternion lookRotation = Quaternion.LookRotation(direction);
+                        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 4);
                     }
                     else //TODO: if player is dead, enemy should go to idle. 
                     {
@@ -112,6 +122,16 @@ public class EnemyBase : CharacterClass
                     break;
             }
         }
+    }
+
+    protected bool IsEnemyFarFromPlayer()
+    {
+        return distanceToPlayer > attackDistanceThreshold;
+    }
+
+    protected bool IsPlayerOutOfRange()
+    {
+        return math.abs(Vector3.Angle(transform.forward, player.transform.position - transform.position)) > 28 ;
     }
 
     public void InitializeStat(float health, float attackPower)
@@ -174,9 +194,11 @@ public class EnemyBase : CharacterClass
         // game object will be destroyed by DieCoroutine
     }
 
-    protected void markLastActionTimeStamp()
+    protected void markLastActionTimeStamp(int additionalMilliToAdd = 0)
     {
         lastActionTimestamp = DateTime.Now;
+        lastActionTimestamp = lastActionTimestamp.AddMilliseconds(additionalMilliToAdd);
+
     }
 
     protected double getTimePassedLastActionInMilli()
