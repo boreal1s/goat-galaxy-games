@@ -89,9 +89,7 @@ public class WaveManager : MonoBehaviour
             {"BossPenguin", new(enemyPrefabMiniBossPenguin, 20, 5, 60, 600)},
         };
 
-        ComputeOnslaught();
         SpawnPlayer();
-        Debug.Log("Initial Spawn Generated: " + nextEnemyQueue);
     }
 
     // Start is called before the first frame update
@@ -99,8 +97,10 @@ public class WaveManager : MonoBehaviour
     {
         // Prepare Enemies
         enemySpawnBoxes = enemySpawnArea.GetComponents<BoxCollider>();
-        waveEvent.AddListener(RequestNextWave);
+        ComputeOnslaught();
+        Debug.Log("Initial Spawn Generated: " + nextEnemyQueue.Count + " enemies");
         StartWave();
+        waveEvent.AddListener(RequestNextWave);
 
         if (shopController == null) {
             Debug.LogWarning("No ShopController was assigned to WaveManager");
@@ -139,14 +139,17 @@ public class WaveManager : MonoBehaviour
 
     private void ScaleEnemyDifficulty()
     {
-        foreach(var enemyKey in enemyScaleInfo.Keys)
+        if (currentWave > 6)
         {
-            EnemySpawnInfo spawnInfo = enemyScaleInfo[enemyKey];
-            EnemyBase enemyBase = spawnInfo.enemyPrefab.GetComponent<EnemyBase>();
-            spawnInfo.health = enemyBase.baseHealth + (enemyBase.baseHealth * currentWave * scalingConfig["Health"]);
-            spawnInfo.attackPower = enemyBase.baseAttackPower + (enemyBase.baseAttackPower * currentWave * scalingConfig["AttackPower"]);
-            enemyBase.goldValueMin = (int)(enemyBase.goldValueMinBase + (enemyBase.goldValueMinBase * currentWave * scalingConfig["GoldMin"]));
-            enemyBase.goldValueMax = (int)(enemyBase.goldValueMaxBase + (enemyBase.goldValueMaxBase * currentWave * scalingConfig["GoldMax"]));
+            foreach (var enemyKey in enemyScaleInfo.Keys)
+            {
+                EnemySpawnInfo spawnInfo = enemyScaleInfo[enemyKey];
+                EnemyBase enemyBase = spawnInfo.enemyPrefab.GetComponent<EnemyBase>();
+                spawnInfo.health = enemyBase.baseHealth + (enemyBase.baseHealth * currentWave * scalingConfig["Health"]);
+                spawnInfo.attackPower = enemyBase.baseAttackPower + (enemyBase.baseAttackPower * currentWave * scalingConfig["AttackPower"]);
+                enemyBase.goldValueMin = (int)(enemyBase.goldValueMinBase + (enemyBase.goldValueMinBase * currentWave * scalingConfig["GoldMin"]));
+                enemyBase.goldValueMax = (int)(enemyBase.goldValueMaxBase + (enemyBase.goldValueMaxBase * currentWave * scalingConfig["GoldMax"]));
+            }
         }
 
         currentDifficulty = (int)(currentDifficulty + (currentDifficulty * scalingConfig["Difficulty"]));
@@ -272,15 +275,13 @@ public class WaveManager : MonoBehaviour
         // Clear the countdown text when finished
         countdownText.text = "";
 
-        // Increment wave & apply scaling 
-        if (currentWave % 3 == 0)
-        {
-            ScaleEnemyDifficulty();
-        }
+        // Increment wave
         currentWave += 1;
         waveCounterText.text = "Wave " + currentWave.ToString(); // Update wave counter
 
+        // Start preparing next wave ahead of time
         enemyQueue = new Queue<string>(nextEnemyQueue);
+        ScaleEnemyDifficulty();
         StartCoroutine(ComputeOnslaught());
 
         Debug.Log("Loading enemies");
@@ -293,7 +294,9 @@ public class WaveManager : MonoBehaviour
                 enemiesToSpawn -= 1;
                 enemyIds.Add(enemyQueue.Dequeue());
             }
-            StartCoroutine(EnemyLoader(enemyIds)); // Spawn chunk of up to 4 enemies
+
+            var doneSpawningGroup = StartCoroutine(EnemyLoader(enemyIds));
+            // yield return doneSpawningGroup; // Spawn chunk of up to 4 enemies
         }
     }
 
@@ -321,7 +324,9 @@ public class WaveManager : MonoBehaviour
 
             currentEnemies.Add(newEnemy);
         }
-        yield return new WaitForSeconds(3);
+
+        yield return new WaitForSeconds(4);
+        yield return true;
     }
 
     Vector3 GetRandomPosition()
