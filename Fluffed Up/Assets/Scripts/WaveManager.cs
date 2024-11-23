@@ -66,8 +66,8 @@ public class WaveManager : MonoBehaviour
     private List<List<EnemySpawnInfo>> waveList;
 
     private int currentDifficulty = 3;
-    private Queue<GameObject> enemyQueue;
-    private Queue<GameObject> nextEnemyQueue;
+    private Queue<List<string>> enemyQueue;
+    private Queue<List<string>> nextEnemyQueue;
     private Dictionary<string, EnemySpawnInfo> enemyScaleInfo = new Dictionary<string, EnemySpawnInfo>()
     {
         {"Slime", new(enemyPrefabSlime, 1, 7, 10, 70) },
@@ -124,10 +124,6 @@ public class WaveManager : MonoBehaviour
         countdownText = playerGameObject.transform.Find("PlayerUI/TimerCountdown").GetComponent<TextMeshProUGUI>();
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-
     private void ScaleEnemyDifficulty()
     {
         foreach(var enemyKey in enemyScaleInfo.Keys)
@@ -143,15 +139,76 @@ public class WaveManager : MonoBehaviour
         currentDifficulty = (int)(currentDifficulty + (currentDifficulty * scalingConfig["Difficulty"]));
     }
 
-    private void ComputeOnslaught()
+    private Queue<List<string>> ComputeOnslaught()
     {
         List<KeyValuePair<int, string>> enemyDifficultyPairs = new List<KeyValuePair<int, string>>();
         foreach (string enemy in enemyScaleInfo.Keys)
         {
             enemyDifficultyPairs.Add(new KeyValuePair<int, string>(enemyScaleInfo[enemy].difficultyCoefficient, enemy));
         }
-        List<string> enemiesToSpawn = OnslaughtMinion(currentDifficulty, enemyDifficultyPairs);
-        nextEnemyQueue = new Queue(enemiesToSpawn[UnityEngine.Random.Range(0, enemiesToSpawn.Count)]);
+        List<List<string>> enemiesToSpawn = OnslaughtMinion(currentDifficulty, enemyDifficultyPairs);
+        return new Queue<List<string>>((IEnumerable<List<string>>)enemiesToSpawn[UnityEngine.Random.Range(0, enemiesToSpawn.Count)]);
+    }
+
+    /* 
+       Onslaught Minion aims to maximize the level of difficulty per wave up to a specified cap.
+       This function receives a difficulty cap for the wave and a list of possible enemies to spawn.
+       It then produces a list of enemy sets that meet or are closest to the difficulty cap.
+       The minion produces multiple sets that can then be chosen from randomly, such that waves can
+       be dynamic and somewhat randomized.
+    
+       This is essentially the unbounded knapsack problem (https://www.geeksforgeeks.org/unbounded-knapsack-repetition-items-allowed/)
+       but instead of producing the number of possible weight combinations, the minion must produce
+       the combinations themselves.
+
+       To save time on writing a solution for the algorithm, I referenced NeetCode's existing solution
+       for a similar problem (https://www.youtube.com/watch?v=Mjy4hd2xgrs&ab_channel=NeetCode); however,
+       the logic for maintaining a list of possible combinations is homegrown.
+    */
+    public List<List<string>> OnslaughtMinion(int difficulty, List<KeyValuePair<int, string>> enemies)
+    {
+        List<List<List<string>>> dp = new List<List<List<string>>>();
+        dp[0] = new List<List<string>>();
+        List<List<List<string>>> nextDP = new List<List<List<string>>>();
+
+        for (int i = enemies.Count - 1; i >= 0; i--)
+        {
+            nextDP = new List<List<List<string>>>();
+            nextDP[0] = new List<List<string>>(); ;
+
+            for (int d = 1; d <= difficulty; d++)
+            {
+                nextDP[d] = dp[d];
+                if (d - enemies[i].Key >= 0)
+                {
+                    foreach (List<string> possibleEnemyList in nextDP[d - enemies[i].Key])
+                    {
+                        List<string> newList = possibleEnemyList;
+                        newList.Add(enemies[i].Value);
+                        nextDP[d].Add(newList);
+                    }
+                }
+            }
+            dp = nextDP;
+        }
+
+        for (int j = dp.Count - 1; j >= 0; j--)
+        {
+            if (dp[j].Count > 0)
+            {
+                return dp[j];
+            }
+        }
+
+        for (int j = nextDP.Count - 1; j >= 0; j--)
+        {
+            if (nextDP[j].Count > 0)
+            {
+                return nextDP[j];
+            }
+        }
+
+        return new List<List<string>>();
     }
 
 
