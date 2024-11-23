@@ -4,25 +4,25 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
-using System.Linq.Expressions;
 using Cinemachine;
-using System.Security.Cryptography.X509Certificates;
 
 public class WaveManager : MonoBehaviour
 {
     public struct EnemySpawnInfo
     {
-        public GameObject enemyPrefab;
-        public int quantity;
         public int speed;
-        public int attackPower;
+        public float attackPower;
+        public float health;
+        public GameObject enemyPrefab;
+        public int difficultyCoefficient;
 
-        public EnemySpawnInfo(GameObject go, int quantity, int speed, int attackPower)
+        public EnemySpawnInfo(GameObject enemyPrefab, int dc, int speed, int attackPower, float health)
         {
-            this.enemyPrefab = go;
-            this.quantity = quantity;
             this.speed = speed;
             this.attackPower = attackPower;
+            this.health = health;
+            this.enemyPrefab = enemyPrefab;
+            this.difficultyCoefficient = dc;
         }
     }
 
@@ -33,10 +33,10 @@ public class WaveManager : MonoBehaviour
     public Transform cameraTransform;
 
     // List of enemies
-    public GameObject enemyPrefabSlime;
-    public GameObject enemyPrefabTurtle;
-    public GameObject enemyPrefabMiniBossDog;
-    public GameObject enemyPrefabMiniBossPenguin;
+    [SerializeField] public GameObject enemyPrefabSlime;
+    [SerializeField] public GameObject enemyPrefabTurtle;
+    [SerializeField] public GameObject enemyPrefabMiniBossDog;
+    [SerializeField] public GameObject enemyPrefabMiniBossPenguin;
     [SerializeField] public GameObject enemySpawnArea;
     public BoxCollider[] enemySpawnBoxes;
 
@@ -46,7 +46,7 @@ public class WaveManager : MonoBehaviour
 
     public UnityEvent waveEvent;
     private List<GameObject> currentEnemies = new List<GameObject>();
-    private int currentWave = -1; // Will be switched to 0 by StartWave
+    private int currentWave = 0;
     private bool isSpawningWave = false; // Flag to prevent multiple waves from starting
 
     [SerializeField]
@@ -58,10 +58,32 @@ public class WaveManager : MonoBehaviour
 
     private Coroutine restTimerCoroutine;
 
-    private List<List<EnemySpawnInfo>> waveList;
+    private int currentDifficulty = 3;
+    public bool enemiesAreSpawning = false;
+    public bool isRunningWave;
+    private Queue<string> enemyQueue = new Queue<string>();
+    private Queue<string> nextEnemyQueue = new Queue<string>();
+    private List<List<string>> possibleStagedOnslaughts;
+    private Dictionary<string, EnemySpawnInfo> enemyScaleInfo;
+    private Dictionary<string, float> scalingConfig = new Dictionary<string, float>()
+    {
+        { "Health", 0.04f},
+        { "AttackPower", 0.02f},
+        { "GoldMin", 0.05f},
+        { "GoldMax", 0.05f},
+        { "Difficulty", 0.33f},
+    };
 
     private void Awake()
     {
+        enemyScaleInfo = new Dictionary<string, EnemySpawnInfo>()
+        {
+            {"Slime", new(enemyPrefabSlime, 1, 6, 10, 70) },
+            {"Turtle", new(enemyPrefabTurtle, 3, 4, 20, 180)},
+            {"BossDog", new(enemyPrefabMiniBossDog, 10, 5, 40, 400)},
+            {"BossPenguin", new(enemyPrefabMiniBossPenguin, 20, 4, 60, 600)},
+        };
+
         SpawnPlayer();
     }
 
@@ -70,10 +92,10 @@ public class WaveManager : MonoBehaviour
     {
         // Prepare Enemies
         enemySpawnBoxes = enemySpawnArea.GetComponents<BoxCollider>();
-        waveEvent.AddListener(RequestNextWave);
-        PopulateWave();
-        currentWave = waveList.Count - 1;
+        StartCoroutine(ComputeOnslaught());
+        Debug.Log("Initial Spawn Generated: " + nextEnemyQueue.Count + " enemies");
         StartWave();
+        waveEvent.AddListener(RequestNextWave);
 
         if (shopController == null) {
             Debug.LogWarning("No ShopController was assigned to WaveManager");
@@ -81,6 +103,14 @@ public class WaveManager : MonoBehaviour
         else {
             shopController.CloseShop();
         }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        //currentEnemies.RemoveAll(enemy => enemy == null);
+        ResponsiveShopLight(shopController.canTriggerShop);
+        waveEvent.Invoke();
     }
 
     void SpawnPlayer()
@@ -102,47 +132,120 @@ public class WaveManager : MonoBehaviour
         countdownText = playerGameObject.transform.Find("PlayerUI/TimerCountdown").GetComponent<TextMeshProUGUI>();
     }
 
-    void PopulateWave()
+    private void ScaleEnemyDifficulty()
     {
-        waveList = new List<List<EnemySpawnInfo>>
-        {            
-            new(){// First wave
-                new(enemyPrefabSlime, 3, 7, 5)
-            },
-            new(){// Second wave
-                new(enemyPrefabTurtle, 2, 8, 10)
-            },
-            new(){// Third wave
-                new(enemyPrefabMiniBossDog, 1, 8, 15)
-            },
-            new(){// Fourth wave
-                new(enemyPrefabTurtle, 4, 9, 15)
-            },
-            new(){// Fifth wave
-                new(enemyPrefabSlime, 6, 11, 10)
-            },
-            new(){// Sixth wave
-                new(enemyPrefabSlime, 3, 10, 12),
-                new(enemyPrefabTurtle, 3, 12, 17)
-            },
-            new(){// Seventh wave
-                new(enemyPrefabMiniBossPenguin, 1, 15, 30)
-            },
-            new(){// Eigth wave
-                new(enemyPrefabSlime, 10, 13, 15)
-            },
-            new(){// Ninth wave
-                new(enemyPrefabTurtle, 9, 13, 20)
-            },
-            new(){// Tenth wave
-                new(enemyPrefabMiniBossDog, 1, 17, 30),
-                new(enemyPrefabMiniBossPenguin, 1, 15, 40)
-            },
-        };
+        if (currentWave > 6)
+        {
+            foreach (var enemyKey in enemyScaleInfo.Keys)
+            {
+                EnemySpawnInfo spawnInfo = enemyScaleInfo[enemyKey];
+                EnemyBase enemyBase = spawnInfo.enemyPrefab.GetComponent<EnemyBase>();
+                spawnInfo.health = enemyBase.baseHealth + (enemyBase.baseHealth * currentWave * scalingConfig["Health"]);
+                spawnInfo.attackPower = enemyBase.baseAttackPower + (enemyBase.baseAttackPower * currentWave * scalingConfig["AttackPower"]);
+                enemyBase.goldValueMin = (int)Mathf.Ceil(enemyBase.goldValueMinBase + (enemyBase.goldValueMinBase * currentWave * scalingConfig["GoldMin"]));
+                enemyBase.goldValueMax = (int)Mathf.Ceil(enemyBase.goldValueMaxBase + (enemyBase.goldValueMaxBase * currentWave * scalingConfig["GoldMax"]));
+            }
+        }
+
+        currentDifficulty = (int)Mathf.Ceil(currentDifficulty + (currentDifficulty * scalingConfig["Difficulty"]));
+        Debug.Log("New difficulty: " + currentDifficulty);
+    }
+
+    private IEnumerator ComputeOnslaught()
+    {
+        Debug.Log("Computing Onslaught");
+
+        if (currentWave + 1 == 3)
+        {
+            nextEnemyQueue.Clear();
+            nextEnemyQueue = new Queue<string>(new List<string>() { "BossDog", "Slime", "Slime" });
+            Debug.Log("Onslaught Computed");
+            yield break;
+        }
+
+        if (currentWave + 1 == 6)
+        {
+            nextEnemyQueue.Clear();
+            nextEnemyQueue = new Queue<string>( new List<string>(){"BossPenguin", "Turtle", "Turtle"});
+            Debug.Log("Onslaught Computed");
+            yield break;
+        }
+
+        List<KeyValuePair<int, string>> enemyDifficultyPairs = new List<KeyValuePair<int, string>>();
+        foreach (string enemy in enemyScaleInfo.Keys)
+        {
+            enemyDifficultyPairs.Add(new KeyValuePair<int, string>(enemyScaleInfo[enemy].difficultyCoefficient, enemy));
+        }
+
+        possibleStagedOnslaughts = OnslaughtMinion(currentDifficulty, enemyDifficultyPairs);
+
+        Debug.Log(possibleStagedOnslaughts);
+        nextEnemyQueue = new Queue<string>(possibleStagedOnslaughts[UnityEngine.Random.Range(0, possibleStagedOnslaughts.Count)]);
+        Debug.Log(nextEnemyQueue.Count);
+
+        Debug.Log("Onslaught Computed for difficulty: " + currentDifficulty);
+        yield return null;
+    }
+
+    /* 
+       Onslaught Minion aims to maximize the level of difficulty per wave up to a specified cap.
+       This function receives a difficulty cap for the wave and a list of possible enemies to spawn.
+       It then produces a list of enemy sets that meet or are closest to the difficulty cap.
+       The minion produces multiple sets that can then be chosen from randomly, such that waves can
+       be dynamic and somewhat randomized.
+    
+       This is essentially the unbounded knapsack problem (https://www.geeksforgeeks.org/unbounded-knapsack-repetition-items-allowed/)
+       but instead of producing the number of possible weight combinations, the minion must produce
+       the combinations themselves.
+
+       To save time on writing a solution for the algorithm, I referenced NeetCode's existing solution
+       for a similar problem (https://www.youtube.com/watch?v=Mjy4hd2xgrs&ab_channel=NeetCode); however,
+       the logic for maintaining a list of possible combinations is homegrown.
+    */
+    public List<List<string>> OnslaughtMinion(int difficulty, List<KeyValuePair<int, string>> enemies)
+    {
+        List<List<List<string>>> dp = new List<List<List<string>>>(new List<List<string>>[difficulty + 1]);
+        for (int a = 1; a < difficulty + 1; a++)
+        {
+            dp[a] = new List<List<string>>();
+        }
+        dp[0] = new List<List<string>>() { new List<string>() { } };
+
+        List<List<List<string>>> nextDP = DeepCopyTriplyNestedList(dp);
+
+        for (int i = enemies.Count - 1; i >= 0; i--)
+        {
+            Debug.Log("Computing dp for enemy: " + enemies[i].Value);
+            for (int d = enemies[i].Key; d < difficulty + 1; d++)
+            {
+                nextDP[d] = DeepCopyDoublyNestedList(dp[d]);
+                if (d - enemies[i].Key >= 0)
+                {
+                    foreach (List<string> possibleEnemyList in nextDP[d - enemies[i].Key])
+                    {
+                        List<string> newList = new List<string>(possibleEnemyList);
+                        newList.Add(enemies[i].Value);
+                        nextDP[d].Add(newList);
+                    }
+                }
+            }
+            dp = DeepCopyTriplyNestedList(nextDP);
+        }
+
+        for (int j = dp.Count - 1; j >= 0; j--)
+        {
+            if (dp[j].Count > 0)
+            {
+                return dp[j];
+            }
+        }
+
+        return new List<List<string>>();
     }
 
     public void StartWave()
     {
+        isRunningWave = true;
         // Stop the rest timer if it's running
         if (restTimerCoroutine != null)
         {
@@ -159,37 +262,64 @@ public class WaveManager : MonoBehaviour
         // Clear the countdown text when finished
         countdownText.text = "";
 
-        // Increment Wave
-        currentWave = (currentWave + 1)%waveList.Count;
+        // Increment wave
+        currentWave += 1;
+        waveCounterText.text = "Wave " + currentWave.ToString(); // Update wave counter
 
-        waveCounterText.text = "Wave " + (currentWave + 1).ToString();// Update wave counter
-        EnemyLoader(waveList[currentWave]);// Spawn enemy
+        // Start preparing next wave ahead of time
+        enemyQueue = new Queue<string>(nextEnemyQueue);
+        ScaleEnemyDifficulty();
+        StartCoroutine(ComputeOnslaught());
+
+        Debug.Log("Loading enemies");
+        StartCoroutine(EnemyGroupHandler(enemyQueue));
+        isRunningWave = false;
     }
 
-    private void EnemyLoader(List<EnemySpawnInfo> wave)
+    private IEnumerator EnemyGroupHandler(Queue<string> enemyQueue)
     {
-        foreach (EnemySpawnInfo spawnInfo in wave)
+        enemiesAreSpawning = true;
+        float secondsToWait = 3f;
+        while (enemyQueue.Count > 0)
         {
-            for (int i = 0 ; i < spawnInfo.quantity ; i++)
+            List<string> enemyIds = new List<string>();
+            int enemiesToSpawn = 4;
+            while (enemyQueue.Count > 0 && enemiesToSpawn > 0)
             {
-                Vector3 randomPosition = GetRandomPosition();
-                GameObject newEnemy = Instantiate(spawnInfo.enemyPrefab, randomPosition, Quaternion.identity);
-                EnemyBase enemyScript = newEnemy.GetComponent<EnemyBase>();
-                enemyScript.attackPower = spawnInfo.attackPower;
-                enemyScript.moveSpeed = spawnInfo.speed;
-
-                // Add event listener: player attack ---> enemy takes damage
-                void onPlayerAttackAction(float damage, int delayInMilli) => InitiateAttackTimer(enemyScript, damage, delayInMilli, true);
-                player.AttackEvent.AddListener(onPlayerAttackAction);
-
-                // Add event listener: enemy attacks ---> player takes damage
-                void onEnemyAttackAction(float damage, int delayInMilli) => InitiateAttackTimer(enemyScript, damage, delayInMilli, false);
-                enemyScript.AttackEvent.AddListener(onEnemyAttackAction);
-                enemyScript.OnEnemyDeath += () => RemoveEnemyListener(onPlayerAttackAction, enemyScript);
-                enemyScript.player = player;
-
-                currentEnemies.Add(newEnemy);
+                enemiesToSpawn -= 1;
+                enemyIds.Add(enemyQueue.Dequeue());
             }
+
+            EnemyLoader(enemyIds);
+            yield return new WaitForSeconds(secondsToWait);
+            secondsToWait = Mathf.Min(secondsToWait + 1f, 12f);
+        }
+        enemiesAreSpawning = false;
+    }
+
+    private void EnemyLoader(List<string> group)
+    {
+        Debug.Log("Spawning group of enemies");
+        foreach (string enemyId in group)
+        {
+            Vector3 randomPosition = GetRandomPosition();
+            GameObject newEnemy = Instantiate(enemyScaleInfo[enemyId].enemyPrefab, randomPosition, Quaternion.identity);
+            EnemyBase enemyScript = newEnemy.GetComponent<EnemyBase>();
+            enemyScript.attackPower = enemyScaleInfo[enemyId].attackPower;
+            enemyScript.moveSpeed = enemyScaleInfo[enemyId].speed;
+            enemyScript.health = enemyScaleInfo[enemyId].health;
+
+            // Add event listener: player attack ---> enemy takes damage
+            void onPlayerAttackAction(float damage, int delayInMilli) => InitiateAttackTimer(enemyScript, damage, delayInMilli, true);
+            player.AttackEvent.AddListener(onPlayerAttackAction);
+
+            // Add event listener: enemy attacks ---> player takes damage
+            void onEnemyAttackAction(float damage, int delayInMilli) => InitiateAttackTimer(enemyScript, damage, delayInMilli, false);
+            enemyScript.AttackEvent.AddListener(onEnemyAttackAction);
+            enemyScript.OnEnemyDeath += () => RemoveEnemyListener(onPlayerAttackAction, enemyScript);
+            enemyScript.player = player;
+
+            currentEnemies.Add(newEnemy);
         }
     }
 
@@ -253,14 +383,6 @@ public class WaveManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        currentEnemies.RemoveAll(enemy => enemy == null);
-        ResponsiveShopLight(shopController.canTriggerShop);        
-        waveEvent.Invoke();
-    }
-
     private void ResponsiveShopLight(bool activate)
     {
         if (activate)
@@ -287,7 +409,7 @@ public class WaveManager : MonoBehaviour
 
     private void RequestNextWave()
     {
-        if (currentEnemies.Count == 0 && !isSpawningWave)
+        if (currentEnemies.Count == 0 && !isSpawningWave && enemyQueue.Count == 0 && !isRunningWave && !enemiesAreSpawning)
         {
             StartCoroutine(StartNextWave());
         }
@@ -318,8 +440,7 @@ public class WaveManager : MonoBehaviour
 
     IEnumerator StartNextWave()
     {
-        isSpawningWave = true; // Set the flag to true to prevent multiple triggers
-        
+        isSpawningWave = true; // Set the flag to true to prevent multiple triggers        
         // Start the rest timer and wait for it to finish
         if (restTimerCoroutine != null)
         {
@@ -328,13 +449,48 @@ public class WaveManager : MonoBehaviour
         restTimerCoroutine = StartCoroutine(StartRestTimer());
         
         yield return restTimerCoroutine; // Wait for the timer to finish
-        isSpawningWave = false; // Reset the flag after spawning the wave
         StartWave();
+        isSpawningWave = false; // Reset the flag after spawning the wave
     }
 
     void RemoveEnemyListener(UnityEngine.Events.UnityAction<float, int> action, EnemyBase enemy)
     {
         player.AttackEvent.RemoveListener(action);
         currentEnemies.Remove(enemy.gameObject); // Safely remove the enemy from the list
+    }
+
+    public static List<List<List<string>>> DeepCopyTriplyNestedList(List<List<List<string>>> originalList)
+    {
+        if (originalList == null)
+            return null;
+
+        List<List<List<string>>> copy = new List<List<List<string>>>();
+        foreach (var innerList1 in originalList)
+        {
+            List<List<string>> innerCopy1 = new List<List<string>>();
+            foreach (var innerList2 in innerList1)
+            {
+                List<string> innerCopy2 = new List<string>(innerList2);
+                innerCopy1.Add(innerCopy2);
+            }
+            copy.Add(innerCopy1);
+        }
+
+        return copy;
+    }
+
+    public static List<List<string>> DeepCopyDoublyNestedList(List<List<string>> originalList)
+    {
+        if (originalList == null)
+            return null;
+
+        List<List<string>> copy = new List<List<string>>();
+        foreach (var innerList in originalList)
+        {
+            List<string> innerCopy = new List<string>(innerList);
+            copy.Add(innerCopy);
+        }
+
+        return copy;
     }
 }
