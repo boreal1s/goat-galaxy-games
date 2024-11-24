@@ -6,18 +6,18 @@ using UnityEngine;
 
 public class UpgradeFlags : MonoBehaviour
 {
-    private Dictionary<string, bool> upgrades = new Dictionary<string, bool>()
+    private Dictionary<string, Upgrade> upgrades = new Dictionary<string, Upgrade>()
     {
-        { "Flesh Wound", false },
-        { "Restock", false },
+        { "Flesh Wound", null },
+        { "Restock", null },
     };
 
-    public void setUpgradeFlag(string flag, bool val)
+    public void setUpgradeFlag(string flag, Upgrade upgrade)
     {
-        upgrades[flag] = val;
+        upgrades[flag] = upgrade;
     }
 
-    public bool getUpgradeFlag(string flag)
+    public Upgrade getUpgradeFlag(string flag)
     {
         return upgrades[flag];
     }

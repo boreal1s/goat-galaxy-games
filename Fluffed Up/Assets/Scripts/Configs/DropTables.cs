@@ -125,14 +125,14 @@ public class DropTables : MonoBehaviour
         };
 
         // Player Modifications
-        Upgrade fleshWoundMod = new Upgrade("Flesh Wound", "Occassionally negate a small amount of damage.", UpgradeType.PlayerModification, 175, fleshWoundModShopSprite, fleshWoundModToolbarSprite, new PlayerModification(new List<Upgrade>(), Rarity.Rare));
+        Upgrade fleshWoundMod = new Upgrade("Flesh Wound", "Occassionally negate a significant amount of damage.", UpgradeType.PlayerModification, 175, fleshWoundModShopSprite, fleshWoundModToolbarSprite, new PlayerModification(new List<Upgrade>(), Rarity.Rare, 0.80f, 0.1f));
         playerModifications = new WeightedList<Upgrade>()
         {
             {fleshWoundMod, rareWeight},
         };
 
         // Game Modifications
-        Upgrade restockMod = new Upgrade("Restock", "The shop now restocks on purchase.", UpgradeType.GameModification, 120, restockModShopSprite, restockModToolbarSprite, new GameModification(new List<Upgrade>(), Rarity.Rare));
+        Upgrade restockMod = new Upgrade("Restock", "The shop now restocks on purchase.", UpgradeType.GameModification, 120, restockModShopSprite, restockModToolbarSprite, new GameModification(new List<Upgrade>(), Rarity.Rare, 1f));
         gameModifications = new WeightedList<Upgrade>()
         {
             {restockMod, rareWeight},

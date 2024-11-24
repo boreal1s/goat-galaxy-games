@@ -47,6 +47,7 @@ public class PlayerController : CharacterClass
         }
     }
     private Dictionary<string, ItemProperties> inventory = new Dictionary<string, ItemProperties>();
+    public UpgradeFlags upgradeFlags;
 
     [Header("Melee attack attibutes")]
     private float attackComboCooldown;
@@ -113,7 +114,10 @@ public class PlayerController : CharacterClass
         currAmmo = maxAmmo;
         isReloading = false;
         projectileDamage = 30f;
-        attackDelayInMilli = 300; 
+        attackDelayInMilli = 300;
+
+        upgradeFlags = FindObjectOfType<UpgradeFlags>();
+        Debug.Log($"PlayerController found UpgradeFlags: {upgradeFlags}");
 
         if (SelectChar.characterID == 1) // If the shooter character is selected
         {
@@ -458,6 +462,14 @@ public class PlayerController : CharacterClass
 
     public override void TakeDamage(float damage, int additionalDelay)
     {
+        Upgrade fleshWound = upgradeFlags.getUpgradeFlag("Flesh Wound");
+        if (fleshWound != null) {
+            if (UnityEngine.Random.Range(0f, 1f) <= fleshWound.playerMod.modChance)
+            {
+                Debug.Log("Flesh wound blocked " + damage * fleshWound.playerMod.modValue + " damage!");
+                damage -= damage * fleshWound.playerMod.modValue;
+            }
+        }
         base.TakeDamage(damage, additionalDelay);
 
         animator.Play("GetHit");

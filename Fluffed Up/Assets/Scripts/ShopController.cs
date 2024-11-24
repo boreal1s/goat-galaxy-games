@@ -224,7 +224,7 @@ public class ShopController : MonoBehaviour
                     dropTables.purchase(upgrade1);
                     upgrade1Purchased = true;
                     HandleUpgrade(upgrade1);
-                    if (upgradeFlags.getUpgradeFlag("Restock"))
+                    if (upgradeFlags.getUpgradeFlag("Restock") != null)
                     {
                         upgrade1 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
                         upgrade1Purchased = false;
@@ -245,7 +245,7 @@ public class ShopController : MonoBehaviour
                     dropTables.purchase(upgrade2);
                     upgrade2Purchased = true;
                     HandleUpgrade(upgrade2);
-                    if (upgradeFlags.getUpgradeFlag("Restock"))
+                    if (upgradeFlags.getUpgradeFlag("Restock") != null)
                     {
                         upgrade2 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
                         upgrade2Purchased = false;
@@ -266,7 +266,7 @@ public class ShopController : MonoBehaviour
                     dropTables.purchase(upgrade3);
                     upgrade3Purchased = true;
                     HandleUpgrade(upgrade3);
-                    if (upgradeFlags.getUpgradeFlag("Restock"))
+                    if (upgradeFlags.getUpgradeFlag("Restock") != null)
                     {
                         upgrade3 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
                         upgrade3Purchased = false;
@@ -287,7 +287,7 @@ public class ShopController : MonoBehaviour
                     dropTables.purchase(consumable);
                     consumablePurchased = true;
                     HandleUpgrade(consumable);
-                    if (upgradeFlags.getUpgradeFlag("Restock"))
+                    if (upgradeFlags.getUpgradeFlag("Restock") != null)
                     {
                         consumable = dropTables.getRandomUpgrade(UpgradeType.Consumable);
                         consumablePurchased = false;
@@ -314,11 +314,9 @@ public class ShopController : MonoBehaviour
             case UpgradeType.Skill:
                 HandleSkillUpgrade(upgrade.skill);
                 break;
-            case UpgradeType.PlayerModification:
-                HandlePlayerModification(upgrade.playerMod);
-                break;
+            case UpgradeType.PlayerModification: // fall-through
             case UpgradeType.GameModification:
-                HandleGameModification(upgrade.upgradeName);
+                HandleModification(upgrade);
                 break;
             case UpgradeType.Consumable:
                 HandleConsumablePurchase(upgrade.consumable);
@@ -361,14 +359,9 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    private void HandlePlayerModification(PlayerModification mod)
+    private void HandleModification(Upgrade mod)
     {
-        return;
-    }
-
-    private void HandleGameModification (string modName)
-    {
-        upgradeFlags.setUpgradeFlag(modName, true);
+        upgradeFlags.setUpgradeFlag(mod.upgradeName, mod); ;
     }
 
     private void HandleConsumablePurchase(Consumable consumable)
