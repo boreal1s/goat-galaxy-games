@@ -8,10 +8,10 @@ using Unity.Mathematics;
 
 public class EnemyBossCyclopes : EnemyBase
 {
-    private double heightDrop = 1.0;
-    private double idleHeight;
-    private double attackHeight;
+    private double idleHeight = 1.5;
+    private double attackHeight = -0.5;
     public GameObject rootObject;
+    public int fullAttackDurationInMilli;
 
     public override void AIStateMachine()
     {
@@ -41,22 +41,17 @@ public class EnemyBossCyclopes : EnemyBase
             }
             break;
         case EnemyState.InitiateAttack:
-            // idleHeight = transform.position.y;
-            // attackHeight = idleHeight - heightDrop;
-            // enemyState = EnemyState.Engaging;
-            // break;
-        case EnemyState.Engaging:
-            // if (AdjustHeight(true))
-            // {
+            if (AdjustHeight(true))
+            {
                 Attack();
                 enemyState = EnemyState.Attacking;
-                markLastActionTimeStamp(attackDelayInMilli);                
-            // }
+                markLastActionTimeStamp(fullAttackDurationInMilli);                
+            }
             break;
         case EnemyState.Attacking:
             if (IsEnemyFarFromPlayer() || IsPlayerOutOfRange())
             {
-                enemyState = EnemyState.ChasingPlayer;//EnemyState.Disengaging;
+                enemyState = EnemyState.Disengaging;
             }
             else if (isAttacking == false)
             {
@@ -73,64 +68,24 @@ public class EnemyBossCyclopes : EnemyBase
         animator.SetBool("isMoving", isMoving);
     }
 
-    // private bool AdjustHeight(bool engage)
-    // {
-    //     Vector3 newPosition = transform.position;
-    //     double newAngle;
-    //     double step = math.PI/180;
-    //     double permittedError = math.PI/180*2;
-
-    //     double targetAngle;
-    //     double currentAngle;
-    //     double originalYInCos;
-    //     if (engage)
-    //     {
-    //         originalYInCos = newPosition.y - attackHeight - 1;
-    //         targetAngle = math.PI;
-    //     }
-    //     else
-    //     {
-    //         // Disengage, restore original height
-    //         originalYInCos = idleHeight - newPosition.y + 1;
-    //         targetAngle = 0.0;
-    //     }
-    //     currentAngle = math.acos(originalYInCos);
-
-    //     if (permittedError < targetAngle - currentAngle)
-    //     {
-    //         newAngle = currentAngle + step;
-    //         if (newAngle > targetAngle) newAngle = targetAngle;
-    //     }
-    //     else if (currentAngle - targetAngle > permittedError)
-    //     {
-    //         newAngle = currentAngle - step;
-    //         if (newAngle < targetAngle) newAngle = targetAngle;
-    //     }
-    //     else return true; // No need to adjust the height anymore, ready to attack.
-
-    //     transform.Translate(0, (float)originalYInCos - math.cos((float)newAngle), 0);
-
-    //     return false;
-    // }
-
     private bool AdjustHeight(bool engage)
     {
-        Vector3 currentPosition = transform.position;
-        float step = 0.01f;
-        double permittedError = 0.05f;
+        float currentHeight = navMeshAgent.baseOffset;
+        float step = 0.02f;
+        double permittedError = 0.05;
         double targetHeight;
 
         if (engage) targetHeight = attackHeight;
         else targetHeight = idleHeight;
 
-        if (permittedError < targetHeight - currentPosition.y)
+        if (permittedError < targetHeight - currentHeight)
         {
-            transform.Translate(0, step, 0);
+            navMeshAgent.baseOffset = currentHeight + step;
             return false;
         }
-        else if (currentPosition.y - targetHeight > permittedError)
+        else if (currentHeight - targetHeight > permittedError)
         {
-            transform.Translate(0, -step, 0);
+            navMeshAgent.baseOffset = currentHeight - step;
             return false;
         }
         else return true; // No need to adjust the height anymore, ready to attack or chase
@@ -167,5 +122,27 @@ public class EnemyBossCyclopes : EnemyBase
         StartCoroutine(DieCoroutine(animator.GetCurrentAnimatorStateInfo(0).length*2));
 
         base.Die();
+    }
+
+    public override float GetDistanceToPlayer()
+    {
+        // Measure the distance as if the player and the enemy is on the same plane
+        Vector3 enemyTransform = transform.position;
+        enemyTransform.y = 0;
+        Vector3 playerTransform = player.transform.position;
+        playerTransform.y = 0;
+        float theDistance = Vector3.Distance(enemyTransform, playerTransform);
+        Debug.Log("cyclopes distance called, distance is " + theDistance);
+        return theDistance;
+    }
+
+    protected override bool IsPlayerOutOfRange()
+    {
+        // Measure the angle as if the player and the enemy is on the same plane
+        Vector3 enemyTransform = transform.position;
+        enemyTransform.y = 0;
+        Vector3 playerTransform = player.transform.position;
+        playerTransform.y = 0;
+        return math.abs(Vector3.Angle(transform.forward, playerTransform - enemyTransform)) > 28 ;
     }
 }

@@ -475,6 +475,7 @@ MonoBehaviour:
   goldValueMaxBase: 1000
   FloatingTextPrefab: {fileID: 7094480470114473468, guid: 349e3df807dc37045b275eaffd38a36f, type: 3}
   rootObject: {fileID: 5066869506182785553}
+  fullAttackDurationInMilli: 750
 --- !u!195 &8686578335799673135
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -489,12 +490,12 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 2.4
+  m_StoppingDistance: 2.5
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 0
+  m_BaseOffset: 1.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!54 &2924699593290023753
@@ -2074,8 +2075,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthSlider: {fileID: 8686578336824374569}
   easeHealthSlider: {fileID: 8686578335850109157}
-  character: {fileID: 0}
-  healthHeightOffset: 6
+  character: {fileID: 5066869506183214639}
+  healthHeightOffset: 3
   healthText: {fileID: 0}
 --- !u!114 &8686578336197616377
 MonoBehaviour:

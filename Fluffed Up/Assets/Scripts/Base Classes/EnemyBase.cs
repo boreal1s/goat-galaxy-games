@@ -16,7 +16,6 @@ public class EnemyBase : CharacterClass
         Attacking,
         Dead,
         Dizzy,
-        Engaging,
         Disengaging
     };
 
@@ -87,7 +86,7 @@ public class EnemyBase : CharacterClass
     {
         if(player)
         {
-            distanceToPlayer  = (transform.position - player.transform.position).magnitude;
+            distanceToPlayer = GetDistanceToPlayer();
             switch (enemyState)
             {
                 case EnemyState.Idle:
@@ -126,12 +125,17 @@ public class EnemyBase : CharacterClass
         }
     }
 
+    public virtual float GetDistanceToPlayer()
+    {
+        return Vector3.Distance(transform.position, player.transform.position);
+    }
+
     protected bool IsEnemyFarFromPlayer()
     {
         return distanceToPlayer > attackDistanceThreshold;
     }
 
-    protected bool IsPlayerOutOfRange()
+    protected virtual bool IsPlayerOutOfRange()
     {
         return math.abs(Vector3.Angle(transform.forward, player.transform.position - transform.position)) > 28 ;
     }

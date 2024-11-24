@@ -157,19 +157,10 @@ public class WaveManager : MonoBehaviour
     {
         Debug.Log("Computing Onslaught");
 
-        // For testing cyclopes only
-        if (currentWave == 0)
-        {
-            nextEnemyQueue.Clear();
-            nextEnemyQueue = new Queue<string>(new List<string>() { "BossCyclopes" });
-            Debug.Log("Onslaught Computed");
-            yield break;
-        }
-
         if (currentWave + 1 == 3)
         {
             nextEnemyQueue.Clear();
-            nextEnemyQueue = new Queue<string>(new List<string>() { "BossCyclopes", "Slime", "Slime" });
+            nextEnemyQueue = new Queue<string>(new List<string>() { "BossDog", "Slime", "Slime" });
             Debug.Log("Onslaught Computed");
             yield break;
         }
@@ -378,7 +369,7 @@ public class WaveManager : MonoBehaviour
     {
         if (enemy != null)
         {
-            float distance = Vector3.Distance(player.transform.position, enemy.transform.position);
+            float distance = Vector3.Distance(enemy.transform.position, player.transform.position);
 
             // Hit condition1: Distance smaller than threshold
             if (playerAttacks)
