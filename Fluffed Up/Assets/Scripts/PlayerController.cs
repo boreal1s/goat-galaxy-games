@@ -24,6 +24,7 @@ public class PlayerController : CharacterClass
     public AudioClip reloadSound;
 
     #region Coin Attributes
+    public bool isShopping;
     private int coins;
     private int coinFlushCounter;
     bool coinsAreFlushing;
@@ -183,6 +184,11 @@ public class PlayerController : CharacterClass
         #endregion
 
         #region Coin Flush Handling
+        if (isShopping && coinFlushCounter != 0)
+        {
+            UpdateCoins(0);
+        }
+
         if (Time.time - timeSinceLastCoinChange > coinFlushWaitTime && coinFlushCounter != 0)
             coinsAreFlushing = true;
 
@@ -547,10 +553,10 @@ public class PlayerController : CharacterClass
 
     public void UpdateCoins(int addedCoins)
     {
-        if (coinsAreFlushing)
+        if (coinsAreFlushing || isShopping)
         {
             coinsAreFlushing = false;
-            coins += coinFlushCounter;
+            coins += coinFlushCounter + addedCoins;
             coinFlushCounter = 0;
         }
         else if (coinFlushCounter * addedCoins < 0)

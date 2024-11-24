@@ -1,12 +1,5 @@
 using Cinemachine;
-using JetBrains.Annotations;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
-using System.Runtime.Remoting.Metadata;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +7,7 @@ public class ShopController : MonoBehaviour
 {
     [SerializeField] private GameObject shopComponent;
     [SerializeField] private GameObject dt;
+    [SerializeField] private GameObject uf;
     private PlayerController player;
     private CinemachineFreeLook freeLookCamera;
     private BGMPlayer bgmPlayer;
@@ -52,13 +46,17 @@ public class ShopController : MonoBehaviour
     public bool canTriggerShop = false;
     public bool canStock = false;
     private DropTables dropTables;
+    public UpgradeFlags upgradeFlags;
 
     private void Start()
     {
         shopIsOpen = false;
         shopComponent.SetActive(false);
-        dropTables = dt.GetComponent<DropTables>();
+        dropTables = FindObjectOfType<DropTables>();
         Debug.Log($"DropTable Found: {dropTables}");
+
+        upgradeFlags = FindObjectOfType<UpgradeFlags>();
+        Debug.Log($"UpgradeFlags Found: {upgradeFlags}");
 
         player = FindObjectOfType<PlayerController>();
         freeLookCamera = FindObjectOfType<CinemachineFreeLook>();
@@ -76,6 +74,8 @@ public class ShopController : MonoBehaviour
         }
         if (canStock == true)
             StockShop();
+
+        player.isShopping = shopIsOpen;
     }
 
     public void OpenShop()
@@ -140,13 +140,38 @@ public class ShopController : MonoBehaviour
 
         if (!upgrade1Purchased)
         {
+            loadShopComponent(1);
+        }
+
+        if (!upgrade2Purchased)
+        {
+            loadShopComponent(2);
+        }
+
+        if (!upgrade3Purchased)
+        {
+            loadShopComponent(3);
+        }
+
+        if (!consumablePurchased)
+        {
+            loadShopComponent(4);
+        }
+
+        Debug.Log("Shop component activated");
+    }
+
+    private void loadShopComponent(int shopNumber)
+    {
+        if (shopNumber == 1)
+        {
             option1.SetActive(true);
             option1ShopImage.GetComponent<Image>().overrideSprite = upgrade1.shopArt;
             option1Name.GetComponent<TextMeshProUGUI>().text = upgrade1.upgradeName;
             option1Description.GetComponent<TextMeshProUGUI>().text = upgrade1.description;
         }
 
-        if (!upgrade2Purchased)
+        if (shopNumber == 2)
         {
             option2.SetActive(true);
             option2ShopImage.GetComponent<Image>().overrideSprite = upgrade2.shopArt;
@@ -154,7 +179,7 @@ public class ShopController : MonoBehaviour
             option2Description.GetComponent<TextMeshProUGUI>().text = upgrade2.description;
         }
 
-        if (!upgrade3Purchased)
+        if (shopNumber == 3)
         {
             option3.SetActive(true);
             option3ShopImage.GetComponent<Image>().overrideSprite = upgrade3.shopArt;
@@ -162,15 +187,13 @@ public class ShopController : MonoBehaviour
             option3Description.GetComponent<TextMeshProUGUI>().text = upgrade3.description;
         }
 
-        if (!consumablePurchased)
+        if (shopNumber == 4)
         {
             consumableOption.SetActive(true);
             consumableOptionShopImage.GetComponent<Image>().overrideSprite = consumable.shopArt;
             consumableOptionName.GetComponent<TextMeshProUGUI>().text = consumable.upgradeName;
             consumableOptionDescription.GetComponent<TextMeshProUGUI>().text = consumable.description;
         }
-
-        Debug.Log("Shop component activated");
     }
 
     private void StockShop() {
@@ -201,6 +224,12 @@ public class ShopController : MonoBehaviour
                     dropTables.purchase(upgrade1);
                     upgrade1Purchased = true;
                     HandleUpgrade(upgrade1);
+                    if (upgradeFlags.getUpgradeFlag("Restock"))
+                    {
+                        upgrade1 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
+                        upgrade1Purchased = false;
+                        loadShopComponent(1);
+                    }
                 }
                 else
                 {
@@ -216,6 +245,12 @@ public class ShopController : MonoBehaviour
                     dropTables.purchase(upgrade2);
                     upgrade2Purchased = true;
                     HandleUpgrade(upgrade2);
+                    if (upgradeFlags.getUpgradeFlag("Restock"))
+                    {
+                        upgrade2 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
+                        upgrade2Purchased = false;
+                        loadShopComponent(2);
+                    }
                 }
                 else
                 {
@@ -231,6 +266,12 @@ public class ShopController : MonoBehaviour
                     dropTables.purchase(upgrade3);
                     upgrade3Purchased = true;
                     HandleUpgrade(upgrade3);
+                    if (upgradeFlags.getUpgradeFlag("Restock"))
+                    {
+                        upgrade3 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
+                        upgrade3Purchased = false;
+                        loadShopComponent(3);
+                    }
                 }
                 else
                 {
@@ -246,6 +287,12 @@ public class ShopController : MonoBehaviour
                     dropTables.purchase(consumable);
                     consumablePurchased = true;
                     HandleUpgrade(consumable);
+                    if (upgradeFlags.getUpgradeFlag("Restock"))
+                    {
+                        consumable = dropTables.getRandomUpgrade(UpgradeType.Consumable);
+                        consumablePurchased = false;
+                        loadShopComponent(4);
+                    }
                 }
                 else
                 {
@@ -271,7 +318,7 @@ public class ShopController : MonoBehaviour
                 HandlePlayerModification(upgrade.playerMod);
                 break;
             case UpgradeType.GameModification:
-                HandleGameModification(upgrade.gameMod);
+                HandleGameModification(upgrade.upgradeName);
                 break;
             case UpgradeType.Consumable:
                 HandleConsumablePurchase(upgrade.consumable);
@@ -319,9 +366,9 @@ public class ShopController : MonoBehaviour
         return;
     }
 
-    private void HandleGameModification (GameModification modl)
+    private void HandleGameModification (string modName)
     {
-        return;
+        upgradeFlags.setUpgradeFlag(modName, true);
     }
 
     private void HandleConsumablePurchase(Consumable consumable)
