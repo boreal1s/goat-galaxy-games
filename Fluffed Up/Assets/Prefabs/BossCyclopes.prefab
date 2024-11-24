@@ -408,7 +408,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.47
+  m_Radius: 0.6
   m_Center: {x: 0, y: 1.48, z: 0}
 --- !u!114 &8686578335799673130
 MonoBehaviour:
@@ -427,7 +427,7 @@ MonoBehaviour:
   isRunning: 0
   healthBar: {fileID: 8686578336197616379}
   health: 1000
-  maxHealth: 0
+  maxHealth: 1000
   attackPower: 30
   attackSpeed: 1
   maxAttackSpeed: 0
@@ -476,6 +476,12 @@ MonoBehaviour:
   FloatingTextPrefab: {fileID: 7094480470114473468, guid: 349e3df807dc37045b275eaffd38a36f, type: 3}
   rootObject: {fileID: 5066869506182785553}
   fullAttackDurationInMilli: 750
+  attackType2DelayInMilli: 48
+  attackType2FullDurationInMilli: 50
+  AttackEventType2:
+    m_PersistentCalls:
+      m_Calls: []
+  electrocuteSoundEffect: {fileID: 8300000, guid: 71509604a85374612914932900e833e0, type: 3}
 --- !u!195 &8686578335799673135
 NavMeshAgent:
   m_ObjectHideFlags: 0

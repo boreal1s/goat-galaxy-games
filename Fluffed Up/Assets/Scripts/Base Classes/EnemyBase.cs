@@ -16,7 +16,8 @@ public class EnemyBase : CharacterClass
         Attacking,
         Dead,
         Dizzy,
-        Disengaging
+        Disengaging, // Cyclopes Boss only
+        Evolving, // Cyclopes Boss only
     };
 
     [System.Serializable]

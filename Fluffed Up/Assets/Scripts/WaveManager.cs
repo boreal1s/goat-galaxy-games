@@ -329,6 +329,14 @@ public class WaveManager : MonoBehaviour
             enemyScript.OnEnemyDeath += () => RemoveEnemyListener(onPlayerAttackAction, enemyScript);
             enemyScript.player = player;
 
+            // Add type 2 attack event listener for boss: enemy attacks ---> player takes damage
+            if (enemyId == "BossCyclopes")
+            {
+                EnemyBossCyclopes bossScript = newEnemy.GetComponent<EnemyBossCyclopes>();
+                void onEnemyAttackAction2(float damage, int delayInMilli) => InitiateAttackTimer(enemyScript, damage, delayInMilli, false);
+                bossScript.AttackEventType2.AddListener(onEnemyAttackAction2);
+            }
+
             currentEnemies.Add(newEnemy);
         }
     }
