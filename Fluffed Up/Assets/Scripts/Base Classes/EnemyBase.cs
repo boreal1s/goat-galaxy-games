@@ -15,7 +15,9 @@ public class EnemyBase : CharacterClass
         InitiateAttack,
         Attacking,
         Dead,
-        Dizzy
+        Dizzy,
+        Engaging,
+        Disengaging
     };
 
     [System.Serializable]

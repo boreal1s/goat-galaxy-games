@@ -37,6 +37,7 @@ public class WaveManager : MonoBehaviour
     [SerializeField] public GameObject enemyPrefabTurtle;
     [SerializeField] public GameObject enemyPrefabMiniBossDog;
     [SerializeField] public GameObject enemyPrefabMiniBossPenguin;
+    [SerializeField] public GameObject enemyPrefabBossCyclopes;
     [SerializeField] public GameObject enemySpawnArea;
     public BoxCollider[] enemySpawnBoxes;
 
@@ -82,6 +83,7 @@ public class WaveManager : MonoBehaviour
             {"Turtle", new(enemyPrefabTurtle, 3, 4, 20, 180)},
             {"BossDog", new(enemyPrefabMiniBossDog, 10, 5, 40, 400)},
             {"BossPenguin", new(enemyPrefabMiniBossPenguin, 20, 4, 60, 600)},
+            {"BossCyclopes", new(enemyPrefabBossCyclopes, 40, 10, 80, 1000)}
         };
 
         SpawnPlayer();
@@ -155,10 +157,19 @@ public class WaveManager : MonoBehaviour
     {
         Debug.Log("Computing Onslaught");
 
+        // For testing cyclopes only
+        if (currentWave == 0)
+        {
+            nextEnemyQueue.Clear();
+            nextEnemyQueue = new Queue<string>(new List<string>() { "BossCyclopes" });
+            Debug.Log("Onslaught Computed");
+            yield break;
+        }
+
         if (currentWave + 1 == 3)
         {
             nextEnemyQueue.Clear();
-            nextEnemyQueue = new Queue<string>(new List<string>() { "BossDog", "Slime", "Slime" });
+            nextEnemyQueue = new Queue<string>(new List<string>() { "BossCyclopes", "Slime", "Slime" });
             Debug.Log("Onslaught Computed");
             yield break;
         }
@@ -167,6 +178,14 @@ public class WaveManager : MonoBehaviour
         {
             nextEnemyQueue.Clear();
             nextEnemyQueue = new Queue<string>( new List<string>(){"BossPenguin", "Turtle", "Turtle"});
+            Debug.Log("Onslaught Computed");
+            yield break;
+        }
+
+        if (currentWave + 1 == 10)
+        {
+            nextEnemyQueue.Clear();
+            nextEnemyQueue = new Queue<string>( new List<string>(){"BossCyclopes", "BossDog", "BossPenguine"});
             Debug.Log("Onslaught Computed");
             yield break;
         }
