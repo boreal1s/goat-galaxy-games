@@ -84,6 +84,7 @@ public class CharacterClass : MonoBehaviour
     public AudioClip hitSoundEffect;
     public AudioClip itemUsedSoundEffect;
     public float hitSoundPitch;
+    private bool loopSoundIsPlaying = false;
     private Sound3D loopSound3D;
     #endregion
 
@@ -215,8 +216,9 @@ public class CharacterClass : MonoBehaviour
     {
         if (sound3DPrefab)
         {
-            if (loopSound3D is not null)
+            if (loopSoundIsPlaying == false)
             {
+                loopSoundIsPlaying = true;
                 loopSound3D = Instantiate(sound3DPrefab, transform.position, Quaternion.identity, null);
                 loopSound3D.audioSrc.clip = audioClip;
 
@@ -232,8 +234,11 @@ public class CharacterClass : MonoBehaviour
 
     public void StopPlaySoundEffectInALoop()
     {
-        if (loopSound3D is not null)
+        if (loopSoundIsPlaying == true)
+        {
             loopSound3D.audioSrc.Stop();
+            loopSoundIsPlaying = false;
+        }            
     }
 
     protected virtual void Die()

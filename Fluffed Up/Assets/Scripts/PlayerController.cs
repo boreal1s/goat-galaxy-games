@@ -463,7 +463,7 @@ public class PlayerController : CharacterClass
     {
         base.TakeDamage(damage, additionalDelay);
 
-        // animator.Play("GetHit");
+        animator.Play("GetHit");
     }
 
     public void UpdateCoinCounter()
