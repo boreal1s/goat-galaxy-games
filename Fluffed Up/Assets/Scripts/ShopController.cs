@@ -319,7 +319,7 @@ public class ShopController : MonoBehaviour
                 HandleModification(upgrade);
                 break;
             case UpgradeType.Consumable:
-                HandleConsumablePurchase(upgrade.consumable);
+                HandleConsumablePurchase(upgrade);
                 break;
             default:
                 break;
@@ -366,8 +366,8 @@ public class ShopController : MonoBehaviour
         upgradeFlags.setUpgradeFlag(mod.upgradeName, mod); ;
     }
 
-    private void HandleConsumablePurchase(Consumable consumable)
+    private void HandleConsumablePurchase(Upgrade upgrade)
     {
-        return;
+        player.CollectItem(new CollectibleItem(upgrade.upgradeName, (int)upgrade.consumable.power, 1, (int)upgrade.consumable.power));
     }
 }

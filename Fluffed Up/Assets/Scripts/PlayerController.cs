@@ -548,7 +548,7 @@ public class PlayerController : CharacterClass
 
     void UpdateHealthPackCounter()
     {
-        ItemProperties properties = GetItemProperties("Health");
+        ItemProperties properties = GetItemProperties("Health Potion");
         if(properties != null)
         {
             healthCounterText.text = properties.quantity.ToString();
@@ -561,7 +561,7 @@ public class PlayerController : CharacterClass
 
     void HealSelf()
     {
-        ItemProperties properties = GetItemProperties("Health");
+        ItemProperties properties = GetItemProperties("Health Potion");
         if(properties != null)
         {
             if(properties.quantity != 0 && health < maxHealth)
