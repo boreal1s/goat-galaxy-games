@@ -11011,7 +11011,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 247
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -27232,6 +27232,8 @@ MonoBehaviour:
   shopController: {fileID: 54886637}
   waveCounterText: {fileID: 0}
   countdownText: {fileID: 0}
+  enemiesAreSpawning: 0
+  isRunningWave: 0
 --- !u!4 &1322518338
 Transform:
   m_ObjectHideFlags: 0
@@ -27868,7 +27870,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 864, y: 362}
-  m_SizeDelta: {x: 155, y: 155}
+  m_SizeDelta: {x: 350, y: 350}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1367245130
 MonoBehaviour:
@@ -30745,7 +30747,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 150, y: 150}
+  m_SizeDelta: {x: 345, y: 345}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1494450718
 MonoBehaviour:
