@@ -5985,6 +5985,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   sound3DPrefab: {fileID: 1719587315714716692, guid: 58873906edcd842929a41e8353bb38b0, type: 3}
   hitSoundEffect: {fileID: 8300000, guid: 477ef4d5fa017410c8b12fc6848f3dc4, type: 3}
+  itemUsedSoundEffect: {fileID: 8300000, guid: bed2b70323b5a4ec590f2905868560f7, type: 3}
   hitSoundPitch: 1
   AttackEvent:
     m_PersistentCalls:
@@ -5998,6 +5999,7 @@ MonoBehaviour:
   attackSound: {fileID: 0}
   shootingSound: {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}
   reloadSound: {fileID: 8300000, guid: 1e76ab8760b76fd479cf5a15ef01c108, type: 3}
+  itemPickupSound: {fileID: 8300000, guid: 552975486ef2142b29309075d715336a, type: 3}
   currentAttackCounter: 0
   ATTACK_1_BOOL: 0
   ATTACK_2_BOOL: 0

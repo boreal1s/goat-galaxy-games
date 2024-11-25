@@ -22,6 +22,8 @@ public class PlayerController : CharacterClass
     public AudioClip shootingSound;
     Vector3 dodgeDir = Vector3.zero;
     public AudioClip reloadSound;
+    public AudioClip itemPickupSound;
+    public AudioClip slayHitSound;
 
     #region Coin Attributes
     private int coins;
@@ -417,6 +419,7 @@ public class PlayerController : CharacterClass
 
     public void CollectItem(CollectibleItem item)
     {
+        PlaySoundEffect(itemPickupSound);
         if (!inventory.ContainsKey(item.itemName))
         {
             // Debug.LogWarning("Adding new item to inventory");
@@ -582,5 +585,10 @@ public class PlayerController : CharacterClass
     protected virtual void Die()
     {
         animator.Play("Die");
+    }
+
+    public void PlaySlayHitSound()
+    {
+        PlaySoundEffect(slayHitSound);
     }
 }

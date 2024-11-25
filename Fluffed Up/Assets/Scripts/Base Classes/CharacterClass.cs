@@ -79,9 +79,13 @@ public class CharacterClass : MonoBehaviour
     public Sound3D sound3DPrefab;
 
     // Sound Effect Audio Clip
+    #region AudioClips for Sound Effects
+    [Header("AudioClips for Sound Effects")]
     public AudioClip hitSoundEffect;
+    public AudioClip itemUsedSoundEffect;
     public float hitSoundPitch;
     private Sound3D loopSound3D;
+    #endregion
 
     public void Jump(float modifier)
     {
@@ -159,6 +163,7 @@ public class CharacterClass : MonoBehaviour
 
     public virtual void Heal(float amount)
     {
+        PlaySoundEffect(itemUsedSoundEffect);
         health = Mathf.Clamp(health + amount, 0, maxHealth);
 
         if (healthBar != null)
