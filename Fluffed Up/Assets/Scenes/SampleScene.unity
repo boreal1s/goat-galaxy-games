@@ -11005,13 +11005,13 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 40
+  field of view: 60
   orthographic: 0
   orthographic size: 10
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 247
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -27222,6 +27222,7 @@ MonoBehaviour:
   enemyPrefabTurtle: {fileID: 5232562413803862215, guid: 6f87a4e241e274fc5b9154af772ec7e1, type: 3}
   enemyPrefabMiniBossDog: {fileID: 4412145234250513926, guid: 58ed0d3f35f344d3e84b1deca4cae991, type: 3}
   enemyPrefabMiniBossPenguin: {fileID: 5535647646396653931, guid: 6f633180a623b499faa5ac93e44d02c6, type: 3}
+  enemyPrefabBossCyclopes: {fileID: 5066869506182785551, guid: 195f9a4625737445d9e0a074de1a606b, type: 3}
   enemySpawnArea: {fileID: 82029157}
   enemySpawnBoxes: []
   shopIndicatorLight: {fileID: 2022252160}
@@ -27870,7 +27871,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 864, y: 362}
-  m_SizeDelta: {x: 155, y: 155}
+  m_SizeDelta: {x: 350, y: 350}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1367245130
 MonoBehaviour:
@@ -30747,7 +30748,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 150, y: 150}
+  m_SizeDelta: {x: 345, y: 345}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1494450718
 MonoBehaviour:
