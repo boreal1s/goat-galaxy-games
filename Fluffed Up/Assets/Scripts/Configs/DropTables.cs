@@ -236,7 +236,6 @@ public class DropTables : MonoBehaviour
                 availableUpgrades[UpgradeType.PlayerModification] += 1;
                 break;
             case UpgradeType.GameModification:
-                Debug.Log($"{upgrade.upgradeName}");
                 gameModifications.Add(upgrade, weightMap[upgrade.gameMod.rarity]);
                 availableUpgrades[UpgradeType.GameModification] += 1;
                 break;
@@ -284,6 +283,7 @@ public class DropTables : MonoBehaviour
 
     public void removeSkillSiblings(SkillType siblingType, List<Upgrade> excludeList)
     {
+        Debug.Log("Removing sibling skills");
         int iMax = skills.Count;
         for (int i = 0; i < iMax; i++)
         {

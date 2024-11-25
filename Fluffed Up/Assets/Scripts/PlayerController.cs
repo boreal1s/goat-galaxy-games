@@ -165,16 +165,23 @@ public class PlayerController : CharacterClass
 
         #region Movement Control
 
-        Vector3 moveDir = GetCameraRelativeMovement(horizontal, vertical);
-
-        Vector3 move = isDodging ? GetDirectionAndRotate() * dodgeSkill.GetSkillValue() : new Vector3(moveDir.x, 0f, moveDir.z);
-
-        if (isGrounded)
-            rb.MovePosition(transform.position + move * moveSpeed * Time.deltaTime);
+        Vector3 moveDir;
+        if (isDodging)
+        {
+            moveDir = GetDodgeDirectionAndRotate();
+            Debug.Log("DodgeDir: " + moveDir);
+            rb.MovePosition(transform.position + moveDir * moveSpeed * dodgeSkill.GetSkillValue() * Time.deltaTime);
+        } 
         else
-            rb.MovePosition(transform.position + move * moveSpeed * airSpeedMultiplier * Time.deltaTime);
+        {
+            moveDir = GetCameraRelativeMovement(horizontal, vertical);
+            if (isGrounded)
+                rb.MovePosition(transform.position + moveDir * moveSpeed * Time.deltaTime);
+            else
+                rb.MovePosition(transform.position + moveDir * moveSpeed * airSpeedMultiplier * Time.deltaTime);
+        }
 
-        isRunning = move != Vector3.zero && isGrounded && !isDodging;
+        isRunning = moveDir != Vector3.zero && isGrounded && !isDodging;
 
         #endregion
 
@@ -300,7 +307,7 @@ public class PlayerController : CharacterClass
 
         Vector3 rightRelataive = horizontal * camRight;
 
-        return GetCameraForwardRelative(vertical) + rightRelataive;
+        return Vector3.Normalize(GetCameraForwardRelative(vertical) + rightRelataive);
     }
 
     public Vector3 GetCameraForwardRelative(float vertical)
@@ -310,7 +317,7 @@ public class PlayerController : CharacterClass
         return vertical * camForward;
     }
 
-    private Vector3 GetDirectionAndRotate()
+    private Vector3 GetDodgeDirectionAndRotate()
     {
         if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
         {
