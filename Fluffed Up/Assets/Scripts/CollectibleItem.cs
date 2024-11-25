@@ -9,11 +9,19 @@ public class CollectibleItem : MonoBehaviour
     public int quantity; // quantity of the item: For example, 1 Health pack.
     public int value; // Value of item: For example, if health then gain 50 health.
 
+    public CollectibleItem(string itemName, int totalAmount, int quantity, int value)
+    {
+        this.itemName = itemName;
+        this.totalAmount = totalAmount;
+        this.quantity = quantity;
+        this.value = value;
+    }
+
     private void setItemData()
     {
         if (gameObject.name == "Heal_Up" || gameObject.name == "Heal_Up(Clone)")
         {
-            itemName = "Health";
+            itemName = "Health Potion";
             quantity = 1;
             value = 50;
             totalAmount = quantity * value;

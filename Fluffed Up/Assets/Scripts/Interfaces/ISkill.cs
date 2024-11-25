@@ -9,7 +9,9 @@ public enum SkillType
 
 public interface ISkill
 {
-    bool UseSkill();
+    void UseSkill();
+
+    void ResetSkill();
 
     bool CanUseSkill();
 
@@ -20,4 +22,7 @@ public interface ISkill
     void SetCharacter(ref PlayerController character);
 
     SkillType GetSkillType();
+
+    float GetSkillValue();
+
 }

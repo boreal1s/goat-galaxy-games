@@ -13,30 +13,41 @@ public class RollSkill : ISkill
     private float lastUsedTime;
     private PlayerController player;
     private SkillType skillType;
+    private int invincibilityFrames;
+    public Vector3 dodgeDir;
+    public float dodgeSpeed = 1.3f;
 
-    public RollSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn, SkillType skillType)
+    public RollSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn, int iframes, SkillType skillType)
     {
         this.followingUpgrades = followingUpgrades;
         this.rarity = rarity;
         this.cooldown = cldwn;
         lastUsedTime = -1;
+        this.invincibilityFrames = iframes;
     }
 
     // Method to use the skill
-    public bool UseSkill()
+    public void UseSkill()
     {
         if (CanUseSkill())
         {
             lastUsedTime = Time.time; // Update the last used time
-            player.currInvincibilityFrames = player.invincibilityFrames;
+            player.currInvincibilityFrames = invincibilityFrames;
+            player.isDodging = true;
+            player.ResetDodgeState();
+            player.animator.SetTrigger("roll");
+
             Debug.Log("Roll used.");
-            return true;
         }
         else
         {
             Debug.Log("Roll is on cooldown.");
-            return false;
         }
+    }
+
+    public void ResetSkill()
+    {
+        player.isDodging = false;
     }
 
     // Check if the skill can be used based on cooldown
@@ -64,6 +75,9 @@ public class RollSkill : ISkill
     {
         return skillType;
     }
-
+    public float GetSkillValue()
+    {
+        return dodgeSpeed;
+    }
 
 }
