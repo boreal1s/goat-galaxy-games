@@ -310,26 +310,6 @@ public class PlayerController : CharacterClass
         return vertical * camForward;
     }
 
-    //public void Dodge()
-    //{
-    //    if (dodgeSkill != null)
-    //        if (dodgeSkill.UseSkill())
-    //        {
-    //            isDodging = true;
-    //            StartCoroutine(ResetDodgeState());
-    //            if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
-    //            {
-    //                dodgeDir = transform.forward;
-    //            }
-    //            else
-    //            {
-    //                dodgeDir = Vector3.Normalize(GetCameraRelativeMovement(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
-    //                transform.forward = dodgeDir.normalized;
-    //            }
-    //            animator.SetTrigger("dodge");
-    //        }
-    //}
-
     private Vector3 GetDirectionAndRotate()
     {
         if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
@@ -339,7 +319,7 @@ public class PlayerController : CharacterClass
         else
         {
             Vector3 dir = Vector3.Normalize(GetCameraRelativeMovement(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
-            //transform.forward = dir;
+            transform.forward = dir;
             return dir.normalized;
         }
     }

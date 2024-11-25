@@ -15,15 +15,13 @@ public class BlinkSkill : MonoBehaviour, ISkill
     private float tpTime;
     AudioClip tpSound;
 
-    [SerializeField] private LayerMask teleportLayerMask = new LayerMask();
-
     public BlinkSkill(List<Upgrade> followingUpgrades, AudioClip tpSound)
     {
         this.followingUpgrades = followingUpgrades;
         this.tpSound = tpSound;
 
-        rarity = DropTables.Rarity.Legendary;
-        cooldown = 8f;
+        rarity = DropTables.Rarity.Rare;
+        cooldown = 6f;
         skillType = SkillType.Dodge;
         invincibilityFrames = 5;
         moveDistancePerFrame = 6.5f;
