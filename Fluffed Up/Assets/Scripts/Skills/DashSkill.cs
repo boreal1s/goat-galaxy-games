@@ -10,29 +10,45 @@ public class DashSkill : ISkill
     private float lastUsedTime;
     private PlayerController player;
     private SkillType skillType;
+    private int invincibilityFrames;
+    private float moveDistancePerFrame;
+    private float duration;
+    private AudioClip dashSound;
 
-    public DashSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn, SkillType skillType)
+    public DashSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, SkillType skillType, AudioClip ds)
     {
         this.followingUpgrades = followingUpgrades;
+        this.dashSound = ds;
         this.rarity = rarity;
-        this.cooldown = cldwn;
+        cooldown = 1.8f;
+        moveDistancePerFrame = 2.5f;
+        duration = 0.1f;
     }
 
     // Method to use the skill
-    public bool UseSkill()
+    public void UseSkill()
     {
         if (CanUseSkill())
         {
             lastUsedTime = Time.time; // Update the last used time
-            // Ex. Handle animations and do damage to target here.
-            Debug.Log("Roll used.");
-            return true;
+            player.currInvincibilityFrames = invincibilityFrames;
+            player.isDodging = true;
+            player.ResetDodgeState(duration);
+            player.animator.SetBool("dash", true);
+            player.PlaySoundEffect(dashSound);
+
+            Debug.Log("Dash used.");
         }
         else
         {
-            Debug.Log("Roll is on cooldown.");
-            return false;
+            Debug.Log("Dash is on cooldown.");
         }
+    }
+
+    public void ResetSkill()
+    {
+        player.animator.SetBool("dash", false);
+        player.isDodging = false;
     }
 
     // Check if the skill can be used based on cooldown
@@ -59,4 +75,10 @@ public class DashSkill : ISkill
     {
         return skillType;
     }
+
+    public float GetSkillValue()
+    {
+        return moveDistancePerFrame;
+    }
+
 }

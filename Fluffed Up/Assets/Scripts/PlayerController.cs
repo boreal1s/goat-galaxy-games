@@ -20,7 +20,6 @@ public class PlayerController : CharacterClass
     public float projectileDamage;
     public AudioClip attackSound;
     public AudioClip shootingSound;
-    Vector3 dodgeDir = Vector3.zero;
     public AudioClip reloadSound;
 
     #region Coin Attributes
@@ -109,7 +108,6 @@ public class PlayerController : CharacterClass
         attackSpeed = 1f;
         coinFlushWaitTime = 1f;
         isDodging = false;
-        invincibilityFrames = 10;
         currInvincibilityFrames = 0;
         currAmmo = maxAmmo;
         isReloading = false;
@@ -169,7 +167,7 @@ public class PlayerController : CharacterClass
 
         Vector3 moveDir = GetCameraRelativeMovement(horizontal, vertical);
 
-        Vector3 move = isDodging ? dodgeDir * 1.3f : new Vector3(moveDir.x, 0f, moveDir.z);
+        Vector3 move = isDodging ? GetDirectionAndRotate() * dodgeSkill.GetSkillValue() : new Vector3(moveDir.x, 0f, moveDir.z);
 
         if (isGrounded)
             rb.MovePosition(transform.position + move * moveSpeed * Time.deltaTime);
@@ -245,7 +243,7 @@ public class PlayerController : CharacterClass
 
         if (SelectChar.characterID == 1) // If the shooter character is selected
         {
-            if (Input.GetMouseButtonDown(0) && !isAttacking && !isReloading && currAmmo > 0)
+            if (Input.GetMouseButtonDown(0) && !isAttacking && !isReloading && currAmmo > 0 && !isDodging)
             {
                 Debug.Log("Left mouse button clicked - calling Shoot() for shooter character");
                 StartCoroutine(WaitToChamber(shotTime));
@@ -254,16 +252,16 @@ public class PlayerController : CharacterClass
         }
         else // If the sword character is selected
         {
-            if (Input.GetMouseButtonDown(0) && !isAttacking)
+            if (Input.GetMouseButtonDown(0) && !isAttacking && !isDodging)
             {
                 Debug.Log("Left mouse button clicked - calling meleeAttack() for sword character");
                 meleeAttack();
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dodgeSkill != null)
         {
-            Dodge();
+            dodgeSkill.UseSkill();
         }
 
         if (inputs.jump && isGrounded && !isJumping && !isDodging)
@@ -306,30 +304,56 @@ public class PlayerController : CharacterClass
         return vertical * camForward;
     }
 
-    public void Dodge()
+    //public void Dodge()
+    //{
+    //    if (dodgeSkill != null)
+    //        if (dodgeSkill.UseSkill())
+    //        {
+    //            isDodging = true;
+    //            StartCoroutine(ResetDodgeState());
+    //            if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
+    //            {
+    //                dodgeDir = transform.forward;
+    //            }
+    //            else
+    //            {
+    //                dodgeDir = Vector3.Normalize(GetCameraRelativeMovement(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
+    //                transform.forward = dodgeDir.normalized;
+    //            }
+    //            animator.SetTrigger("dodge");
+    //        }
+    //}
+
+    private Vector3 GetDirectionAndRotate()
     {
-        if (dodgeSkill != null)
-            if (dodgeSkill.UseSkill())
-            {
-                isDodging = true;
-                StartCoroutine(ResetDodgeState());
-                if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
-                {
-                    dodgeDir = transform.forward;
-                }
-                else
-                {
-                    dodgeDir = Vector3.Normalize(GetCameraRelativeMovement(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
-                    transform.forward = dodgeDir.normalized;
-                }
-                animator.SetTrigger("dodge");
-            }
+        if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
+        {
+            return transform.forward;
+        }
+        else
+        {
+            Vector3 dir = Vector3.Normalize(GetCameraRelativeMovement(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
+            //transform.forward = dir;
+            return dir.normalized;
+        }
     }
 
-    private IEnumerator ResetDodgeState()
+    public void ResetDodgeState(float resetTime = 0f)
     {
-        yield return new WaitForSeconds((animator.GetCurrentAnimatorStateInfo(0).length));
-        isDodging = false;
+        StartCoroutine(ResetDodgeStateCoroutine(resetTime));
+    }
+
+
+    private IEnumerator ResetDodgeStateCoroutine(float resetTime)
+    {
+        if (resetTime == 0f) {
+            yield return new WaitForSeconds((animator.GetCurrentAnimatorStateInfo(0).length));
+        }
+        else
+        {
+            yield return new WaitForSeconds(resetTime); 
+        }
+        dodgeSkill.ResetSkill();
         Debug.Log("Dodge reset.");
     }
 

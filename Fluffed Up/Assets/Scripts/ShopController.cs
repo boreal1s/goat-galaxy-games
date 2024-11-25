@@ -351,10 +351,12 @@ public class ShopController : MonoBehaviour
 
     private void HandleSkillUpgrade(ISkill skill)
     {
+        dropTables.removeSkillSiblings(skill.GetSkillType(), skill.GetFollowingUprages());
+
         skill.SetCharacter(ref player);
         if (skill.GetSkillType() == SkillType.Dodge)
         {
-            Debug.Log("Dodge purchased");
+            Debug.Log("Skill purchased");
             player.dodgeSkill = skill;
         }
     }

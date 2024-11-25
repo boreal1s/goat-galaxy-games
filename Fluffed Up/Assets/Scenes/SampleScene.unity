@@ -10933,8 +10933,8 @@ GameObject:
   - component: {fileID: 489838435}
   - component: {fileID: 489838437}
   m_Layer: 0
-  m_Name: Camera
-  m_TagString: Untagged
+  m_Name: MainCamera
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -25594,7 +25594,7 @@ GameObject:
   - component: {fileID: 1248660465}
   m_Layer: 0
   m_Name: PlayerFollowCamera
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
