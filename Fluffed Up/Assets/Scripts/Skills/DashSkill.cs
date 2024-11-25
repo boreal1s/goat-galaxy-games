@@ -34,7 +34,7 @@ public class DashSkill : ISkill
             player.currInvincibilityFrames = invincibilityFrames;
             player.isDodging = true;
             player.ResetDodgeState(duration);
-            player.animator.SetBool("dash", true);
+            player.animator.SetBool("isDashing", true);
             player.PlaySoundEffect(dashSound);
 
             Debug.Log("Dash used.");
@@ -47,7 +47,7 @@ public class DashSkill : ISkill
 
     public void ResetSkill()
     {
-        player.animator.SetBool("dash", false);
+        player.animator.SetBool("isDashing", false);
         player.isDodging = false;
     }
 
