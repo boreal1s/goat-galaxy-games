@@ -79,9 +79,14 @@ public class CharacterClass : MonoBehaviour
     public Sound3D sound3DPrefab;
 
     // Sound Effect Audio Clip
+    #region AudioClips for Sound Effects
+    [Header("AudioClips for Sound Effects")]
     public AudioClip hitSoundEffect;
+    public AudioClip itemUsedSoundEffect;
     public float hitSoundPitch;
+    private bool loopSoundIsPlaying = false;
     private Sound3D loopSound3D;
+    #endregion
 
     public void Jump(float modifier)
     {
@@ -159,6 +164,7 @@ public class CharacterClass : MonoBehaviour
 
     public virtual void Heal(float amount)
     {
+        PlaySoundEffect(itemUsedSoundEffect);
         health = Mathf.Clamp(health + amount, 0, maxHealth);
 
         if (healthBar != null)
@@ -210,8 +216,9 @@ public class CharacterClass : MonoBehaviour
     {
         if (sound3DPrefab)
         {
-            if (loopSound3D is not null)
+            if (loopSoundIsPlaying == false)
             {
+                loopSoundIsPlaying = true;
                 loopSound3D = Instantiate(sound3DPrefab, transform.position, Quaternion.identity, null);
                 loopSound3D.audioSrc.clip = audioClip;
 
@@ -227,8 +234,11 @@ public class CharacterClass : MonoBehaviour
 
     public void StopPlaySoundEffectInALoop()
     {
-        if (loopSound3D is not null)
+        if (loopSoundIsPlaying == true)
+        {
             loopSound3D.audioSrc.Stop();
+            loopSoundIsPlaying = false;
+        }            
     }
 
     protected virtual void Die()

@@ -380,12 +380,13 @@ public class WaveManager : MonoBehaviour
             float distance = Vector3.Distance(enemy.transform.position, player.transform.position);
 
             // Hit condition1: Distance smaller than threshold
-            if (playerAttacks)
+            if (playerAttacks) // This is for slayer type player only 
             {
                 bool withinDistance = distance <= player.attackDistanceThreshold;
                 bool withinAngle = math.abs(Vector3.Angle(player.transform.forward, enemy.transform.position - player.transform.position)) < 30 ;
                 if (withinDistance && withinAngle)
                 {
+                    player.PlaySlayHitSound();
                     enemy.TakeDamage(damage, player.enemyStunDelayMilli);
                 }
             }

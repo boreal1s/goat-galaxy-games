@@ -7,6 +7,8 @@ using JetBrains.Annotations;
 
 public class EnemyMiniBossDogAndPenguine : EnemyBase
 {
+    public AudioClip punchSound;
+
     public override void AIStateMachine()
     {
         if (getTimePassedLastActionInMilli() < actionDelayDefaultInMilli + additionalDelayInMilli)
@@ -54,6 +56,7 @@ public class EnemyMiniBossDogAndPenguine : EnemyBase
 
     public override void Attack()
     {
+        PlaySoundEffect(punchSound, 0.7f);
         animator.Play("Attack01");
         isAttacking = true;
         // Reset the attacking state after the attack animation finishes

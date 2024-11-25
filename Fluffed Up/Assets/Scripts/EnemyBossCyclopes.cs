@@ -17,6 +17,8 @@ public class EnemyBossCyclopes : EnemyBase
     public int attackType2FullDurationInMilli;
     public UnityEvent<float, int> AttackEventType2; // input: damage and attack time delay
     public AudioClip electrocuteSoundEffect;
+    public AudioClip biteSoundEffect;
+    public AudioClip angrySoundEffect;
 
     private bool attackType2Activated = false;
     private int heightAdjustSpeed = 1;
@@ -40,6 +42,14 @@ public class EnemyBossCyclopes : EnemyBase
         {
         case EnemyState.ChasingPlayer:
             isMoving = true;
+            if (attackType2Activated)
+            {
+                animator.SetBool("isAngry", true);
+            }
+            else
+            {
+                animator.SetBool("isAngry", false);
+            }
             break;
         case EnemyState.Disengaging:
             if (AdjustHeight())
@@ -118,6 +128,7 @@ public class EnemyBossCyclopes : EnemyBase
 
     public override void Attack()
     {
+        PlaySoundEffect(biteSoundEffect, 0.7f);
         animator.Play("Attack03");
         isAttacking = true;
         // Reset the attacking state after the attack animation finishes
@@ -159,10 +170,17 @@ public class EnemyBossCyclopes : EnemyBase
             heightAdjustSpeed = 2;
             navMeshAgent.speed *= heightAdjustSpeed;
             StartCoroutine(WaitForEvolveAnimation(1700)); // Wait for GetHit and Daunting animation
-            animator.SetBool("isAngry", true);
+            PlaySoundEffect(angrySoundEffect);
             animator.StopPlayback();
             animator.Play("GetHit");
             enemyState = EnemyState.Evolving;
+        }
+        else
+        {
+            markLastActionTimeStamp(100);
+            animator.StopPlayback();
+            animator.Play("GetHit");
+            enemyState = EnemyState.Dizzy;
         }
     }
 
