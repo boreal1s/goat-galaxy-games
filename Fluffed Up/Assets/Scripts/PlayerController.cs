@@ -243,7 +243,7 @@ public class PlayerController : CharacterClass
 
         if (SelectChar.characterID == 1) // If the shooter character is selected
         {
-            if (Input.GetMouseButtonDown(0) && !isAttacking && !isReloading && currAmmo > 0 && !isDodging)
+            if (Input.GetMouseButton(0) && !isAttacking && !isReloading && currAmmo > 0 && !isDodging)
             {
                 Debug.Log("Left mouse button clicked - calling Shoot() for shooter character");
                 StartCoroutine(WaitToChamber(shotTime));
@@ -252,7 +252,7 @@ public class PlayerController : CharacterClass
         }
         else // If the sword character is selected
         {
-            if (Input.GetMouseButtonDown(0) && !isAttacking && !isDodging)
+            if (Input.GetMouseButton(0) && !isAttacking && !isDodging)
             {
                 Debug.Log("Left mouse button clicked - calling meleeAttack() for sword character");
                 meleeAttack();
