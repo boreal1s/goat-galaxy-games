@@ -209,11 +209,24 @@ public class CharacterClass : MonoBehaviour
     {
         Debug.Log($"{gameObject.name} has died.");
         if(gameObject.name == "PlayerSlayer(Clone)" || gameObject.name == "PlayerShooter(Clone)") {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            SceneManager.LoadScene("DeathScene");
+            StartCoroutine(DelayedDeathActions()); // Start the coroutine to delay actions
         }
-        Destroy(gameObject);
+        else {
+            Destroy(gameObject);
+        }
+    }
+
+    private IEnumerator DelayedDeathActions()
+    {
+        // Wait for a few seconds before showing death screen. Death animation needs to finish
+        yield return new WaitForSeconds(2f);
+
+        // After the delay, unlock the cursor and show it
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // Uncomment to load the death scene (if necessary)
+        SceneManager.LoadScene("DeathScene");
     }
     
     public void UpdateAttackSpeed(float attackSpeedMultiplier)

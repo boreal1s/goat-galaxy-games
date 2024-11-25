@@ -357,7 +357,7 @@ public class WaveManager : MonoBehaviour
 
     void ExecuteAttack(EnemyBase enemy, float damage, bool playerAttacks)
     {
-        if (enemy != null)
+        if (enemy != null && player != null)
         {
             float distance = Vector3.Distance(player.transform.position, enemy.transform.position);
 

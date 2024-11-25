@@ -275,7 +275,13 @@ public class PlayerController : CharacterClass
         }
 
         if (currInvincibilityFrames > 0)
+        {
             currInvincibilityFrames--;
+        }
+
+        if (health <= 0) {
+            Die();
+        }
     }
 
     public Vector3 GetCameraRelativeMovement(float horizontal, float vertical)
@@ -454,7 +460,7 @@ public class PlayerController : CharacterClass
     {
         base.TakeDamage(damage, additionalDelay);
 
-        animator.Play("GetHit");
+        // animator.Play("GetHit");
     }
 
     public void UpdateCoinCounter()
@@ -571,5 +577,10 @@ public class PlayerController : CharacterClass
     public int GetCoins()
     {
         return coins;
+    }
+
+    protected virtual void Die()
+    {
+        animator.Play("Die");
     }
 }

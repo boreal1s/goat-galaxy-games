@@ -131,7 +131,11 @@ public class EnemyBase : CharacterClass
 
     protected bool IsPlayerOutOfRange()
     {
-        return math.abs(Vector3.Angle(transform.forward, player.transform.position - transform.position)) > 28 ;
+        if (player)
+        {
+            return math.abs(Vector3.Angle(transform.forward, player.transform.position - transform.position)) > 28 ;
+        }
+        return false;
     }
 
     public void InitializeStat(float health, float attackPower)
