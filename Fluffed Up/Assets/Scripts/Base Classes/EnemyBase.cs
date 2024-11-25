@@ -15,7 +15,9 @@ public class EnemyBase : CharacterClass
         InitiateAttack,
         Attacking,
         Dead,
-        Dizzy
+        Dizzy,
+        Disengaging, // Cyclopes Boss only
+        Evolving, // Cyclopes Boss only
     };
 
     [System.Serializable]
@@ -85,7 +87,7 @@ public class EnemyBase : CharacterClass
     {
         if(player)
         {
-            distanceToPlayer  = (transform.position - player.transform.position).magnitude;
+            distanceToPlayer = GetDistanceToPlayer();
             switch (enemyState)
             {
                 case EnemyState.Idle:
@@ -124,12 +126,17 @@ public class EnemyBase : CharacterClass
         }
     }
 
+    public virtual float GetDistanceToPlayer()
+    {
+        return Vector3.Distance(transform.position, player.transform.position);
+    }
+
     protected bool IsEnemyFarFromPlayer()
     {
         return distanceToPlayer > attackDistanceThreshold;
     }
 
-    protected bool IsPlayerOutOfRange()
+    protected virtual bool IsPlayerOutOfRange()
     {
         if (player)
         {

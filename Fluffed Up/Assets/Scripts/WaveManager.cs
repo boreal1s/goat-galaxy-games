@@ -37,6 +37,7 @@ public class WaveManager : MonoBehaviour
     [SerializeField] public GameObject enemyPrefabTurtle;
     [SerializeField] public GameObject enemyPrefabMiniBossDog;
     [SerializeField] public GameObject enemyPrefabMiniBossPenguin;
+    [SerializeField] public GameObject enemyPrefabBossCyclopes;
     [SerializeField] public GameObject enemySpawnArea;
     public BoxCollider[] enemySpawnBoxes;
 
@@ -82,6 +83,7 @@ public class WaveManager : MonoBehaviour
             {"Turtle", new(enemyPrefabTurtle, 3, 4, 20, 180)},
             {"BossDog", new(enemyPrefabMiniBossDog, 10, 5, 40, 400)},
             {"BossPenguin", new(enemyPrefabMiniBossPenguin, 20, 4, 60, 600)},
+            {"BossCyclopes", new(enemyPrefabBossCyclopes, 40, 10, 80, 1000)}
         };
 
         SpawnPlayer();
@@ -167,6 +169,14 @@ public class WaveManager : MonoBehaviour
         {
             nextEnemyQueue.Clear();
             nextEnemyQueue = new Queue<string>( new List<string>(){"BossPenguin", "Turtle", "Turtle"});
+            Debug.Log("Onslaught Computed");
+            yield break;
+        }
+
+        if (currentWave + 1 == 10)
+        {
+            nextEnemyQueue.Clear();
+            nextEnemyQueue = new Queue<string>( new List<string>(){"BossCyclopes", "BossDog", "BossPenguine"});
             Debug.Log("Onslaught Computed");
             yield break;
         }
@@ -319,6 +329,14 @@ public class WaveManager : MonoBehaviour
             enemyScript.OnEnemyDeath += () => RemoveEnemyListener(onPlayerAttackAction, enemyScript);
             enemyScript.player = player;
 
+            // Add type 2 attack event listener for boss: enemy attacks ---> player takes damage
+            if (enemyId == "BossCyclopes")
+            {
+                EnemyBossCyclopes bossScript = newEnemy.GetComponent<EnemyBossCyclopes>();
+                void onEnemyAttackAction2(float damage, int delayInMilli) => InitiateAttackTimer(enemyScript, damage, delayInMilli, false);
+                bossScript.AttackEventType2.AddListener(onEnemyAttackAction2);
+            }
+
             currentEnemies.Add(newEnemy);
         }
     }
@@ -359,7 +377,7 @@ public class WaveManager : MonoBehaviour
     {
         if (enemy != null && player != null)
         {
-            float distance = Vector3.Distance(player.transform.position, enemy.transform.position);
+            float distance = Vector3.Distance(enemy.transform.position, player.transform.position);
 
             // Hit condition1: Distance smaller than threshold
             if (playerAttacks)
