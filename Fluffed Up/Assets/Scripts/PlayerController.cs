@@ -137,6 +137,8 @@ public class PlayerController : CharacterClass
             };
         }
 
+        cameraTransform = GameObject.Find("MainCamera").transform;
+
         // Coin stuff
         coins = 0;
         coinFlushCounter = 0;
@@ -186,7 +188,8 @@ public class PlayerController : CharacterClass
         #endregion
 
         #region Rotate player with camera
-        if (!isDodging) {
+        if (!isDodging)
+        {
             Vector3 viewDirection = transform.position - new Vector3(cameraTransform.position.x, transform.position.y, cameraTransform.position.z);
             transform.forward = viewDirection.normalized;
         }
