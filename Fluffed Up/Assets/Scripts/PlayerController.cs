@@ -98,7 +98,7 @@ public class PlayerController : CharacterClass
     // Start is called before the first frame update
     void Start()
     {
-        moveSpeed = 100f;
+        moveSpeed = 10f;
         rotationSpeed = 360f;
         jumpForce = 5f;
         jumpTime = 3f;
@@ -196,6 +196,41 @@ public class PlayerController : CharacterClass
             coinsAreFlushing = false;
         #endregion
 
+        #region Movement Control
+
+        Vector3 moveDir;
+        if (isDodging)
+        {
+            moveDir = GetDodgeDirectionAndRotate();
+            Vector3 newVelocity = new Vector3(moveDir.x, 0, moveDir.z) * moveSpeed * dodgeSkill.GetSkillValue();
+            newVelocity.y = rb.velocity.y;
+            rb.velocity = newVelocity;
+        }
+        else
+        {
+            moveDir = GetCameraRelativeMovement(horizontal, vertical);
+            Vector3 newVelocity = new Vector3(moveDir.x, 0, moveDir.z) * moveSpeed;
+            if (!isGrounded)
+            {
+                newVelocity *= airSpeedMultiplier;
+            }
+            newVelocity.y = rb.velocity.y;
+            rb.velocity = newVelocity;
+
+        }
+
+        isRunning = moveDir != Vector3.zero && isGrounded && !isDodging;
+
+        #endregion
+
+        #region Rotate player with camera
+        if (!isDodging)
+        {
+            Vector3 viewDirection = transform.position - new Vector3(cameraTransform.position.x, transform.position.y, cameraTransform.position.z);
+            transform.forward = viewDirection.normalized;
+        }
+        #endregion
+
         #region Stat UI
         attackPowerText.text = attackPower.ToString();
         defenseText.text = defense.ToString();
@@ -218,37 +253,6 @@ public class PlayerController : CharacterClass
     {
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
-
-        #region Movement Control
-
-        Vector3 moveDir;
-        if (isDodging)
-        {
-            moveDir = GetDodgeDirectionAndRotate();
-            Debug.Log("DodgeDir: " + moveDir);
-            rb.MovePosition(transform.position + moveDir * moveSpeed * dodgeSkill.GetSkillValue() * Time.deltaTime);
-        }
-        else
-        {
-            moveDir = GetCameraRelativeMovement(horizontal, vertical);
-            if (isGrounded)
-                rb.MovePosition(transform.position + moveDir * moveSpeed * Time.deltaTime);
-            else
-                rb.MovePosition(transform.position + moveDir * moveSpeed * airSpeedMultiplier * Time.deltaTime);
-        }
-
-        isRunning = moveDir != Vector3.zero && isGrounded && !isDodging;
-
-        #endregion
-
-        #region Rotate player with camera
-        if (!isDodging)
-        {
-            Vector3 viewDirection = transform.position - new Vector3(cameraTransform.position.x, transform.position.y, cameraTransform.position.z);
-            transform.forward = viewDirection.normalized;
-        }
-        #endregion
-
 
         animator.SetBool("isRunning", isRunning);
         if (currAmmo < 1 && !isReloading)
@@ -283,8 +287,7 @@ public class PlayerController : CharacterClass
         if (inputs.jump && isGrounded && !isJumping && !isDodging)
         {
             isJumping = true;
-            rb.AddForce(Vector3.up * 10f);
-            //Jump(Time.deltaTime);
+            Jump();
         }
         healthBar.SetHealth(health);
 

@@ -9,7 +9,7 @@ public class ShopController : MonoBehaviour
     [SerializeField] private GameObject dt;
     [SerializeField] private GameObject uf;
     private PlayerController player;
-    private CinemachineFreeLook freeLookCamera;
+    private GameObject virtualCameras;
     private BGMPlayer bgmPlayer;
 
     [SerializeField] private GameObject option1;
@@ -59,7 +59,7 @@ public class ShopController : MonoBehaviour
         Debug.Log($"UpgradeFlags Found: {upgradeFlags}");
 
         player = FindObjectOfType<PlayerController>();
-        freeLookCamera = FindObjectOfType<CinemachineFreeLook>();
+        virtualCameras = GameObject.Find("VirtualCameras");
 
         GameObject bgmObject = GameObject.FindGameObjectWithTag("BGM");
         bgmPlayer = bgmObject.GetComponent<BGMPlayer>();
@@ -93,9 +93,9 @@ public class ShopController : MonoBehaviour
                 player.enabled = false; // Disable player movement
             }
 
-            if (freeLookCamera != null)
+            if (virtualCameras != null)
             {
-                freeLookCamera.enabled = false; // Disable the CinemachineFreeLook component
+                virtualCameras.SetActive(false);
             }
         }
     }
@@ -112,8 +112,8 @@ public class ShopController : MonoBehaviour
         if (player != null)
             player.enabled = true; // Re-enable player movement
 
-        if (freeLookCamera != null)
-            freeLookCamera.enabled = true; // Re-enable the CinemachineFreeLook component
+        if (virtualCameras != null)
+            virtualCameras.SetActive(true);
     }
 
     public void RestockShop()

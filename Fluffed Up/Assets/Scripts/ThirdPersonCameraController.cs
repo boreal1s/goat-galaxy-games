@@ -24,6 +24,7 @@ public class ThirdPersonCameraController : MonoBehaviour
     float standardFOV = 60f;
     float aimFOV = 40f;
     bool isAiming = false;
+    public bool isShopping = false;
 
     private void Awake()
     {
@@ -45,24 +46,28 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(playerSettings.SENSITIVITY);
-        Debug.Log(playerSettings.FINE_SENSITIVITY);
-        yaw += isAiming ? playerSettings.FINE_SENSITIVITY * -Input.GetAxis("Mouse Y") : playerSettings.SENSITIVITY * -Input.GetAxis("Mouse Y");
-        pitch += isAiming ? playerSettings.FINE_SENSITIVITY * Input.GetAxis("Mouse X") : playerSettings.SENSITIVITY * Input.GetAxis("Mouse X");
-
-        followTarget.transform.eulerAngles = new Vector3(yaw, pitch, 0f);
-
-        #region Aim mode control
-        if (inputs.aim)
+        if (!isShopping)
         {
-            aimCamera.gameObject.SetActive(true);
-            isAiming = true;
-        } else
-        {
-            aimCamera.gameObject.SetActive(false);
-            isAiming = false;
+            Debug.Log(playerSettings.SENSITIVITY);
+            Debug.Log(playerSettings.FINE_SENSITIVITY);
+            yaw += isAiming ? playerSettings.FINE_SENSITIVITY * -Input.GetAxis("Mouse Y") : playerSettings.SENSITIVITY * -Input.GetAxis("Mouse Y");
+            pitch += isAiming ? playerSettings.FINE_SENSITIVITY * Input.GetAxis("Mouse X") : playerSettings.SENSITIVITY * Input.GetAxis("Mouse X");
+
+            followTarget.transform.eulerAngles = new Vector3(yaw, pitch, 0f);
+
+            #region Aim mode control
+            if (inputs.aim)
+            {
+                aimCamera.gameObject.SetActive(true);
+                isAiming = true;
+            }
+            else
+            {
+                aimCamera.gameObject.SetActive(false);
+                isAiming = false;
+            }
+            #endregion
         }
-        #endregion
     }
 
     void OnApplicationFocus(bool focus)

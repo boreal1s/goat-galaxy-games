@@ -117,7 +117,7 @@ public class OtherPlayer : CharacterClass
         if (inputs.jump && isGrounded && !isJumping)
         {
             isJumping = true;
-            Jump(1f);
+            Jump();
         }
         healthBar.SetHealth(health);
 
