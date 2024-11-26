@@ -27,6 +27,12 @@ public class PlayerController : CharacterClass
     float timeSinceLastCoinChange;
     float coinFlushWaitTime;
     #endregion
+
+    #region Movement
+    float horizontal;
+    float vertical;
+    #endregion
+
     [System.Serializable]
     public class ItemProperties
     {
@@ -51,8 +57,6 @@ public class PlayerController : CharacterClass
     public AudioClip reloadSound;
     public AudioClip itemPickupSound;
     public AudioClip slayHitSound;
-    public AudioClip coinJiggleSound;
-    public AudioClip coinLowSound;
 
     [Header("Melee attack attibutes")]
     [SerializeField]
@@ -165,41 +169,8 @@ public class PlayerController : CharacterClass
 
     void FixedUpdate()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-
         #region Grounded Check
         isGrounded = Physics.CheckSphere(rb.transform.position, 0.2f, groundMask);
-        #endregion
-
-        #region Movement Control
-
-        Vector3 moveDir;
-        if (isDodging)
-        {
-            moveDir = GetDodgeDirectionAndRotate();
-            Debug.Log("DodgeDir: " + moveDir);
-            rb.MovePosition(transform.position + moveDir * moveSpeed * dodgeSkill.GetSkillValue() * Time.deltaTime);
-        } 
-        else
-        {
-            moveDir = GetCameraRelativeMovement(horizontal, vertical);
-            if (isGrounded)
-                rb.MovePosition(transform.position + moveDir * moveSpeed * Time.deltaTime);
-            else
-                rb.MovePosition(transform.position + moveDir * moveSpeed * airSpeedMultiplier * Time.deltaTime);
-        }
-
-        isRunning = moveDir != Vector3.zero && isGrounded && !isDodging;
-
-        #endregion
-
-        #region Rotate player with camera
-        if (!isDodging)
-        {
-            Vector3 viewDirection = transform.position - new Vector3(cameraTransform.position.x, transform.position.y, cameraTransform.position.z);
-            transform.forward = viewDirection.normalized;
-        }
         #endregion
 
         #region Coin Flush Handling
@@ -231,6 +202,41 @@ public class PlayerController : CharacterClass
             coinsAreFlushing = false;
         #endregion
 
+        #region Movement Control
+
+        Vector3 moveDir;
+        if (isDodging)
+        {
+            moveDir = GetDodgeDirectionAndRotate();
+            Vector3 newVelocity = new Vector3(moveDir.x, 0, moveDir.z) * moveSpeed * dodgeSkill.GetSkillValue();
+            newVelocity.y = rb.velocity.y;
+            rb.velocity = newVelocity;
+        }
+        else
+        {
+            moveDir = GetCameraRelativeMovement(horizontal, vertical);
+            Vector3 newVelocity = new Vector3(moveDir.x, 0, moveDir.z) * moveSpeed;
+            if (!isGrounded)
+            {
+                newVelocity *= airSpeedMultiplier;
+            }
+            newVelocity.y = rb.velocity.y;
+            rb.velocity = newVelocity;
+
+        }
+
+        isRunning = moveDir != Vector3.zero && isGrounded && !isDodging;
+
+        #endregion
+
+        #region Rotate player with camera
+        if (!isDodging)
+        {
+            Vector3 viewDirection = transform.position - new Vector3(cameraTransform.position.x, transform.position.y, cameraTransform.position.z);
+            transform.forward = viewDirection.normalized;
+        }
+        #endregion
+
         #region Stat UI
         attackPowerText.text = attackPower.ToString();
         defenseText.text = defense.ToString();
@@ -251,6 +257,9 @@ public class PlayerController : CharacterClass
     // Update is called once per frame
     void Update()
     {
+        horizontal = Input.GetAxis("Horizontal");
+        vertical = Input.GetAxis("Vertical");
+
         animator.SetBool("isRunning", isRunning);
         if (currAmmo < 1 && !isReloading)
         {
@@ -284,7 +293,7 @@ public class PlayerController : CharacterClass
         if (inputs.jump && isGrounded && !isJumping && !isDodging)
         {
             isJumping = true;
-            Jump(1f);
+            Jump();
         }
         healthBar.SetHealth(health);
 
@@ -329,13 +338,13 @@ public class PlayerController : CharacterClass
 
     private Vector3 GetDodgeDirectionAndRotate()
     {
-        if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
+        if (horizontal == 0 && vertical == 0)
         {
             return transform.forward;
         }
         else
         {
-            Vector3 dir = Vector3.Normalize(GetCameraRelativeMovement(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
+            Vector3 dir = Vector3.Normalize(GetCameraRelativeMovement(horizontal, vertical));
             transform.forward = dir;
             return dir.normalized;
         }
@@ -595,7 +604,6 @@ public class PlayerController : CharacterClass
     {
         if (coinsAreFlushing || isShopping)
         {
-            PlaySoundEffect(coinJiggleSound);
             coinsAreFlushing = false;
             coins += coinFlushCounter + addedCoins;
             coinFlushCounter = 0;

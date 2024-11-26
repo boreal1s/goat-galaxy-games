@@ -87,11 +87,11 @@ public class CharacterClass : MonoBehaviour
     private Sound3D loopSound3D;
     #endregion
 
-    public void Jump(float modifier)
+    public void Jump()
     {
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddForce(rb.transform.up * jumpForce, ForceMode.Impulse);
-        Invoke("ResetJump", jumpCooldown * modifier);
+        Invoke("ResetJump", jumpCooldown);
     }
 
     public void ResetJump()
