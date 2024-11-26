@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    private float speed = 50f;      // Speed of the projectile
+    private float speed = 300f; // Speed of the projectile
     private float damage;
     public int enemyStunDelayInMilli = 0;
 
@@ -14,6 +14,7 @@ public class Projectile : MonoBehaviour
         if (rb != null)
         {
             rb.velocity = transform.forward * speed;
+            rb.useGravity = true;
         }
         else
         {
@@ -35,13 +36,9 @@ public class Projectile : MonoBehaviour
         if (enemy != null)
         {
             enemy.TakeDamage(damage, enemyStunDelayInMilli);
-            Destroy(gameObject); // Destroy the projectile after hitting an enemy
         }
-        else
-        {
-            // Destroy the projectile if it hits any other object
-            Destroy(gameObject);
-        }
+
+        Destroy(gameObject); // Destroy the projectile after colliding with anything
     }
 
     public float GetSpeed()

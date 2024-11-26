@@ -19,6 +19,7 @@ public class PlayerController : CharacterClass
     public GameObject projectilePrefab;       // The projectile prefab to instantiate
     public Transform projectileSpawnPoint;    // Where the projectile will spawn
     public float projectileDamage;
+    private LayerMask aimLayerMask; // Invertered layer mask
     #region Coin Attributes
     public bool isShopping;
     private int coins;
@@ -111,8 +112,8 @@ public class PlayerController : CharacterClass
         jumpCooldown = 0.5f;
         airSpeedMultiplier = 1f;
         attackPower = 70f;
-        health = 100f;
-        maxHealth = 100f;
+        health = 100000000000000f;
+        maxHealth = 100000000000000f;
         CurrentAttackCounter = 0;
         attackComboMax = 3;
         attackComboCooldown = 1f;
@@ -149,6 +150,8 @@ public class PlayerController : CharacterClass
         }
 
         cameraTransform = GameObject.Find("MainCamera").transform;
+        projectileSpawnPoint = GameObject.Find("ProjectileSpawnPoint").transform;
+        aimLayerMask = LayerMask.GetMask("Player", "MiniMap");
 
         // Coin stuff
         coins = 0;
@@ -374,47 +377,47 @@ public class PlayerController : CharacterClass
     void Shoot()
     {
         Debug.Log("Shoot() method is being called");
-
         PlaySoundEffect(shootingSound);
 
-        // Make projectile shoot towards camera's forward direction
-        Vector3 shootDirection = cameraTransform.forward;
-
-        // If you want to shoot slightly above the camera's forward direction, you can add cameraTransform.up
-        shootDirection += cameraTransform.up * 0.115f;  // Slightly shoot upward
-        shootDirection -= cameraTransform.right * 0.025f;  // This slightly shoots the projectile to the right or left if needed
-
-        // Normalize the shoot direction to ensure consistent projectile speed
-        shootDirection.Normalize();
+        Vector3 aimDirection = GetAimDirection() - projectileSpawnPoint.transform.position;
+        Debug.DrawLine(projectileSpawnPoint.transform.position, 1000f * aimDirection, Color.green, 2f);
 
         // Instantiate the projectile at the spawn point
-        GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
+        GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.transform.position, Quaternion.LookRotation(aimDirection, Vector3.up));
+        //projectile.transform.forward = aimDirection;
 
         // Ignore collision between the projectile and the player
-        Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
+        // Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
         projectile.GetComponent<Projectile>().SetDamage(projectileDamage);
-
-        // Set the projectile's direction based on the adjusted shoot direction
-        projectile.transform.forward = shootDirection;
-
-        // Apply velocity to the projectile using the Rigidbody component
-        Rigidbody rb = projectile.GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.velocity = shootDirection * projectile.GetComponent<Projectile>().GetSpeed(); //Set velocity with direction and speed
-
-            // apply gravity
-            rb.useGravity = true;
-        }
 
         ammoIndicators[currAmmo].canvasRenderer.SetAlpha(0.2f);
         currAmmo -= 1;
+
     }
 
-    private Vector3 GetShootLocation()
+    private Vector3 GetAimDirection()
     {
-
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit raycastHit, aimLayerMask))
+        {
+            Debug.DrawLine(Camera.main.transform.position, raycastHit.point, Color.blue, 2f, false);
+            return raycastHit.point;
+        }
+        Debug.DrawLine(Camera.main.transform.position, Camera.main.transform.forward * 10000f, Color.red, 2f, false);
+        return Camera.main.transform.forward * 10000f;
     }
+
+    //private Vector3 GetMousePositionInWorld()
+    //{
+    //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //    if(Physics.Raycast(ray, out RaycastHit raycastHit))
+    //    {
+    //        if (Physics.Raycast(projectileSpawnPoint.position, raycastHit.point, out RaycastHit target)) {
+    //            return target.point;
+    //        }
+    //        return Vector3.zero;
+    //    }
+    //    return Vector3.zero;
+    //}
 
     public IEnumerator WaitToReload(float duration)
     {
