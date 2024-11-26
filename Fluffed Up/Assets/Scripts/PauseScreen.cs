@@ -4,11 +4,14 @@ using UnityEngine.SceneManagement;
 public class PauseScreen : MonoBehaviour
 {
     private bool isPaused = false;
+    private BGMPlayer bgmPlayer;
     [SerializeField] private GameObject pauseScreenUI;
 
     void Start()
     {
         pauseScreenUI.SetActive(false);
+        GameObject bgmObject = GameObject.FindGameObjectWithTag("BGM");
+        bgmPlayer = bgmObject.GetComponent<BGMPlayer>();
     }
 
     void Update()
@@ -28,6 +31,7 @@ public class PauseScreen : MonoBehaviour
 
     void PauseGame()
     {
+        bgmPlayer.DimAndDull();
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -37,6 +41,7 @@ public class PauseScreen : MonoBehaviour
 
     public void ResumeGame()
     {
+        bgmPlayer.LoudAndClear();
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

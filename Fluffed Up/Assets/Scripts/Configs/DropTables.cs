@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using KaimiraGames;
 using Unity.VisualScripting;
+using UnityEngine.Rendering;
 
 public class DropTables : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class DropTables : MonoBehaviour
         Rare = 2,
         Legendary = 3,
     }
+
+    #region Sound Effects
+    AudioClip blinkAudio;
+    AudioClip dashAudio;
+    #endregion
 
     #region Artwork
     Sprite attackPowerShopSprite;
@@ -38,7 +44,8 @@ public class DropTables : MonoBehaviour
     Sprite healthPotionToolbarSprite;
     #endregion
 
-    #region Weights
+
+    #region Weights & Coefficients
     static int commonWeight = 40;
     static int uncommonWeight = 40;
     static int rareWeight = 40;
@@ -56,6 +63,8 @@ public class DropTables : MonoBehaviour
         { Rarity.Rare, rareWeight },
         { Rarity.Legendary, legendaryWeight },
     };
+
+    private float statUpgradeIncreaseFactor = 1.2f;
     #endregion
 
     public WeightedList<UpgradeType> upgradeTypeTable;
@@ -91,6 +100,11 @@ public class DropTables : MonoBehaviour
         healthPotionToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
         #endregion
 
+        #region Set Sound Effects
+        blinkAudio = Resources.Load<AudioClip>("Sounds/teleport-90137");
+        dashAudio = Resources.Load<AudioClip>("Sounds/JumpGrunt");
+        #endregion
+
         upgradeTypeTable = new WeightedList<UpgradeType>
         {
             { UpgradeType.Skill, skillWeight },
@@ -115,24 +129,24 @@ public class DropTables : MonoBehaviour
             {attackSpeedUpgrade, uncommonWeight},
         };
 
-        // Skill
-        Upgrade blinkSkill = new Upgrade("Blink", "Instantaneously teleport a short distance", UpgradeType.Skill, 200, blinkSkillShopSprite, blinkSkillToolbarSprite, new BlinkSkill(new List<Upgrade>(), Rarity.Rare, 4f, SkillType.Dodge));
-        Upgrade dashSkill = new Upgrade("Dash", "A faster way to dodge", UpgradeType.Skill, 100, blinkSkillShopSprite, blinkSkillToolbarSprite, new DashSkill(new List<Upgrade>(), Rarity.Uncommon, 3f, SkillType.Dodge));
-        Upgrade dodgeSkill = new Upgrade("Roll", "Swiftly roll out of harms way", UpgradeType.Skill, 55, dodgeSkillShopSprite, dodgeSkillToolbarSprite, new RollSkill(new List<Upgrade>() { blinkSkill, dashSkill }, Rarity.Common, 1.2f, SkillType.Dodge));
+        // Skills
+        Upgrade blinkSkill = new Upgrade("Blink", "Instantaneously teleport a short distance", UpgradeType.Skill, 200, blinkSkillShopSprite, blinkSkillToolbarSprite, new BlinkSkill(new List<Upgrade>(), blinkAudio));
+        Upgrade dashSkill = new Upgrade("Dash", "A faster way to dodge", UpgradeType.Skill, 100, blinkSkillShopSprite, blinkSkillToolbarSprite, new DashSkill(new List<Upgrade>(), Rarity.Uncommon, SkillType.Dodge, dashAudio));
+        Upgrade dodgeSkill = new Upgrade("Roll", "Swiftly roll out of harms way", UpgradeType.Skill, 55, dodgeSkillShopSprite, dodgeSkillToolbarSprite, new RollSkill(new List<Upgrade>() { blinkSkill, dashSkill }, Rarity.Common, 1.2f, 10, SkillType.Dodge));
         skills = new WeightedList<Upgrade>()
         {
             { dodgeSkill, commonWeight},
         };
 
         // Player Modifications
-        Upgrade fleshWoundMod = new Upgrade("Flesh Wound", "Occassionally negate a small amount of damage.", UpgradeType.PlayerModification, 175, fleshWoundModShopSprite, fleshWoundModToolbarSprite, new PlayerModification(new List<Upgrade>(), Rarity.Rare));
+        Upgrade fleshWoundMod = new Upgrade("Flesh Wound", "Occassionally negate a significant amount of damage.", UpgradeType.PlayerModification, 175, fleshWoundModShopSprite, fleshWoundModToolbarSprite, new PlayerModification(new List<Upgrade>(), Rarity.Rare, 0.80f, 0.1f));
         playerModifications = new WeightedList<Upgrade>()
         {
             {fleshWoundMod, rareWeight},
         };
 
         // Game Modifications
-        Upgrade restockMod = new Upgrade("Restock", "The shop now restocks on purchase.", UpgradeType.GameModification, 120, restockModShopSprite, restockModToolbarSprite, new GameModification(new List<Upgrade>(), Rarity.Rare));
+        Upgrade restockMod = new Upgrade("Restock", "The shop now restocks on purchase.", UpgradeType.GameModification, 120, restockModShopSprite, restockModToolbarSprite, new GameModification(new List<Upgrade>(), Rarity.Rare, 1f));
         gameModifications = new WeightedList<Upgrade>()
         {
             {restockMod, rareWeight},
@@ -184,17 +198,17 @@ public class DropTables : MonoBehaviour
                 break;
             case UpgradeType.Skill:
                 upgrade = skills.Next();
-                skills.SetWeight(upgrade, 0);
+                skills.Remove(upgrade);
                 availableUpgrades[UpgradeType.Skill] -= 1;
                 break;
             case UpgradeType.PlayerModification:
                 upgrade = playerModifications.Next();
-                playerModifications.SetWeight(upgrade, 0);
+                skills.Remove(upgrade);
                 availableUpgrades[UpgradeType.PlayerModification] -= 1;
                 break;
             case UpgradeType.GameModification:
                 upgrade = gameModifications.Next();
-                gameModifications.SetWeight(upgrade, 0);
+                skills.Remove(upgrade);
                 availableUpgrades[UpgradeType.GameModification] -= 1;
                 break;
             case UpgradeType.Consumable:
@@ -214,16 +228,15 @@ public class DropTables : MonoBehaviour
         switch (upgrade.upgradeType)
         {
             case UpgradeType.Skill:
-                skills.SetWeight(upgrade, weightMap[upgrade.skill.GetRarity()]);
+                skills.Add(upgrade, weightMap[upgrade.skill.GetRarity()]);
                 availableUpgrades[UpgradeType.Skill] += 1;
                 break;
             case UpgradeType.PlayerModification:
-                playerModifications.SetWeight(upgrade, weightMap[upgrade.playerMod.rarity]);
+                playerModifications.Add(upgrade, weightMap[upgrade.playerMod.rarity]);
                 availableUpgrades[UpgradeType.PlayerModification] += 1;
                 break;
             case UpgradeType.GameModification:
-                Debug.Log($"{upgrade.upgradeName}");
-                gameModifications.SetWeight(upgrade, weightMap[upgrade.gameMod.rarity]);
+                gameModifications.Add(upgrade, weightMap[upgrade.gameMod.rarity]);
                 availableUpgrades[UpgradeType.GameModification] += 1;
                 break;
             default:
@@ -237,7 +250,7 @@ public class DropTables : MonoBehaviour
         switch (upgrade.upgradeType)
         {
             case UpgradeType.StatUpgrade:
-                statUpgrades[statUpgrades.IndexOf(upgrade)].cost = (int) Math.Round(statUpgrades[statUpgrades.IndexOf(upgrade)].cost * 1.5f);
+                statUpgrades[statUpgrades.IndexOf(upgrade)].cost = (int) Math.Round(statUpgrades[statUpgrades.IndexOf(upgrade)].cost * statUpgradeIncreaseFactor);
                 break;
             case UpgradeType.Skill:
                 followingUpgrades = upgrade.skill.GetFollowingUprages();
@@ -265,6 +278,22 @@ public class DropTables : MonoBehaviour
                 break;
             default:
                 break;
+        }
+    }
+
+    public void removeSkillSiblings(SkillType siblingType, List<Upgrade> excludeList)
+    {
+        Debug.Log("Removing sibling skills");
+        int iMax = skills.Count;
+        for (int i = 0; i < iMax; i++)
+        {
+            if (skills[i].skill.GetSkillType() == siblingType && !excludeList.Contains(skills[i]))
+            {
+                skills.RemoveAt(i);
+                availableUpgrades[UpgradeType.Skill] -= 1;
+                i--;
+                iMax -= 1;
+            }
         }
     }
 }

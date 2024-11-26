@@ -10,29 +10,62 @@ public class BlinkSkill : ISkill
     private float lastUsedTime;
     private PlayerController player;
     private SkillType skillType;
+    private int invincibilityFrames;
+    private float moveDistancePerFrame;
+    private float tpTime;
+    AudioClip tpSound;
 
-    public BlinkSkill(List<Upgrade> followingUpgrades, DropTables.Rarity rarity, float cldwn, SkillType skillType)
+    public BlinkSkill(List<Upgrade> followingUpgrades, AudioClip tpSound)
     {
         this.followingUpgrades = followingUpgrades;
-        this.rarity = rarity;
-        this.cooldown = cldwn;
-        this.skillType = skillType;
+        this.tpSound = tpSound;
+
+        rarity = DropTables.Rarity.Rare;
+        cooldown = 6f;
+        skillType = SkillType.Dodge;
+        invincibilityFrames = 5;
+        moveDistancePerFrame = 6.5f;
+        tpTime = 0.4f;
     }
 
     // Method to use the skill
-    public bool UseSkill()
+    public void UseSkill()
     {
         if (CanUseSkill())
         {
-            lastUsedTime = Time.time; // Update the last used time
-            // Ex. Handle animations and do damage to target here.
             Debug.Log("Blink used.");
-            return true;
+            lastUsedTime = Time.time; // Update the last used time
+            player.currInvincibilityFrames = invincibilityFrames;
+            player.isDodging = true;
+
+            foreach (SkinnedMeshRenderer sr in player.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                sr.enabled = false;
+            }
+            foreach (MeshRenderer r in player.gameObject.GetComponentsInChildren<MeshRenderer>())
+            {
+                r.enabled = false;
+            }
+            player.PlaySoundEffect(tpSound);
+            player.ResetDodgeState(tpTime);
+            Debug.Log("Blinked!");
         }
         else
         {
             Debug.Log("Blink is on cooldown.");
-            return false;
+        }
+    }
+
+    public void ResetSkill()
+    {
+        player.isDodging = false;
+        foreach (SkinnedMeshRenderer sr in player.gameObject.GetComponentsInChildren<SkinnedMeshRenderer>())
+        {
+            sr.enabled = true;
+        }
+        foreach (MeshRenderer r in player.gameObject.GetComponentsInChildren<MeshRenderer>())
+        {
+            r.enabled = true;
         }
     }
 
@@ -59,5 +92,10 @@ public class BlinkSkill : ISkill
     public SkillType GetSkillType()
     {
         return skillType;
+    }
+
+    public float GetSkillValue()
+    {
+        return moveDistancePerFrame;
     }
 }
