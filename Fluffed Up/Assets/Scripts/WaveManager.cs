@@ -27,10 +27,7 @@ public class WaveManager : MonoBehaviour
     }
 
     public PlayerController player;
-    public GameObject playerAimCamera;
-    public GameObject playerFollowCamera;
     public GameObject[] playerPrefabs;
-    public Transform cameraTransform;
 
     // List of enemies
     [SerializeField] public GameObject enemyPrefabSlime;
@@ -119,16 +116,6 @@ public class WaveManager : MonoBehaviour
     {
         GameObject playerGameObject = Instantiate(playerPrefabs[SelectChar.characterID], new Vector3(0, 0.052f, 0), Quaternion.identity);
         player = playerGameObject.GetComponent<PlayerController>();
-        player.cameraTransform = cameraTransform;
-        Transform playerCameraRoot = playerGameObject.transform.Find("CameraRoot");
-        
-        CinemachineFreeLook aimCameraFreeLook = playerAimCamera.GetComponent<CinemachineFreeLook>();
-        aimCameraFreeLook.Follow = playerCameraRoot;
-        aimCameraFreeLook.LookAt = playerCameraRoot;
-
-        CinemachineFreeLook followCameraFreeLook = playerFollowCamera.GetComponent<CinemachineFreeLook>();
-        followCameraFreeLook.Follow = playerCameraRoot;
-        followCameraFreeLook.LookAt = playerCameraRoot;
 
         waveCounterText = playerGameObject.transform.Find("PlayerUI/WaveCounter").GetComponent<TextMeshProUGUI>();
         countdownText = playerGameObject.transform.Find("PlayerUI/TimerCountdown").GetComponent<TextMeshProUGUI>();
@@ -380,12 +367,13 @@ public class WaveManager : MonoBehaviour
             float distance = Vector3.Distance(enemy.transform.position, player.transform.position);
 
             // Hit condition1: Distance smaller than threshold
-            if (playerAttacks)
+            if (playerAttacks) // This is for slayer type player only 
             {
                 bool withinDistance = distance <= player.attackDistanceThreshold;
                 bool withinAngle = math.abs(Vector3.Angle(player.transform.forward, enemy.transform.position - player.transform.position)) < 30 ;
                 if (withinDistance && withinAngle)
                 {
+                    player.PlaySlayHitSound();
                     enemy.TakeDamage(damage, player.enemyStunDelayMilli);
                 }
             }

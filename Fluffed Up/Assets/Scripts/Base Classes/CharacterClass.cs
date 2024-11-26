@@ -35,7 +35,6 @@ public class CharacterClass : MonoBehaviour
     #region Dodging
     public ISkill dodgeSkill;
     public bool isDodging;
-    public int invincibilityFrames;
     public int currInvincibilityFrames;
     #endregion
 
@@ -68,7 +67,7 @@ public class CharacterClass : MonoBehaviour
     protected int maxAmmo = 13;
     protected int currAmmo;
     protected float reloadTime = 2f;
-    protected float shotTime = 0.2f;
+    protected float shotTime = 0.4f;
     public bool isReloading;
     protected Dictionary<int, Image> ammoIndicators;
     #endregion
@@ -79,9 +78,14 @@ public class CharacterClass : MonoBehaviour
     public Sound3D sound3DPrefab;
 
     // Sound Effect Audio Clip
+    #region Sound Effects for Character Class
+    [Header("Sound Effects for Character Class")]
     public AudioClip hitSoundEffect;
     public float hitSoundPitch;
+    public AudioClip healSoundEffect;    
+    private bool loopSoundIsPlaying = false;
     private Sound3D loopSound3D;
+    #endregion
 
     public void Jump(float modifier)
     {
@@ -159,6 +163,7 @@ public class CharacterClass : MonoBehaviour
 
     public virtual void Heal(float amount)
     {
+        PlaySoundEffect(healSoundEffect);
         health = Mathf.Clamp(health + amount, 0, maxHealth);
 
         if (healthBar != null)
@@ -190,7 +195,7 @@ public class CharacterClass : MonoBehaviour
         }
     }
 
-    public void PlaySoundEffect(AudioClip audioClip, float pitch = 1.0f)
+    public void PlaySoundEffect(AudioClip audioClip, float pitch = 1.0f, float audioLevel = 1.0f)
     {
         if (sound3DPrefab)
         {
@@ -201,6 +206,7 @@ public class CharacterClass : MonoBehaviour
             sound3DObject.audioSrc.minDistance = 5f;
             sound3DObject.audioSrc.maxDistance = 100f;
             sound3DObject.audioSrc.pitch = pitch;
+            sound3DObject.audioSrc.volume = audioLevel;
 
             sound3DObject.audioSrc.Play();
         }
@@ -210,8 +216,9 @@ public class CharacterClass : MonoBehaviour
     {
         if (sound3DPrefab)
         {
-            if (loopSound3D is not null)
+            if (loopSoundIsPlaying == false)
             {
+                loopSoundIsPlaying = true;
                 loopSound3D = Instantiate(sound3DPrefab, transform.position, Quaternion.identity, null);
                 loopSound3D.audioSrc.clip = audioClip;
 
@@ -227,8 +234,11 @@ public class CharacterClass : MonoBehaviour
 
     public void StopPlaySoundEffectInALoop()
     {
-        if (loopSound3D is not null)
+        if (loopSoundIsPlaying == true)
+        {
             loopSound3D.audioSrc.Stop();
+            loopSoundIsPlaying = false;
+        }            
     }
 
     protected virtual void Die()
