@@ -4249,7 +4249,6 @@ MonoBehaviour:
   attackDelayInMilli: 300
   defense: 0
   isDodging: 0
-  invincibilityFrames: 0
   currInvincibilityFrames: 0
   isBurning: 0
   isFrozen: 0
@@ -4284,6 +4283,8 @@ MonoBehaviour:
   attackSound: {fileID: 8300000, guid: be779a7c804054a8cbf743ef9a43cd0d, type: 3}
   shootingSound: {fileID: 0}
   reloadSound: {fileID: 0}
+  isShopping: 0
+  upgradeFlags: {fileID: 0}
   currentAttackCounter: 0
   ATTACK_1_BOOL: 0
   ATTACK_2_BOOL: 0
