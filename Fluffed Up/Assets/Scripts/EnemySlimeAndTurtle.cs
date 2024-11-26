@@ -7,6 +7,8 @@ using JetBrains.Annotations;
 
 public class EnemySlimeAndTurtle : EnemyBase
 {
+    public AudioClip monsterBiteSound;
+
     public override void AIStateMachine()
     {
         if (getTimePassedLastActionInMilli() < actionDelayDefaultInMilli + additionalDelayInMilli)
@@ -48,6 +50,7 @@ public class EnemySlimeAndTurtle : EnemyBase
 
     public override void Attack()
     {
+        PlaySoundEffect(monsterBiteSound, hitSoundPitch);
         animator.Play("Attack01");
         isAttacking = true;
         // Reset the attacking state after the attack animation finishes

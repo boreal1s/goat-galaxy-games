@@ -458,6 +458,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   sound3DPrefab: {fileID: 1719587315714716692, guid: 58873906edcd842929a41e8353bb38b0, type: 3}
   hitSoundEffect: {fileID: 8300000, guid: b992ab776242a4a1b96677b578374e95, type: 3}
+  itemUsedSoundEffect: {fileID: 0}
   hitSoundPitch: 1
   baseHealth: 0
   baseAttackPower: 0
@@ -482,6 +483,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   electrocuteSoundEffect: {fileID: 8300000, guid: 71509604a85374612914932900e833e0, type: 3}
+  biteSoundEffect: {fileID: 8300000, guid: a3944cadfce7248fbb99c1b28aa07ae8, type: 3}
+  angrySoundEffect: {fileID: 8300000, guid: 8d9e1850010c0455c9c7beb5067ec05b, type: 3}
 --- !u!195 &8686578335799673135
 NavMeshAgent:
   m_ObjectHideFlags: 0

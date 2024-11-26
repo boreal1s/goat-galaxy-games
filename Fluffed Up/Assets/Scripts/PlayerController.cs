@@ -14,14 +14,11 @@ public class PlayerController : CharacterClass
     // Player attributes
     public UnityEvent<float, int> AttackEvent;
     public UnityEvent<float> DamageEvent;
+
     [Header("Shooting")]
     public GameObject projectilePrefab;       // The projectile prefab to instantiate
     public Transform projectileSpawnPoint;    // Where the projectile will spawn
     public float projectileDamage;
-    public AudioClip attackSound;
-    public AudioClip shootingSound;
-    public AudioClip reloadSound;
-
     #region Coin Attributes
     public bool isShopping;
     private int coins;
@@ -30,7 +27,6 @@ public class PlayerController : CharacterClass
     float timeSinceLastCoinChange;
     float coinFlushWaitTime;
     #endregion
-
     [System.Serializable]
     public class ItemProperties
     {
@@ -48,7 +44,18 @@ public class PlayerController : CharacterClass
     private Dictionary<string, ItemProperties> inventory = new Dictionary<string, ItemProperties>();
     public UpgradeFlags upgradeFlags;
 
+    [Header("Sound Effects for PlayerController")]
+    [SerializeField]
+    public AudioClip attackSound;
+    public AudioClip shootingSound;
+    public AudioClip reloadSound;
+    public AudioClip itemPickupSound;
+    public AudioClip slayHitSound;
+    public AudioClip coinJiggleSound;
+    public AudioClip coinLowSound;
+
     [Header("Melee attack attibutes")]
+    [SerializeField]
     private float attackComboCooldown;
     private int attackComboMax;
     public int CurrentAttackCounter
@@ -441,6 +448,7 @@ public class PlayerController : CharacterClass
 
     public void CollectItem(CollectibleItem item)
     {
+        PlaySoundEffect(itemPickupSound, 1, 0.5f);
         if (!inventory.ContainsKey(item.itemName))
         {
             // Debug.LogWarning("Adding new item to inventory");
@@ -492,7 +500,7 @@ public class PlayerController : CharacterClass
         }
         base.TakeDamage(damage, additionalDelay);
 
-        // animator.Play("GetHit");
+        animator.Play("GetHit");
     }
 
     public void UpdateCoinCounter()
@@ -587,6 +595,7 @@ public class PlayerController : CharacterClass
     {
         if (coinsAreFlushing || isShopping)
         {
+            PlaySoundEffect(coinJiggleSound);
             coinsAreFlushing = false;
             coins += coinFlushCounter + addedCoins;
             coinFlushCounter = 0;
@@ -614,5 +623,10 @@ public class PlayerController : CharacterClass
     protected virtual void Die()
     {
         animator.Play("Die");
+    }
+
+    public void PlaySlayHitSound()
+    {
+        PlaySoundEffect(slayHitSound);
     }
 }
