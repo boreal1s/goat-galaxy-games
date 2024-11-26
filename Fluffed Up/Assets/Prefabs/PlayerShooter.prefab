@@ -5903,7 +5903,12 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'lowerarm_l'\n\tTransform 'neck_01'\n\tTransform
+    'ring_01_r'\n\tTransform 'foot_l'\n\tTransform 'foot_r'\n\tTransform 'pelvis'\n\tTransform
+    'spine_03'\n\tTransform 'index_02_l'\n\tTransform 'lowerarm_r'\n\tTransform 'head'\n\tand
+    more ...\n\tFrom animation clip 'Dash'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -5963,7 +5968,6 @@ MonoBehaviour:
   attackDelayInMilli: 0
   defense: 0
   isDodging: 0
-  invincibilityFrames: 0
   currInvincibilityFrames: 0
   isBurning: 0
   isFrozen: 0
@@ -5998,6 +6002,8 @@ MonoBehaviour:
   attackSound: {fileID: 0}
   shootingSound: {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}
   reloadSound: {fileID: 8300000, guid: 1e76ab8760b76fd479cf5a15ef01c108, type: 3}
+  isShopping: 0
+  upgradeFlags: {fileID: 0}
   currentAttackCounter: 0
   ATTACK_1_BOOL: 0
   ATTACK_2_BOOL: 0
