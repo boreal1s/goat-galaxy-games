@@ -15,7 +15,9 @@ public class EnemyBase : CharacterClass
         InitiateAttack,
         Attacking,
         Dead,
-        Dizzy
+        Dizzy,
+        Disengaging, // Cyclopes Boss only
+        Evolving, // Cyclopes Boss only
     };
 
     [System.Serializable]
@@ -62,7 +64,6 @@ public class EnemyBase : CharacterClass
         animator = GetComponent<Animator>();
         enemyState = EnemyState.Idle;
         navMeshAgent = GetComponent<NavMeshAgent>();
-        invincibilityFrames = 0;
 
         // Temporary initialization since this is the base.
         // However, we can utilize this method for inherited classes.
@@ -85,7 +86,7 @@ public class EnemyBase : CharacterClass
     {
         if(player)
         {
-            distanceToPlayer  = (transform.position - player.transform.position).magnitude;
+            distanceToPlayer = GetDistanceToPlayer();
             switch (enemyState)
             {
                 case EnemyState.Idle:
@@ -124,14 +125,23 @@ public class EnemyBase : CharacterClass
         }
     }
 
+    public virtual float GetDistanceToPlayer()
+    {
+        return Vector3.Distance(transform.position, player.transform.position);
+    }
+
     protected bool IsEnemyFarFromPlayer()
     {
         return distanceToPlayer > attackDistanceThreshold;
     }
 
-    protected bool IsPlayerOutOfRange()
+    protected virtual bool IsPlayerOutOfRange()
     {
-        return math.abs(Vector3.Angle(transform.forward, player.transform.position - transform.position)) > 28 ;
+        if (player)
+        {
+            return math.abs(Vector3.Angle(transform.forward, player.transform.position - transform.position)) > 28 ;
+        }
+        return false;
     }
 
     public void InitializeStat(float health, float attackPower)

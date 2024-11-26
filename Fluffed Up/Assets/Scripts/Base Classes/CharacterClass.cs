@@ -35,7 +35,6 @@ public class CharacterClass : MonoBehaviour
     #region Dodging
     public ISkill dodgeSkill;
     public bool isDodging;
-    public int invincibilityFrames;
     public int currInvincibilityFrames;
     #endregion
 
@@ -81,6 +80,7 @@ public class CharacterClass : MonoBehaviour
     // Sound Effect Audio Clip
     public AudioClip hitSoundEffect;
     public float hitSoundPitch;
+    private Sound3D loopSound3D;
 
     public void Jump(float modifier)
     {
@@ -205,15 +205,53 @@ public class CharacterClass : MonoBehaviour
         }
     }
 
+    public void PlaySoundEffectInALoop(AudioClip audioClip, float pitch = 1.0f)
+    {
+        if (sound3DPrefab)
+        {
+            if (loopSound3D is not null)
+            {
+                loopSound3D = Instantiate(sound3DPrefab, transform.position, Quaternion.identity, null);
+                loopSound3D.audioSrc.clip = audioClip;
+
+                loopSound3D.audioSrc.minDistance = 5f;
+                loopSound3D.audioSrc.maxDistance = 100f;
+                loopSound3D.audioSrc.loop = true;
+                loopSound3D.audioSrc.pitch = pitch;
+
+                loopSound3D.audioSrc.Play();
+            }
+        }
+    }
+
+    public void StopPlaySoundEffectInALoop()
+    {
+        if (loopSound3D is not null)
+            loopSound3D.audioSrc.Stop();
+    }
+
     protected virtual void Die()
     {
         Debug.Log($"{gameObject.name} has died.");
         if(gameObject.name == "PlayerSlayer(Clone)" || gameObject.name == "PlayerShooter(Clone)") {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            SceneManager.LoadScene("DeathScene");
+            StartCoroutine(DelayedDeathActions()); // Start the coroutine to delay actions
         }
-        Destroy(gameObject);
+        else {
+            Destroy(gameObject);
+        }
+    }
+
+    private IEnumerator DelayedDeathActions()
+    {
+        // Wait for a few seconds before showing death screen. Death animation needs to finish
+        yield return new WaitForSeconds(2f);
+
+        // After the delay, unlock the cursor and show it
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // Uncomment to load the death scene (if necessary)
+        SceneManager.LoadScene("DeathScene");
     }
     
     public void UpdateAttackSpeed(float attackSpeedMultiplier)
