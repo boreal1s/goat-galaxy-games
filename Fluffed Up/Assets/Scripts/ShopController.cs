@@ -32,6 +32,11 @@ public class ShopController : MonoBehaviour
     [SerializeField] private GameObject consumableOptionName;
     [SerializeField] private GameObject consumableOptionDescription;
 
+    [Header("Sound Effects")]
+    [SerializeField]
+    public AudioClip coinJiggleSound;
+    public AudioClip coinLowSound;
+
     Upgrade upgrade1;
     Upgrade upgrade2;
     Upgrade upgrade3;
@@ -219,6 +224,7 @@ public class ShopController : MonoBehaviour
                 if (player.GetCoins() >= upgrade1.cost)
                 {
                     player.UpdateCoins(-upgrade1.cost);
+                    player.PlaySoundEffect(coinJiggleSound);
                     Debug.Log($"Buying: {upgrade1.upgradeName}");
                     option1.SetActive(false);
                     dropTables.purchase(upgrade1);
@@ -233,7 +239,7 @@ public class ShopController : MonoBehaviour
                 }
                 else
                 {
-                    player.PlaySoundEffect(player.coinLowSound);
+                    player.PlaySoundEffect(coinLowSound);
                     Debug.Log("Not enough money");
                 }
                 break;
@@ -241,6 +247,7 @@ public class ShopController : MonoBehaviour
                 if (player.GetCoins() >= upgrade2.cost)
                 {
                     player.UpdateCoins(-upgrade2.cost);
+                    player.PlaySoundEffect(coinJiggleSound);
                     Debug.Log($"Buying: {upgrade2.upgradeName}");
                     option2.SetActive(false);
                     dropTables.purchase(upgrade2);
@@ -255,7 +262,7 @@ public class ShopController : MonoBehaviour
                 }
                 else
                 {
-                    player.PlaySoundEffect(player.coinLowSound);
+                    player.PlaySoundEffect(coinLowSound);
                     Debug.Log("Not enough money");
                 }
                 break;
@@ -263,6 +270,7 @@ public class ShopController : MonoBehaviour
                 if (player.GetCoins() >= upgrade3.cost)
                 {
                     player.UpdateCoins(-upgrade3.cost);
+                    player.PlaySoundEffect(coinJiggleSound);
                     Debug.Log($"Buying: {upgrade3.upgradeName}");
                     option3.SetActive(false);
                     dropTables.purchase(upgrade3);
@@ -277,7 +285,7 @@ public class ShopController : MonoBehaviour
                 }
                 else
                 {
-                    player.PlaySoundEffect(player.coinLowSound);
+                    player.PlaySoundEffect(coinLowSound);
                     Debug.Log("Not enough money");
                 }
                 break;
@@ -285,6 +293,7 @@ public class ShopController : MonoBehaviour
                 if (player.GetCoins() >= consumable.cost)
                 {
                     player.UpdateCoins(-consumable.cost);
+                    player.PlaySoundEffect(coinJiggleSound);
                     Debug.Log($"Buying: {consumable.upgradeName}");
                     consumableOption.SetActive(false);
                     dropTables.purchase(consumable);
@@ -299,7 +308,7 @@ public class ShopController : MonoBehaviour
                 }
                 else
                 {
-                    player.PlaySoundEffect(player.coinLowSound);
+                    player.PlaySoundEffect(coinLowSound);
                     Debug.Log("Not enough money");
                 }
                 break;

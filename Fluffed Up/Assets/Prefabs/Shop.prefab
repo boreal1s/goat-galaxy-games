@@ -94,6 +94,8 @@ MonoBehaviour:
   consumableOptionShopImage: {fileID: 606263880698469640}
   consumableOptionName: {fileID: 606263880552672145}
   consumableOptionDescription: {fileID: 606263880689133952}
+  coinJiggleSound: {fileID: 8300000, guid: a96bbf554c48f4c9ca32fbd569b9e549, type: 3}
+  coinLowSound: {fileID: 8300000, guid: 60e35050305c54be690eaeb2be101a9e, type: 3}
   shopIsOpen: 0
   canTriggerShop: 0
   canStock: 0

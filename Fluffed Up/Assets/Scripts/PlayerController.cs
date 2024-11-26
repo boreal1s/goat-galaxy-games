@@ -57,8 +57,6 @@ public class PlayerController : CharacterClass
     public AudioClip reloadSound;
     public AudioClip itemPickupSound;
     public AudioClip slayHitSound;
-    public AudioClip coinJiggleSound;
-    public AudioClip coinLowSound;
 
     [Header("Melee attack attibutes")]
     [SerializeField]
@@ -606,7 +604,6 @@ public class PlayerController : CharacterClass
     {
         if (coinsAreFlushing || isShopping)
         {
-            PlaySoundEffect(coinJiggleSound);
             coinsAreFlushing = false;
             coins += coinFlushCounter + addedCoins;
             coinFlushCounter = 0;
