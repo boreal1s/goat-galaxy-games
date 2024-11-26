@@ -35,7 +35,6 @@ public class CharacterClass : MonoBehaviour
     #region Dodging
     public ISkill dodgeSkill;
     public bool isDodging;
-    public int invincibilityFrames;
     public int currInvincibilityFrames;
     #endregion
 
