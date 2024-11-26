@@ -330,22 +330,25 @@ public class WaveManager : MonoBehaviour
 
     Vector3 GetRandomPosition()
     {
-        BoxCollider selectedBox = enemySpawnBoxes[UnityEngine.Random.Range(0, enemySpawnBoxes.Length)];
+        BoxCollider selectedBox = enemySpawnBoxes[0];
+        float shortestDistance = math.INFINITY;
+        foreach (BoxCollider boxCollider in enemySpawnBoxes)
+        {
+            Vector3 boxColliderWorldCenter = boxCollider.transform.position + boxCollider.transform.TransformVector(boxCollider.center);
+            float distanceToPlayer = (boxColliderWorldCenter - player.transform.position).magnitude;
+            if (distanceToPlayer < shortestDistance)
+            {
+                shortestDistance = distanceToPlayer;
+                selectedBox = boxCollider;
+            }
+        }
+
         Vector3 spawnPosition = new Vector3(
             UnityEngine.Random.Range(selectedBox.bounds.min.x, selectedBox.bounds.max.x),
             2f,
             UnityEngine.Random.Range(selectedBox.bounds.min.z, selectedBox.bounds.max.z)
         );
 
-        // Raycast down to find the terrain level
-        // RaycastHit hit;
-        // if (Physics.Raycast(spawnPosition, Vector3.down, out hit, Mathf.Infinity))
-        // {
-        //     // Return the ground level plus a small offset to prevent sinking
-        //     return new Vector3(spawnPosition.x, hit.point.y + 0.1f, spawnPosition.y);
-        // }
-
-        // Fallback if the raycast fails
         return spawnPosition;
     }
 
