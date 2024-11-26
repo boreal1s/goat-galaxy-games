@@ -3028,6 +3028,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 314417102}
+  - {fileID: 133129489}
+  - {fileID: 1283729686}
   - {fileID: 1764170950}
   - {fileID: 41166663}
   - {fileID: 1894446130}
@@ -3100,31 +3102,31 @@ Transform:
   - {fileID: 413206399}
   - {fileID: 529711882}
   - {fileID: 1593924499}
-  - {fileID: 1539534204}
-  - {fileID: 1563120615}
-  - {fileID: 1351747628}
-  - {fileID: 1293495275}
-  - {fileID: 687199092}
-  - {fileID: 1620944171}
-  - {fileID: 997510239}
-  - {fileID: 317648116}
-  - {fileID: 1861536385}
-  - {fileID: 1638968336}
-  - {fileID: 1638782041}
   - {fileID: 182418733}
+  - {fileID: 1539534204}
   - {fileID: 917810320}
+  - {fileID: 1351747628}
   - {fileID: 756392220}
-  - {fileID: 1704050975}
-  - {fileID: 2027133495}
+  - {fileID: 1638968336}
+  - {fileID: 1293495275}
+  - {fileID: 1638782041}
+  - {fileID: 687199092}
   - {fileID: 1449164577}
+  - {fileID: 2027133495}
   - {fileID: 568028803}
-  - {fileID: 927425289}
+  - {fileID: 1563120615}
+  - {fileID: 317648116}
   - {fileID: 1326195257}
   - {fileID: 1166428497}
   - {fileID: 515971428}
+  - {fileID: 997510239}
   - {fileID: 1742584764}
   - {fileID: 1885699893}
   - {fileID: 620909536}
+  - {fileID: 927425289}
+  - {fileID: 1704050975}
+  - {fileID: 1620944171}
+  - {fileID: 1861536385}
   m_Father: {fileID: 0}
   m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: -34.124, z: 0}
@@ -5044,6 +5046,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5964602590c67d77e94b4cf69ebe9b1d, type: 3}
+--- !u!4 &133129489 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7529779925262894279, guid: 5964602590c67d77e94b4cf69ebe9b1d, type: 3}
+  m_PrefabInstance: {fileID: 133129488}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &135287601
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9963,9 +9970,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7529779925262894279, guid: 5964602590c67d77e94b4cf69ebe9b1d, type: 3}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &331031346
 GameObject:
   m_ObjectHideFlags: 0
@@ -9996,6 +10000,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1524998733}
+  - {fileID: 2937334692168496328}
   - {fileID: 109160652}
   - {fileID: 914714164}
   - {fileID: 1981459080}
@@ -10121,32 +10126,32 @@ Transform:
   - {fileID: 753873695}
   - {fileID: 1311025570}
   - {fileID: 1300459812}
+  - {fileID: 1166374848}
   - {fileID: 623586337}
   - {fileID: 255258880}
   - {fileID: 1231360613}
   - {fileID: 848772501}
+  - {fileID: 1478813783}
+  - {fileID: 357261373}
   - {fileID: 1342028385}
   - {fileID: 509495614}
-  - {fileID: 1441667323}
-  - {fileID: 1797664807}
-  - {fileID: 1478813783}
-  - {fileID: 1166374848}
-  - {fileID: 1965190855}
-  - {fileID: 1546231624}
-  - {fileID: 357261373}
   - {fileID: 1432867809}
   - {fileID: 1051576610}
-  - {fileID: 2122766235}
+  - {fileID: 1797664807}
   - {fileID: 1795521830}
   - {fileID: 1279589545}
   - {fileID: 1073734274}
   - {fileID: 1528418815}
+  - {fileID: 1546231624}
   - {fileID: 240465516}
   - {fileID: 1954605320}
   - {fileID: 1451777303}
+  - {fileID: 1441667323}
+  - {fileID: 2122766235}
   - {fileID: 242298373}
   - {fileID: 1798085937}
   - {fileID: 1054266460}
+  - {fileID: 1965190855}
   - {fileID: 349060824}
   - {fileID: 2124767569}
   - {fileID: 647861515}
@@ -13160,7 +13165,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 40
+  field of view: 60
   orthographic: 0
   orthographic size: 10
   m_Depth: 0
@@ -17345,9 +17350,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300072, guid: dbc39f66988d81d45929537e762ad795, type: 3}
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7529779925262894279, guid: 5964602590c67d77e94b4cf69ebe9b1d, type: 3}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &667059461
 GameObject:
   m_ObjectHideFlags: 0
@@ -24972,9 +24974,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7245177476897486771, guid: 8bc794aee01b5881a8640878d7177edd, type: 3}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &953253993
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25427,9 +25426,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7245177476897486771, guid: 8bc794aee01b5881a8640878d7177edd, type: 3}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &969796167
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32082,6 +32078,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5964602590c67d77e94b4cf69ebe9b1d, type: 3}
+--- !u!4 &1283729686 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7529779925262894279, guid: 5964602590c67d77e94b4cf69ebe9b1d, type: 3}
+  m_PrefabInstance: {fileID: 1283729685}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1293495274
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34445,6 +34446,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8bc794aee01b5881a8640878d7177edd, type: 3}
+--- !u!4 &1384880606 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7245177476897486771, guid: 8bc794aee01b5881a8640878d7177edd, type: 3}
+  m_PrefabInstance: {fileID: 1384880605}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1397154678
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37983,9 +37989,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300084, guid: dbc39f66988d81d45929537e762ad795, type: 3}
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7529779925262894279, guid: 5964602590c67d77e94b4cf69ebe9b1d, type: 3}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1524998732
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44927,6 +44930,7 @@ Transform:
   - {fileID: 1143991583}
   - {fileID: 1408905146}
   - {fileID: 1147264781}
+  - {fileID: 1384880606}
   - {fileID: 1985755808}
   - {fileID: 934774925}
   - {fileID: 1769263045}
@@ -53315,3 +53319,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0536ba839a8ad7e57bef0d3c63e30fcf, type: 3}
+--- !u!4 &2937334692168496328 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3018731778347423484, guid: 0536ba839a8ad7e57bef0d3c63e30fcf, type: 3}
+  m_PrefabInstance: {fileID: 2937334692168496327}
+  m_PrefabAsset: {fileID: 0}
