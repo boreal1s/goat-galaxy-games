@@ -194,12 +194,14 @@ public class PlayerController : CharacterClass
                 coinFlushCounter -= 1;
                 coins += 1;
             }
-
+            else
+            {
+                coinsAreFlushing = false;
+            }
             UpdateCoinCounter();
         }
 
-        if (coinFlushCounter == 0)
-            coinsAreFlushing = false;
+
         #endregion
 
         #region Movement Control
@@ -407,6 +409,11 @@ public class PlayerController : CharacterClass
 
         ammoIndicators[currAmmo].canvasRenderer.SetAlpha(0.2f);
         currAmmo -= 1;
+    }
+
+    private Vector3 GetShootLocation()
+    {
+
     }
 
     public IEnumerator WaitToReload(float duration)
