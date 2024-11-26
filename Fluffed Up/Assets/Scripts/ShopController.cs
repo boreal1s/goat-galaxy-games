@@ -1,4 +1,5 @@
 using Cinemachine;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,16 +37,18 @@ public class ShopController : MonoBehaviour
     [SerializeField]
     public AudioClip coinJiggleSound;
     public AudioClip coinLowSound;
+    private AudioSource audioSource; 
+    private AudioClip purchaseSound; 
 
     Upgrade upgrade1;
     Upgrade upgrade2;
     Upgrade upgrade3;
     Upgrade consumable;
 
-    bool upgrade1Purchased;
-    bool upgrade2Purchased;
-    bool upgrade3Purchased;
-    bool consumablePurchased;
+    private bool upgrade1Purchased;
+    private bool upgrade2Purchased;
+    private bool upgrade3Purchased;
+    private bool consumablePurchased;
 
     public bool shopIsOpen;
     public bool canTriggerShop = false;
@@ -77,7 +80,7 @@ public class ShopController : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-        if (canStock == true)
+        if (canStock)
             StockShop();
 
         player.isShopping = shopIsOpen;
@@ -90,14 +93,11 @@ public class ShopController : MonoBehaviour
             bgmPlayer.DimAndDull();
             Debug.Log("Shop opened");
             activateShop();
-            Debug.Log($"Shop component: {shopComponent}");
             shopIsOpen = true;
 
             if (player != null)
-            {
-                player.enabled = false; // Disable player movement
-            }
-
+                player.enabled = false;
+\
             if (virtualCameras != null)
             {
                 virtualCameras.SetActive(false);
@@ -115,7 +115,7 @@ public class ShopController : MonoBehaviour
         shopIsOpen = false;
 
         if (player != null)
-            player.enabled = true; // Re-enable player movement
+            player.enabled = true;
 
         if (virtualCameras != null)
             virtualCameras.SetActive(true);
@@ -123,16 +123,16 @@ public class ShopController : MonoBehaviour
 
     public void RestockShop()
     {
-        if (upgrade1Purchased == false && upgrade1 != null)
+        if (!upgrade1Purchased && upgrade1 != null)
             dropTables.putBack(upgrade1);
 
-        if (upgrade2Purchased == false && upgrade2 != null)
+        if (!upgrade2Purchased && upgrade2 != null)
             dropTables.putBack(upgrade2);
 
-        if (upgrade3Purchased == false && upgrade3 != null)
+        if (!upgrade3Purchased && upgrade3 != null)
             dropTables.putBack(upgrade3);
 
-        if (consumablePurchased == false && consumable != null) // Should never actually do anything unless we make consumables limited in quantity
+        if (!consumablePurchased && consumable != null)
             dropTables.putBack(consumable);
 
         canStock = true;
@@ -201,10 +201,9 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    private void StockShop() {
+    private void StockShop()
+    {
         Debug.Log("Stocking shop");
-        Debug.Log($"Option 1: {option1}");
-        Debug.Log($"DropTables: {dropTables}");
         upgrade1 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
         upgrade1Purchased = false;
         upgrade2 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
@@ -219,17 +218,17 @@ public class ShopController : MonoBehaviour
 
     public void BuyOption(int i)
     {
-        switch (i) {
+        switch (i)
+        {
             case 1:
                 if (player.GetCoins() >= upgrade1.cost)
                 {
                     player.UpdateCoins(-upgrade1.cost);
-                    player.PlaySoundEffect(coinJiggleSound);
-                    Debug.Log($"Buying: {upgrade1.upgradeName}");
                     option1.SetActive(false);
                     dropTables.purchase(upgrade1);
                     upgrade1Purchased = true;
                     HandleUpgrade(upgrade1);
+                    PlayPurchaseSound();
                     if (upgradeFlags.getUpgradeFlag("Restock") != null)
                     {
                         upgrade1 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
@@ -247,12 +246,11 @@ public class ShopController : MonoBehaviour
                 if (player.GetCoins() >= upgrade2.cost)
                 {
                     player.UpdateCoins(-upgrade2.cost);
-                    player.PlaySoundEffect(coinJiggleSound);
-                    Debug.Log($"Buying: {upgrade2.upgradeName}");
                     option2.SetActive(false);
                     dropTables.purchase(upgrade2);
                     upgrade2Purchased = true;
                     HandleUpgrade(upgrade2);
+                    PlayPurchaseSound();
                     if (upgradeFlags.getUpgradeFlag("Restock") != null)
                     {
                         upgrade2 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
@@ -270,12 +268,11 @@ public class ShopController : MonoBehaviour
                 if (player.GetCoins() >= upgrade3.cost)
                 {
                     player.UpdateCoins(-upgrade3.cost);
-                    player.PlaySoundEffect(coinJiggleSound);
-                    Debug.Log($"Buying: {upgrade3.upgradeName}");
                     option3.SetActive(false);
                     dropTables.purchase(upgrade3);
                     upgrade3Purchased = true;
                     HandleUpgrade(upgrade3);
+                    PlayPurchaseSound();
                     if (upgradeFlags.getUpgradeFlag("Restock") != null)
                     {
                         upgrade3 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
@@ -293,8 +290,7 @@ public class ShopController : MonoBehaviour
                 if (player.GetCoins() >= consumable.cost)
                 {
                     player.UpdateCoins(-consumable.cost);
-                    player.PlaySoundEffect(coinJiggleSound);
-                    Debug.Log($"Buying: {consumable.upgradeName}");
+                    PlayPurchaseSound();
                     consumableOption.SetActive(false);
                     dropTables.purchase(consumable);
                     consumablePurchased = true;
@@ -312,8 +308,18 @@ public class ShopController : MonoBehaviour
                     Debug.Log("Not enough money");
                 }
                 break;
-            default: 
-                break;
+        }
+    }
+
+    private void PlayPurchaseSound()
+    {
+        if (audioSource != null && purchaseSound != null)
+        {
+            audioSource.PlayOneShot(purchaseSound);
+        }
+        else
+        {
+            Debug.LogWarning("AudioSource or PurchaseSound not set!");
         }
     }
 
@@ -333,8 +339,6 @@ public class ShopController : MonoBehaviour
                 break;
             case UpgradeType.Consumable:
                 HandleConsumablePurchase(upgrade);
-                break;
-            default:
                 break;
         }
     }
@@ -369,7 +373,6 @@ public class ShopController : MonoBehaviour
         skill.SetCharacter(ref player);
         if (skill.GetSkillType() == SkillType.Dodge)
         {
-            Debug.Log("Skill purchased");
             player.dodgeSkill = skill;
         }
     }
