@@ -13179,7 +13179,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 40
+  field of view: 60
   orthographic: 0
   orthographic size: 10
   m_Depth: 0
@@ -13260,6 +13260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerSettings: {fileID: 1944541178}
   inputs: {fileID: 522361944}
+  isShopping: 0
 --- !u!114 &489838436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33068,6 +33069,8 @@ MonoBehaviour:
   enemyPrefabSlime: {fileID: 9095522416803934105, guid: 653a465a5400a4f2f951a8d29e061783, type: 3}
   enemyPrefabTurtle: {fileID: 5232562413803862215, guid: 6f87a4e241e274fc5b9154af772ec7e1, type: 3}
   enemyPrefabMiniBossDog: {fileID: 4412145234250513926, guid: 58ed0d3f35f344d3e84b1deca4cae991, type: 3}
+  enemyPrefabMantaRay: {fileID: 2391359435489877134, guid: 75f057b43e0a449dae5f6549f5107474, type: 3}
+  enemyPrefabMosquito: {fileID: 1467277096911013437, guid: 586a8fad78c64d758ef4b7e17ea63960, type: 3}
   enemyPrefabMiniBossPenguin: {fileID: 5535647646396653931, guid: 6f633180a623b499faa5ac93e44d02c6, type: 3}
   enemyPrefabBossCyclopes: {fileID: 5066869506182785551, guid: 195f9a4625737445d9e0a074de1a606b, type: 3}
   enemySpawnArea: {fileID: 82029157}

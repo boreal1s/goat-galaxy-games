@@ -33,6 +33,8 @@ public class WaveManager : MonoBehaviour
     [SerializeField] public GameObject enemyPrefabSlime;
     [SerializeField] public GameObject enemyPrefabTurtle;
     [SerializeField] public GameObject enemyPrefabMiniBossDog;
+    [SerializeField] public GameObject enemyPrefabMantaRay;
+    [SerializeField] public GameObject enemyPrefabMosquito;
     [SerializeField] public GameObject enemyPrefabMiniBossPenguin;
     [SerializeField] public GameObject enemyPrefabBossCyclopes;
     [SerializeField] public GameObject enemySpawnArea;
@@ -78,6 +80,8 @@ public class WaveManager : MonoBehaviour
         {
             {"Slime", new(enemyPrefabSlime, 1, 6, 10, 70) },
             {"Turtle", new(enemyPrefabTurtle, 3, 4, 20, 180)},
+            {"MantaRay", new(enemyPrefabMantaRay, 10, 5, 40, 400)},
+            {"Mosquito", new(enemyPrefabMosquito, 10, 5, 40, 400)},
             {"BossDog", new(enemyPrefabMiniBossDog, 10, 5, 40, 400)},
             {"BossPenguin", new(enemyPrefabMiniBossPenguin, 20, 4, 60, 600)},
             {"BossCyclopes", new(enemyPrefabBossCyclopes, 40, 10, 80, 1000)}
@@ -143,6 +147,14 @@ public class WaveManager : MonoBehaviour
     private IEnumerator ComputeOnslaught()
     {
         Debug.Log("Computing Onslaught");
+
+        if (currentWave == 0)
+        {
+            nextEnemyQueue.Clear();
+            nextEnemyQueue = new Queue<string>(new List<string>() { "Mosquito", "MantaRay" });
+            Debug.Log("Onslaught Computed");
+            yield break;
+        }
 
         if (currentWave + 1 == 3)
         {
