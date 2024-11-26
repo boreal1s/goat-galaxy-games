@@ -6001,6 +6001,7 @@ MonoBehaviour:
   sound3DPrefab: {fileID: 1719587315714716692, guid: 58873906edcd842929a41e8353bb38b0, type: 3}
   hitSoundEffect: {fileID: 8300000, guid: 477ef4d5fa017410c8b12fc6848f3dc4, type: 3}
   hitSoundPitch: 1
+  healSoundEffect: {fileID: 8300000, guid: c48a972d3d024c2408a3331750786a29, type: 3}
   AttackEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -6010,11 +6011,16 @@ MonoBehaviour:
   projectilePrefab: {fileID: 4375877043695035639, guid: b6daace4167ce31d58d10ebfef167161, type: 3}
   projectileSpawnPoint: {fileID: 7924904203460507141}
   projectileDamage: 0
+  isShopping: 0
+  upgradeFlags: {fileID: 0}
   attackSound: {fileID: 0}
   shootingSound: {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}
   reloadSound: {fileID: 8300000, guid: 1e76ab8760b76fd479cf5a15ef01c108, type: 3}
-  isShopping: 0
-  upgradeFlags: {fileID: 0}
+  itemPickupSound: {fileID: 8300000, guid: 552975486ef2142b29309075d715336a, type: 3}
+  slayHitSound: {fileID: 0}
+  coinJiggleSound: {fileID: 8300000, guid: a96bbf554c48f4c9ca32fbd569b9e549, type: 3}
+  coinLowSound: {fileID: 8300000, guid: 60e35050305c54be690eaeb2be101a9e, type: 3}
+  attackComboCooldown: 0
   currentAttackCounter: 0
   ATTACK_1_BOOL: 0
   ATTACK_2_BOOL: 0

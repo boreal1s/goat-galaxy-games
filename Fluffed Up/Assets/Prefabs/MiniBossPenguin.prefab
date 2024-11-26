@@ -2385,6 +2385,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   sound3DPrefab: {fileID: 1719587315714716692, guid: 58873906edcd842929a41e8353bb38b0, type: 3}
   hitSoundEffect: {fileID: 8300000, guid: 8ddf957b24c9445dc9811f11e3a16a76, type: 3}
+  itemUsedSoundEffect: {fileID: 0}
   hitSoundPitch: 4
   baseHealth: 0
   baseAttackPower: 0
@@ -2411,6 +2412,7 @@ MonoBehaviour:
   goldValueMax: 150
   goldValueMaxBase: 150
   FloatingTextPrefab: {fileID: 7094480470114473468, guid: 349e3df807dc37045b275eaffd38a36f, type: 3}
+  punchSound: {fileID: 8300000, guid: b23f1b25590274345b3b13e75f28a1e8, type: 3}
 --- !u!195 &6722868417841180654
 NavMeshAgent:
   m_ObjectHideFlags: 0

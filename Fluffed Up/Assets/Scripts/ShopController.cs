@@ -233,6 +233,7 @@ public class ShopController : MonoBehaviour
                 }
                 else
                 {
+                    player.PlaySoundEffect(player.coinLowSound);
                     Debug.Log("Not enough money");
                 }
                 break;
@@ -254,6 +255,7 @@ public class ShopController : MonoBehaviour
                 }
                 else
                 {
+                    player.PlaySoundEffect(player.coinLowSound);
                     Debug.Log("Not enough money");
                 }
                 break;
@@ -275,6 +277,7 @@ public class ShopController : MonoBehaviour
                 }
                 else
                 {
+                    player.PlaySoundEffect(player.coinLowSound);
                     Debug.Log("Not enough money");
                 }
                 break;
@@ -296,6 +299,7 @@ public class ShopController : MonoBehaviour
                 }
                 else
                 {
+                    player.PlaySoundEffect(player.coinLowSound);
                     Debug.Log("Not enough money");
                 }
                 break;
