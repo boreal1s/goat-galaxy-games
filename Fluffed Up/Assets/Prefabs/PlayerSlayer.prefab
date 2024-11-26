@@ -4246,10 +4246,9 @@ MonoBehaviour:
   maxAttackSpeed: 0
   attackDistanceThreshold: 5
   isAttacking: 0
-  attackDelayInMilli: 300
+  attackDelayInMilli: 200
   defense: 0
   isDodging: 0
-  invincibilityFrames: 0
   currInvincibilityFrames: 0
   isBurning: 0
   isFrozen: 0
@@ -4271,8 +4270,8 @@ MonoBehaviour:
   rb: {fileID: 0}
   sound3DPrefab: {fileID: 1719587315714716692, guid: 58873906edcd842929a41e8353bb38b0, type: 3}
   hitSoundEffect: {fileID: 8300000, guid: 477ef4d5fa017410c8b12fc6848f3dc4, type: 3}
-  itemUsedSoundEffect: {fileID: 8300000, guid: bed2b70323b5a4ec590f2905868560f7, type: 3}
   hitSoundPitch: 1
+  healSoundEffect: {fileID: 8300000, guid: c48a972d3d024c2408a3331750786a29, type: 3}
   AttackEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -4282,11 +4281,16 @@ MonoBehaviour:
   projectilePrefab: {fileID: 4375877043695035639, guid: b6daace4167ce31d58d10ebfef167161, type: 3}
   projectileSpawnPoint: {fileID: 8317859748969207974}
   projectileDamage: 10
+  isShopping: 0
+  upgradeFlags: {fileID: 0}
   attackSound: {fileID: 8300000, guid: be779a7c804054a8cbf743ef9a43cd0d, type: 3}
   shootingSound: {fileID: 0}
   reloadSound: {fileID: 0}
   itemPickupSound: {fileID: 8300000, guid: 552975486ef2142b29309075d715336a, type: 3}
   slayHitSound: {fileID: 8300000, guid: 82aed6eece57d4dbbaf6ccf10afc4def, type: 3}
+  coinJiggleSound: {fileID: 8300000, guid: a96bbf554c48f4c9ca32fbd569b9e549, type: 3}
+  coinLowSound: {fileID: 8300000, guid: 60e35050305c54be690eaeb2be101a9e, type: 3}
+  attackComboCooldown: 0
   currentAttackCounter: 0
   ATTACK_1_BOOL: 0
   ATTACK_2_BOOL: 0

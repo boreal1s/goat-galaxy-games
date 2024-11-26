@@ -78,11 +78,11 @@ public class CharacterClass : MonoBehaviour
     public Sound3D sound3DPrefab;
 
     // Sound Effect Audio Clip
-    #region AudioClips for Sound Effects
-    [Header("AudioClips for Sound Effects")]
+    #region Sound Effects for Character Class
+    [Header("Sound Effects for Character Class")]
     public AudioClip hitSoundEffect;
-    public AudioClip itemUsedSoundEffect;
     public float hitSoundPitch;
+    public AudioClip healSoundEffect;    
     private bool loopSoundIsPlaying = false;
     private Sound3D loopSound3D;
     #endregion
@@ -163,7 +163,7 @@ public class CharacterClass : MonoBehaviour
 
     public virtual void Heal(float amount)
     {
-        PlaySoundEffect(itemUsedSoundEffect);
+        PlaySoundEffect(healSoundEffect);
         health = Mathf.Clamp(health + amount, 0, maxHealth);
 
         if (healthBar != null)
@@ -195,7 +195,7 @@ public class CharacterClass : MonoBehaviour
         }
     }
 
-    public void PlaySoundEffect(AudioClip audioClip, float pitch = 1.0f)
+    public void PlaySoundEffect(AudioClip audioClip, float pitch = 1.0f, float audioLevel = 1.0f)
     {
         if (sound3DPrefab)
         {
@@ -206,6 +206,7 @@ public class CharacterClass : MonoBehaviour
             sound3DObject.audioSrc.minDistance = 5f;
             sound3DObject.audioSrc.maxDistance = 100f;
             sound3DObject.audioSrc.pitch = pitch;
+            sound3DObject.audioSrc.volume = audioLevel;
 
             sound3DObject.audioSrc.Play();
         }
