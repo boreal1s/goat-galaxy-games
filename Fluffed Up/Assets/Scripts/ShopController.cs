@@ -17,6 +17,8 @@ public class ShopController: MonoBehaviour
     [SerializeField] private GameObject option1Name;
     [SerializeField] private GameObject option1Description;
     [SerializeField] private GameObject notEnoughCoinsText1; // Text for option 1
+    [SerializeField] private GameObject purchaseText1; // Text for option 1
+
 
     [Header("Option 2 UI Elements")]
     [SerializeField] private GameObject option2;
@@ -24,6 +26,9 @@ public class ShopController: MonoBehaviour
     [SerializeField] private GameObject option2Name;
     [SerializeField] private GameObject option2Description;
     [SerializeField] private GameObject notEnoughCoinsText2; // Text for option 2
+    [SerializeField] private GameObject purchaseText2; // Text for option 2
+
+
 
     [Header("Option 3 UI Elements")]
     [SerializeField] private GameObject option3;
@@ -31,6 +36,10 @@ public class ShopController: MonoBehaviour
     [SerializeField] private GameObject option3Name;
     [SerializeField] private GameObject option3Description;
     [SerializeField] private GameObject notEnoughCoinsText3; // Text for option 3
+    [SerializeField] private GameObject purchaseText3; // Text for option 3
+
+
+
 
     [Header("Consumable UI Elements")]
     [SerializeField] private GameObject consumableOption;
@@ -38,6 +47,10 @@ public class ShopController: MonoBehaviour
     [SerializeField] private GameObject consumableOptionName;
     [SerializeField] private GameObject consumableOptionDescription;
     [SerializeField] private GameObject notEnoughCoinsText4; // Text for consumable option
+    [SerializeField] private GameObject purchaseText4; // Text for option 4
+
+ 
+
 
     [SerializeField] private AudioSource audioSource;       // Reference to AudioSource
     [SerializeField] private AudioClip confirmSound;        // Sound for successful purchase
@@ -67,6 +80,12 @@ public class ShopController: MonoBehaviour
         notEnoughCoinsText2.SetActive(false);
         notEnoughCoinsText3.SetActive(false);
         notEnoughCoinsText4.SetActive(false);
+        purchaseText1.SetActive(false);
+        purchaseText2.SetActive(false);
+        purchaseText3.SetActive(false);
+        purchaseText4.SetActive(false);
+
+
 
         dropTables = dt.GetComponent<DropTables>();
         player = FindObjectOfType<PlayerController>();
@@ -114,6 +133,11 @@ public class ShopController: MonoBehaviour
         notEnoughCoinsText2.SetActive(false);
         notEnoughCoinsText3.SetActive(false);
         notEnoughCoinsText4.SetActive(false);
+
+        purchaseText1.SetActive(false);
+        purchaseText2.SetActive(false);
+        purchaseText3.SetActive(false);
+        purchaseText4.SetActive(false);
 
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
@@ -203,23 +227,23 @@ public class ShopController: MonoBehaviour
         switch (i)
         {
             case 1:
-                AttemptPurchase(upgrade1, ref upgrade1Purchased, option1, notEnoughCoinsText1);
+                AttemptPurchase(upgrade1, ref upgrade1Purchased, option1, notEnoughCoinsText1, purchaseText1);
                 break;
             case 2:
-                AttemptPurchase(upgrade2, ref upgrade2Purchased, option2, notEnoughCoinsText2);
+                AttemptPurchase(upgrade2, ref upgrade2Purchased, option2, notEnoughCoinsText2, purchaseText2);
                 break;
             case 3:
-                AttemptPurchase(upgrade3, ref upgrade3Purchased, option3, notEnoughCoinsText3);
+                AttemptPurchase(upgrade3, ref upgrade3Purchased, option3, notEnoughCoinsText3, purchaseText3);
                 break;
             case 4:
-                AttemptPurchase(consumable, ref consumablePurchased, consumableOption, notEnoughCoinsText4);
+                AttemptPurchase(consumable, ref consumablePurchased, consumableOption, notEnoughCoinsText4, purchaseText4);
                 break;
             default:
                 break;
         }
     }
 
-    private void AttemptPurchase(Upgrade upgrade, ref bool isPurchased, GameObject option, GameObject notEnoughCoinsText)
+    private void AttemptPurchase(Upgrade upgrade, ref bool isPurchased, GameObject option, GameObject notEnoughCoinsText, GameObject purchaseText)
     {
         if (player.GetCoins() >= upgrade.cost)
         {
@@ -229,6 +253,7 @@ public class ShopController: MonoBehaviour
             isPurchased = true;
             HandleUpgrade(upgrade);
             PlayConfirmSound();
+            purchaseText.SetActive(true);
         }
         else
         {
