@@ -1,10 +1,9 @@
 using Cinemachine;
-using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShopController : MonoBehaviour
+public class ShopController: MonoBehaviour
 {
     [SerializeField] private GameObject shopComponent;
     [SerializeField] private GameObject dt;
@@ -13,32 +12,40 @@ public class ShopController : MonoBehaviour
     private GameObject virtualCameras;
     private BGMPlayer bgmPlayer;
 
+    [Header("Option 1 UI Elements")]
     [SerializeField] private GameObject option1;
     [SerializeField] private GameObject option1ShopImage;
     [SerializeField] private GameObject option1Name;
     [SerializeField] private GameObject option1Description;
+    [SerializeField] private GameObject notEnoughCoinsText1; // Text for option 1
 
+    [Header("Option 2 UI Elements")]
     [SerializeField] private GameObject option2;
     [SerializeField] private GameObject option2ShopImage;
     [SerializeField] private GameObject option2Name;
     [SerializeField] private GameObject option2Description;
+    [SerializeField] private GameObject notEnoughCoinsText2; // Text for option 2
 
+    [Header("Option 3 UI Elements")]
     [SerializeField] private GameObject option3;
     [SerializeField] private GameObject option3ShopImage;
     [SerializeField] private GameObject option3Name;
     [SerializeField] private GameObject option3Description;
+    [SerializeField] private GameObject notEnoughCoinsText3; // Text for option 3
 
+    [Header("Consumable UI Elements")]
     [SerializeField] private GameObject consumableOption;
     [SerializeField] private GameObject consumableOptionShopImage;
     [SerializeField] private GameObject consumableOptionName;
     [SerializeField] private GameObject consumableOptionDescription;
+    [SerializeField] private GameObject notEnoughCoinsText4; // Text for consumable option
 
     [Header("Sound Effects")]
     [SerializeField]
     public AudioClip coinJiggleSound;
     public AudioClip coinLowSound;
-    private AudioSource audioSource; 
-    private AudioClip purchaseSound; 
+    private AudioSource audioSource;        // Reference to AudioSource
+    private AudioClip confirmSound;        // Sound for successful purchase
 
     Upgrade upgrade1;
     Upgrade upgrade2;
@@ -60,12 +67,14 @@ public class ShopController : MonoBehaviour
     {
         shopIsOpen = false;
         shopComponent.SetActive(false);
-        dropTables = FindObjectOfType<DropTables>();
-        Debug.Log($"DropTable Found: {dropTables}");
 
-        upgradeFlags = FindObjectOfType<UpgradeFlags>();
-        Debug.Log($"UpgradeFlags Found: {upgradeFlags}");
+        // Ensure all "Not Enough Coins" messages are hidden initially
+        notEnoughCoinsText1.SetActive(false);
+        notEnoughCoinsText2.SetActive(false);
+        notEnoughCoinsText3.SetActive(false);
+        notEnoughCoinsText4.SetActive(false);
 
+        dropTables = dt.GetComponent<DropTables>();
         player = FindObjectOfType<PlayerController>();
         virtualCameras = GameObject.Find("VirtualCameras");
 
@@ -80,7 +89,7 @@ public class ShopController : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-        if (canStock)
+        if (canStock == true)
             StockShop();
 
         player.isShopping = shopIsOpen;
@@ -91,9 +100,9 @@ public class ShopController : MonoBehaviour
         if (canTriggerShop)
         {
             bgmPlayer.DimAndDull();
-            Debug.Log("Shop opened");
-            activateShop();
+            shopComponent.SetActive(true);
             shopIsOpen = true;
+            Time.timeScale = 0;
 
             if (player != null)
                 player.enabled = false;
@@ -109,6 +118,13 @@ public class ShopController : MonoBehaviour
     {
         bgmPlayer.LoudAndClear();
         shopComponent.SetActive(false);
+
+        // Hide all "Not Enough Coins" messages when the shop closes
+        notEnoughCoinsText1.SetActive(false);
+        notEnoughCoinsText2.SetActive(false);
+        notEnoughCoinsText3.SetActive(false);
+        notEnoughCoinsText4.SetActive(false);
+
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -201,9 +217,9 @@ public class ShopController : MonoBehaviour
         }
     }
 
+
     private void StockShop()
     {
-        Debug.Log("Stocking shop");
         upgrade1 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
         upgrade1Purchased = false;
         upgrade2 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
@@ -213,7 +229,6 @@ public class ShopController : MonoBehaviour
         consumable = dropTables.getRandomUpgrade(UpgradeType.Consumable);
         consumablePurchased = false;
         canStock = false;
-        Debug.Log($"Stocked with:  {upgrade1.upgradeName}, {upgrade2.upgradeName}, {upgrade3.upgradeName}, {consumable.upgradeName}");
     }
 
     public void BuyOption(int i)
@@ -221,107 +236,45 @@ public class ShopController : MonoBehaviour
         switch (i)
         {
             case 1:
-                if (player.GetCoins() >= upgrade1.cost)
-                {
-                    player.UpdateCoins(-upgrade1.cost);
-                    option1.SetActive(false);
-                    dropTables.purchase(upgrade1);
-                    upgrade1Purchased = true;
-                    HandleUpgrade(upgrade1);
-                    PlayPurchaseSound();
-                    if (upgradeFlags.getUpgradeFlag("Restock") != null)
-                    {
-                        upgrade1 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
-                        upgrade1Purchased = false;
-                        loadShopComponent(1);
-                    }
-                }
-                else
-                {
-                    player.PlaySoundEffect(coinLowSound);
-                    Debug.Log("Not enough money");
-                }
+                AttemptPurchase(upgrade1, ref upgrade1Purchased, option1, notEnoughCoinsText1);
                 break;
             case 2:
-                if (player.GetCoins() >= upgrade2.cost)
-                {
-                    player.UpdateCoins(-upgrade2.cost);
-                    option2.SetActive(false);
-                    dropTables.purchase(upgrade2);
-                    upgrade2Purchased = true;
-                    HandleUpgrade(upgrade2);
-                    PlayPurchaseSound();
-                    if (upgradeFlags.getUpgradeFlag("Restock") != null)
-                    {
-                        upgrade2 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
-                        upgrade2Purchased = false;
-                        loadShopComponent(2);
-                    }
-                }
-                else
-                {
-                    player.PlaySoundEffect(coinLowSound);
-                    Debug.Log("Not enough money");
-                }
+                AttemptPurchase(upgrade2, ref upgrade2Purchased, option2, notEnoughCoinsText2);
                 break;
             case 3:
-                if (player.GetCoins() >= upgrade3.cost)
-                {
-                    player.UpdateCoins(-upgrade3.cost);
-                    option3.SetActive(false);
-                    dropTables.purchase(upgrade3);
-                    upgrade3Purchased = true;
-                    HandleUpgrade(upgrade3);
-                    PlayPurchaseSound();
-                    if (upgradeFlags.getUpgradeFlag("Restock") != null)
-                    {
-                        upgrade3 = dropTables.getRandomUpgrade(dropTables.getRandomUpgradeType());
-                        upgrade3Purchased = false;
-                        loadShopComponent(3);
-                    }
-                }
-                else
-                {
-                    player.PlaySoundEffect(coinLowSound);
-                    Debug.Log("Not enough money");
-                }
+                AttemptPurchase(upgrade3, ref upgrade3Purchased, option3, notEnoughCoinsText3);
                 break;
             case 4:
-                if (player.GetCoins() >= consumable.cost)
-                {
-                    player.UpdateCoins(-consumable.cost);
-                    PlayPurchaseSound();
-                    consumableOption.SetActive(false);
-                    dropTables.purchase(consumable);
-                    consumablePurchased = true;
-                    HandleUpgrade(consumable);
-                    if (upgradeFlags.getUpgradeFlag("Restock") != null)
-                    {
-                        consumable = dropTables.getRandomUpgrade(UpgradeType.Consumable);
-                        consumablePurchased = false;
-                        loadShopComponent(4);
-                    }
-                }
-                else
-                {
-                    player.PlaySoundEffect(coinLowSound);
-                    Debug.Log("Not enough money");
-                }
+                AttemptPurchase(consumable, ref consumablePurchased, consumableOption, notEnoughCoinsText4);
+                break;
+            default:
                 break;
         }
     }
 
-    private void PlayPurchaseSound()
+    private void AttemptPurchase(Upgrade upgrade, ref bool isPurchased, GameObject option, GameObject notEnoughCoinsText)
     {
-        if (audioSource != null && purchaseSound != null)
+        if (player.GetCoins() >= upgrade.cost)
         {
-            audioSource.PlayOneShot(purchaseSound);
+            player.UpdateCoins(-upgrade.cost);
+            option.SetActive(false);
+            dropTables.purchase(upgrade);
+            isPurchased = true;
+            HandleUpgrade(upgrade);
+            PlayConfirmSound();
         }
         else
         {
-            Debug.LogWarning("AudioSource or PurchaseSound not set!");
+            notEnoughCoinsText.SetActive(true); // Show specific item's message
         }
     }
+
+    private void PlayConfirmSound()
+    {
+        if (audioSource != null && confirmSound != null)
+            audioSource.PlayOneShot(confirmSound);
+    }
+
 
     private void HandleUpgrade(Upgrade upgrade)
     {
