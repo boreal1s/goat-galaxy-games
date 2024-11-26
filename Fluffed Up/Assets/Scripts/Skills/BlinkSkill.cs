@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlinkSkill : MonoBehaviour, ISkill
+public class BlinkSkill : ISkill
 {
     public List<Upgrade> followingUpgrades;
     public DropTables.Rarity rarity;

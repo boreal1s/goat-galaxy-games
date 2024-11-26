@@ -45,7 +45,7 @@ public class DropTables : MonoBehaviour
     #endregion
 
 
-    #region Weights
+    #region Weights & Coefficients
     static int commonWeight = 40;
     static int uncommonWeight = 40;
     static int rareWeight = 40;
@@ -63,6 +63,8 @@ public class DropTables : MonoBehaviour
         { Rarity.Rare, rareWeight },
         { Rarity.Legendary, legendaryWeight },
     };
+
+    private float statUpgradeIncreaseFactor = 1.2f;
     #endregion
 
     public WeightedList<UpgradeType> upgradeTypeTable;
@@ -234,7 +236,6 @@ public class DropTables : MonoBehaviour
                 availableUpgrades[UpgradeType.PlayerModification] += 1;
                 break;
             case UpgradeType.GameModification:
-                Debug.Log($"{upgrade.upgradeName}");
                 gameModifications.Add(upgrade, weightMap[upgrade.gameMod.rarity]);
                 availableUpgrades[UpgradeType.GameModification] += 1;
                 break;
@@ -249,7 +250,7 @@ public class DropTables : MonoBehaviour
         switch (upgrade.upgradeType)
         {
             case UpgradeType.StatUpgrade:
-                statUpgrades[statUpgrades.IndexOf(upgrade)].cost = (int) Math.Round(statUpgrades[statUpgrades.IndexOf(upgrade)].cost * 1.5f);
+                statUpgrades[statUpgrades.IndexOf(upgrade)].cost = (int) Math.Round(statUpgrades[statUpgrades.IndexOf(upgrade)].cost * statUpgradeIncreaseFactor);
                 break;
             case UpgradeType.Skill:
                 followingUpgrades = upgrade.skill.GetFollowingUprages();
@@ -282,6 +283,7 @@ public class DropTables : MonoBehaviour
 
     public void removeSkillSiblings(SkillType siblingType, List<Upgrade> excludeList)
     {
+        Debug.Log("Removing sibling skills");
         int iMax = skills.Count;
         for (int i = 0; i < iMax; i++)
         {

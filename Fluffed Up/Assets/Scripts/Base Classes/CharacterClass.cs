@@ -67,7 +67,7 @@ public class CharacterClass : MonoBehaviour
     protected int maxAmmo = 13;
     protected int currAmmo;
     protected float reloadTime = 2f;
-    protected float shotTime = 0.2f;
+    protected float shotTime = 0.4f;
     public bool isReloading;
     protected Dictionary<int, Image> ammoIndicators;
     #endregion

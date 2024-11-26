@@ -5903,7 +5903,12 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'lowerarm_l'\n\tTransform 'neck_01'\n\tTransform
+    'ring_01_r'\n\tTransform 'foot_l'\n\tTransform 'foot_r'\n\tTransform 'pelvis'\n\tTransform
+    'spine_03'\n\tTransform 'index_02_l'\n\tTransform 'lowerarm_r'\n\tTransform 'head'\n\tand
+    more ...\n\tFrom animation clip 'Dash'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0

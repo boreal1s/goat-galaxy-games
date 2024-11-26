@@ -144,6 +144,8 @@ public class PlayerController : CharacterClass
             };
         }
 
+        cameraTransform = GameObject.Find("MainCamera").transform;
+
         // Coin stuff
         coins = 0;
         coinFlushCounter = 0;
@@ -172,21 +174,29 @@ public class PlayerController : CharacterClass
 
         #region Movement Control
 
-        Vector3 moveDir = GetCameraRelativeMovement(horizontal, vertical);
-
-        Vector3 move = isDodging ? GetDirectionAndRotate() * dodgeSkill.GetSkillValue() : new Vector3(moveDir.x, 0f, moveDir.z);
-
-        if (isGrounded)
-            rb.MovePosition(transform.position + move * moveSpeed * Time.deltaTime);
+        Vector3 moveDir;
+        if (isDodging)
+        {
+            moveDir = GetDodgeDirectionAndRotate();
+            Debug.Log("DodgeDir: " + moveDir);
+            rb.MovePosition(transform.position + moveDir * moveSpeed * dodgeSkill.GetSkillValue() * Time.deltaTime);
+        } 
         else
-            rb.MovePosition(transform.position + move * moveSpeed * airSpeedMultiplier * Time.deltaTime);
+        {
+            moveDir = GetCameraRelativeMovement(horizontal, vertical);
+            if (isGrounded)
+                rb.MovePosition(transform.position + moveDir * moveSpeed * Time.deltaTime);
+            else
+                rb.MovePosition(transform.position + moveDir * moveSpeed * airSpeedMultiplier * Time.deltaTime);
+        }
 
-        isRunning = move != Vector3.zero && isGrounded && !isDodging;
+        isRunning = moveDir != Vector3.zero && isGrounded && !isDodging;
 
         #endregion
 
         #region Rotate player with camera
-        if (!isDodging) {
+        if (!isDodging)
+        {
             Vector3 viewDirection = transform.position - new Vector3(cameraTransform.position.x, transform.position.y, cameraTransform.position.z);
             transform.forward = viewDirection.normalized;
         }
@@ -250,7 +260,7 @@ public class PlayerController : CharacterClass
 
         if (SelectChar.characterID == 1) // If the shooter character is selected
         {
-            if (Input.GetMouseButtonDown(0) && !isAttacking && !isReloading && currAmmo > 0 && !isDodging)
+            if (Input.GetMouseButton(0) && !isAttacking && !isReloading && currAmmo > 0 && !isDodging)
             {
                 Debug.Log("Left mouse button clicked - calling Shoot() for shooter character");
                 StartCoroutine(WaitToChamber(shotTime));
@@ -259,7 +269,7 @@ public class PlayerController : CharacterClass
         }
         else // If the sword character is selected
         {
-            if (Input.GetMouseButtonDown(0) && !isAttacking && !isDodging)
+            if (Input.GetMouseButton(0) && !isAttacking && !isDodging)
             {
                 Debug.Log("Left mouse button clicked - calling meleeAttack() for sword character");
                 meleeAttack();
@@ -307,7 +317,7 @@ public class PlayerController : CharacterClass
 
         Vector3 rightRelataive = horizontal * camRight;
 
-        return GetCameraForwardRelative(vertical) + rightRelataive;
+        return Vector3.Normalize(GetCameraForwardRelative(vertical) + rightRelataive);
     }
 
     public Vector3 GetCameraForwardRelative(float vertical)
@@ -317,7 +327,7 @@ public class PlayerController : CharacterClass
         return vertical * camForward;
     }
 
-    private Vector3 GetDirectionAndRotate()
+    private Vector3 GetDodgeDirectionAndRotate()
     {
         if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
         {
