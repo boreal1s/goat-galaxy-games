@@ -87,4 +87,14 @@ public class EnemyMiniBossDogAndPenguine : EnemyBase
 
         base.Die();
     }
+
+    public override bool isAttackInvalid()
+    {
+        if (GetDistanceToPlayer() > attackValidDistanceThreshold)
+        {
+            return true;
+        }
+        
+        return base.isAttackInvalid();
+    }
 }

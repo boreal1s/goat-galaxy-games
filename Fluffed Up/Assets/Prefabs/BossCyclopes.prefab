@@ -167,6 +167,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5066869506183214635}
+  - component: {fileID: 4920103309401412713}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -206,6 +207,19 @@ Transform:
   m_Father: {fileID: 5066869506183214641}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &4920103309401412713
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5066869506182785547}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.47
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5066869506182785549
 GameObject:
   m_ObjectHideFlags: 0
@@ -347,7 +361,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5066869506183214639}
   - component: {fileID: 5066869506192300495}
-  - component: {fileID: 8686578335799673129}
   - component: {fileID: 8686578335799673130}
   - component: {fileID: 8686578335799673135}
   - component: {fileID: 2924699593290023753}
@@ -368,7 +381,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 13.035458, y: -1.7020065, z: 38.175278}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5066869506183214637}
   - {fileID: 5066869506183214641}
@@ -397,19 +410,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!135 &8686578335799673129
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5066869506182785551}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.6
-  m_Center: {x: 0, y: 1.48, z: 0}
 --- !u!114 &8686578335799673130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -431,12 +431,12 @@ MonoBehaviour:
   attackPower: 30
   attackSpeed: 1
   maxAttackSpeed: 0
-  attackDistanceThreshold: 2.5
+  attackValidDistanceThreshold: 1.5
+  attackReadyDistanceThreshold: 2.5
   isAttacking: 0
   attackDelayInMilli: 500
   defense: 0
   isDodging: 0
-  invincibilityFrames: 0
   currInvincibilityFrames: 0
   isBurning: 0
   isFrozen: 0
@@ -458,8 +458,8 @@ MonoBehaviour:
   rb: {fileID: 0}
   sound3DPrefab: {fileID: 1719587315714716692, guid: 58873906edcd842929a41e8353bb38b0, type: 3}
   hitSoundEffect: {fileID: 8300000, guid: b992ab776242a4a1b96677b578374e95, type: 3}
-  itemUsedSoundEffect: {fileID: 0}
   hitSoundPitch: 1
+  healSoundEffect: {fileID: 0}
   baseHealth: 0
   baseAttackPower: 0
   AttackEvent:
@@ -479,6 +479,7 @@ MonoBehaviour:
   fullAttackDurationInMilli: 750
   attackType2DelayInMilli: 48
   attackType2FullDurationInMilli: 50
+  attackType2ValidDistanceThreshold: 100
   AttackEventType2:
     m_PersistentCalls:
       m_Calls: []
@@ -499,7 +500,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 2.5
+  m_StoppingDistance: 2
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
