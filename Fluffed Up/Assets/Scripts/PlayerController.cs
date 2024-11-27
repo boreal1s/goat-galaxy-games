@@ -111,8 +111,8 @@ public class PlayerController : CharacterClass
         jumpCooldown = 0.5f;
         airSpeedMultiplier = 1f;
         attackPower = 70f;
-        health = 100000000000000f;
-        maxHealth = 100000000000000f;
+        health = 100f;
+        maxHealth = 100f;
         CurrentAttackCounter = 0;
         attackComboMax = 3;
         attackComboCooldown = 1f;
