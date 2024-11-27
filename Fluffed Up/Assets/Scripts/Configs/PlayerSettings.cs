@@ -21,6 +21,11 @@ public class PlayerSettings : MonoBehaviour
 
     private void Update()
     {
+        DontDestroyOnLoad(this);
+    }
+
+    public void UpdateValues()
+    {
         if (mouseSensSlider == null)
         {
             mouseSensSlider = GameObject.Find("StandardSensitivity").GetComponentInChildren<Slider>();
@@ -31,11 +36,6 @@ public class PlayerSettings : MonoBehaviour
             aimSensSlider = GameObject.Find("AimSensitivity").GetComponentInChildren<Slider>();
         }
 
-        DontDestroyOnLoad(this);
-    }
-
-    public void UpdateValues()
-    {
         SENSITIVITY = mouseSensSlider.value;
         FINE_SENSITIVITY = aimSensSlider.value;
     }
