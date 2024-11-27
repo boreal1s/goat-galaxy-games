@@ -1,5 +1,12 @@
 using Cinemachine;
+using JetBrains.Annotations;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Net;
+using System.Runtime.Remoting.Metadata;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +18,7 @@ public class ShopController: MonoBehaviour
     private PlayerController player;
     private GameObject virtualCameras;
     private BGMPlayer bgmPlayer;
+ 
 
     [Header("Option 1 UI Elements")]
     [SerializeField] private GameObject option1;
@@ -81,6 +89,10 @@ public class ShopController: MonoBehaviour
         shopIsOpen = false;
         shopComponent.SetActive(false);
 
+        dropTables = FindObjectOfType<DropTables>();
+
+        upgradeFlags = FindObjectOfType<UpgradeFlags>();
+
         // Ensure all "Not Enough Coins" messages are hidden initially
         notEnoughCoinsText1.SetActive(false);
         notEnoughCoinsText2.SetActive(false);
@@ -94,6 +106,7 @@ public class ShopController: MonoBehaviour
 
 
         dropTables = dt.GetComponent<DropTables>();
+
         player = FindObjectOfType<PlayerController>();
         virtualCameras = GameObject.Find("VirtualCameras");
 
@@ -119,6 +132,7 @@ public class ShopController: MonoBehaviour
         if (canTriggerShop)
         {
             bgmPlayer.DimAndDull();
+            activateShop();
             shopComponent.SetActive(true);
             shopIsOpen = true;
             Time.timeScale = 0;
