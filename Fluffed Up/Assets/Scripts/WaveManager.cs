@@ -376,7 +376,7 @@ public class WaveManager : MonoBehaviour
                 if (withinDistance && withinAngle)
                 {
                     player.PlaySlayHitSound();
-                    enemy.TakeDamage(damage, player.enemyStunDelayMilli);
+                    enemy.TakeDamage(damage);
                 }
             }
             else if (enemy.isAttackInvalid() == false)
@@ -385,7 +385,7 @@ public class WaveManager : MonoBehaviour
                 bool withinAngle = math.abs(Vector3.Angle(enemy.transform.forward, player.transform.position - enemy.transform.position)) < 30 ;
                 if (withinDistance && withinAngle)
                 {
-                    player.TakeDamage(damage, 0);
+                    player.TakeDamage(damage);
                 }
             }
         }

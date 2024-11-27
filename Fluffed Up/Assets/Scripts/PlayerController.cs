@@ -13,12 +13,13 @@ public class PlayerController : CharacterClass
     public UnityEvent<float, int> AttackEvent;
     public UnityEvent<float> DamageEvent;
 
-    [Header("Shooting")]
+    [Header("Shootin' 'n' Slashin'")]
     public GameObject projectilePrefab;       // The projectile prefab to instantiate
     public Transform projectileSpawnPoint;    // Where the projectile will spawn
     public float projectileDamage;
     private float projectileSpeed = 300f;
-    private LayerMask aimLayerMask; // Invertered layer mask
+    private LayerMask aimLayerMask;
+
     #region Coin Attributes
     public bool isShopping;
     private int coins;
@@ -95,6 +96,7 @@ public class PlayerController : CharacterClass
     private void Awake()
     {
         groundMask = ~(1 << LayerMask.GetMask("Ground"));
+        aimLayerMask = LayerMask.GetMask("Player", "MiniMap");
         inputs = GetComponent<InputMap>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
@@ -110,7 +112,7 @@ public class PlayerController : CharacterClass
         jumpTime = 3f;
         jumpCooldown = 0.5f;
         airSpeedMultiplier = 1f;
-        attackPower = 70f;
+        attackPower = 60f;
         health = 100f;
         maxHealth = 100f;
         CurrentAttackCounter = 0;
@@ -146,11 +148,10 @@ public class PlayerController : CharacterClass
                 { 12, GameObject.Find("Ammo12").GetComponent<UnityEngine.UI.Image>() },
                 { 13, GameObject.Find("Ammo13").GetComponent<UnityEngine.UI.Image>() },
             };
+            projectileSpawnPoint = GameObject.Find("ProjectileSpawnPoint").transform;
         }
 
         cameraTransform = GameObject.Find("MainCamera").transform;
-        projectileSpawnPoint = GameObject.Find("ProjectileSpawnPoint").transform;
-        aimLayerMask = LayerMask.GetMask("Player", "MiniMap");
 
         // Coin stuff
         coins = 0;
@@ -297,7 +298,7 @@ public class PlayerController : CharacterClass
         if (inputs.jump && isGrounded && !isJumping && !isDodging)
         {
             isJumping = true;
-            Jump();
+            Jump(1f);
         }
         healthBar.SetHealth(health);
 
@@ -340,6 +341,7 @@ public class PlayerController : CharacterClass
         return vertical * camForward;
     }
 
+    #region Dodge controls
     private Vector3 GetDodgeDirectionAndRotate()
     {
         if (horizontal == 0 && vertical == 0)
@@ -372,7 +374,9 @@ public class PlayerController : CharacterClass
         dodgeSkill.ResetSkill();
         Debug.Log("Dodge reset.");
     }
+    #endregion
 
+    #region Shooting Controls
     void Shoot()
     {
         Debug.Log("Shoot() method is being called");
@@ -413,7 +417,7 @@ public class PlayerController : CharacterClass
             Rigidbody targetRB = raycastHit.rigidbody;
             if (raycastHit.rigidbody != null && LayerMask.LayerToName(raycastHit.rigidbody.gameObject.layer) == "Enemy")
             {
-                raycastHit.rigidbody.gameObject.GetComponent<EnemyBase>().TakeDamage(projectileDamage, 0);
+                raycastHit.rigidbody.gameObject.GetComponent<EnemyBase>().TakeDamage(projectileDamage);
             }
         }
     }
@@ -436,6 +440,8 @@ public class PlayerController : CharacterClass
         yield return new WaitForSeconds(duration);
         isAttacking = false;
     }
+    #endregion
+
 
     void meleeAttack()
     {
@@ -453,20 +459,19 @@ public class PlayerController : CharacterClass
         }
         CurrentAttackCounter = (CurrentAttackCounter + 1) % 2;
 
-        // Reset the attacking state after the attack animation finishes
-        StartCoroutine(ResetAttackState());
-
         // Play attack sound
         PlaySoundEffect(attackSound);
+
+        // Reset the attacking state after the attack animation finishes
+        StartCoroutine(ResetAttackState());
 
         // Find nearby enemies
         AttackEvent?.Invoke(attackPower, attackDelayInMilli);
     }
 
-
     public void CollectItem(CollectibleItem item)
     {
-        PlaySoundEffect(itemPickupSound, 1, 0.5f);
+        PlaySoundEffect(itemPickupSound, 1, 0.25f);
         if (!inventory.ContainsKey(item.itemName))
         {
             // Debug.LogWarning("Adding new item to inventory");
@@ -506,7 +511,7 @@ public class PlayerController : CharacterClass
         UpdateHealthPackCounter();
     }
 
-    public override void TakeDamage(float damage, int additionalDelay)
+    public override void TakeDamage(float damage)
     {
         Upgrade fleshWound = upgradeFlags.getUpgradeFlag("Flesh Wound");
         if (fleshWound != null) {
@@ -516,7 +521,7 @@ public class PlayerController : CharacterClass
                 damage -= damage * fleshWound.playerMod.modValue;
             }
         }
-        base.TakeDamage(damage, additionalDelay);
+        base.TakeDamage(damage);
 
         animator.Play("GetHit");
     }

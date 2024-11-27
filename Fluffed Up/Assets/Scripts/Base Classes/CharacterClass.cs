@@ -87,11 +87,11 @@ public class CharacterClass : MonoBehaviour
     private Sound3D loopSound3D;
     #endregion
 
-    public void Jump()
+    public void Jump(float additionalWaitTime = 1f)
     {
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddForce(rb.transform.up * jumpForce, ForceMode.Impulse);
-        Invoke("ResetJump", jumpCooldown);
+        Invoke("ResetJump", jumpCooldown + additionalWaitTime);
     }
 
     public void ResetJump()
@@ -120,7 +120,7 @@ public class CharacterClass : MonoBehaviour
 
         while (elapsedTime < duration)
         {
-            TakeDamage(burnDamage * Time.deltaTime, 0);
+            TakeDamage(burnDamage * Time.deltaTime);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -172,7 +172,7 @@ public class CharacterClass : MonoBehaviour
         }
     }
 
-    public virtual void TakeDamage(float damage, int additionalDelay)
+    public virtual void TakeDamage(float damage)
     {
         if (currInvincibilityFrames < 1)
         {

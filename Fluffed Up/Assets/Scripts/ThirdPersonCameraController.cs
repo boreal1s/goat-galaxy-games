@@ -48,8 +48,6 @@ public class ThirdPersonCameraController : MonoBehaviour
     {
         if (!isShopping)
         {
-            Debug.Log(playerSettings.SENSITIVITY);
-            Debug.Log(playerSettings.FINE_SENSITIVITY);
             pitch += isAiming ? playerSettings.FINE_SENSITIVITY * -Input.GetAxis("Mouse Y") : playerSettings.SENSITIVITY * -Input.GetAxis("Mouse Y");
             yaw += isAiming ? playerSettings.FINE_SENSITIVITY * Input.GetAxis("Mouse X") : playerSettings.SENSITIVITY * Input.GetAxis("Mouse X");
             pitch = Mathf.Clamp(pitch, -90f, 75f);

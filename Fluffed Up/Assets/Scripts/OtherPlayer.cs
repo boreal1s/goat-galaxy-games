@@ -175,9 +175,9 @@ public class OtherPlayer : CharacterClass
         Debug.Log($"Collected: {item.itemName}");
     }
 
-    public override void TakeDamage(float damage, int additionalDelay)
+    public override void TakeDamage(float damage)
     {
-        base.TakeDamage(damage, additionalDelay);
+        base.TakeDamage(damage);
 
         animator.Play("GetHit");
     }
