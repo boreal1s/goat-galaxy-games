@@ -2571,10 +2571,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f37a204386e51874f8811afa8ffc5f83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waveManager: {fileID: 0}
-  aimCamera: {fileID: 0}
   playerSettings: {fileID: 1944541178}
   inputs: {fileID: 0}
+  isShopping: 0
 --- !u!114 &56338627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3256,10 +3255,10 @@ Transform:
   - {fileID: 1326195257}
   - {fileID: 1166428497}
   - {fileID: 515971428}
-  - {fileID: 997510239}
   - {fileID: 1742584764}
   - {fileID: 1885699893}
   - {fileID: 620909536}
+  - {fileID: 997510239}
   - {fileID: 927425289}
   - {fileID: 1704050975}
   - {fileID: 1620944171}
@@ -13665,10 +13664,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f37a204386e51874f8811afa8ffc5f83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waveManager: {fileID: 0}
-  aimCamera: {fileID: 0}
   playerSettings: {fileID: 1944541178}
   inputs: {fileID: 522361944}
+  isShopping: 0
 --- !u!114 &489838436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34223,18 +34221,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  playerAimCamera: {fileID: 0}
-  playerFollowCamera: {fileID: 0}
   playerPrefabs:
   - {fileID: 8052979353776500095, guid: 09f1bbe9e000e4c95977ffc9740f510b, type: 3}
   - {fileID: 8166711897979369329, guid: c97dfb51721c84f8eb1d6ebb23c6edfa, type: 3}
-  cameraTransform: {fileID: 0}
   enemyPrefabSlime: {fileID: 9095522416803934105, guid: 653a465a5400a4f2f951a8d29e061783, type: 3}
   enemyPrefabTurtle: {fileID: 5232562413803862215, guid: 6f87a4e241e274fc5b9154af772ec7e1, type: 3}
   enemyPrefabMiniBossDog: {fileID: 4412145234250513926, guid: 58ed0d3f35f344d3e84b1deca4cae991, type: 3}
   enemyPrefabMantaRay: {fileID: 2391359435489877134, guid: 75f057b43e0a449dae5f6549f5107474, type: 3}
   enemyPrefabMosquito: {fileID: 1467277096911013437, guid: 586a8fad78c64d758ef4b7e17ea63960, type: 3}
   enemyPrefabMiniBossPenguin: {fileID: 5535647646396653931, guid: 6f633180a623b499faa5ac93e44d02c6, type: 3}
+  enemyPrefabBossCyclopes: {fileID: 0}
   enemySpawnArea: {fileID: 82029157}
   enemySpawnBoxes: []
   shopIndicatorLight: {fileID: 2022252160}
@@ -34245,6 +34241,8 @@ MonoBehaviour:
   shopController: {fileID: 54886637}
   waveCounterText: {fileID: 0}
   countdownText: {fileID: 0}
+  enemiesAreSpawning: 0
+  isRunningWave: 0
 --- !u!4 &1322518338
 Transform:
   m_ObjectHideFlags: 0
@@ -49778,7 +49776,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 320f39a999235dd4a98337b439ea5eb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivity: 0
+  SENSITIVITY: 0
+  FINE_SENSITIVITY: 0
+  CAMERA_SIDE: 0
 --- !u!4 &1944541179
 Transform:
   m_ObjectHideFlags: 0
@@ -54792,6 +54792,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 606263880420663483, guid: 06035e013d8f9ce439ce81d4cf56b0c2, type: 3}
+      propertyPath: dt
+      value: 
+      objectReference: {fileID: 1508319941}
+    - target: {fileID: 606263880420663483, guid: 06035e013d8f9ce439ce81d4cf56b0c2, type: 3}
+      propertyPath: uf
+      value: 
+      objectReference: {fileID: 1729022000}
     - target: {fileID: 606263880420663483, guid: 06035e013d8f9ce439ce81d4cf56b0c2, type: 3}
       propertyPath: audioSource
       value: 
