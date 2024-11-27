@@ -24,7 +24,8 @@ public class CharacterClass : MonoBehaviour
     public float attackPower;
     public float attackSpeed;
     public float maxAttackSpeed;
-    public float attackDistanceThreshold;
+    public float attackValidDistanceThreshold;
+    public float attackReadyDistanceThreshold;
     public bool isAttacking = false;
     public int attackDelayInMilli;      // Attack delay in milliseconds. After the delay, the distance between enemy and player is calculated to decide if attack was valid or not.
 
