@@ -578,14 +578,14 @@ MonoBehaviour:
   rotationSpeed: 0
   isRunning: 0
   healthBar: {fileID: 5362168310349424946, guid: 58ed0d3f35f344d3e84b1deca4cae991, type: 3}
-  health: 0
+  health: 100
   maxHealth: 0
-  attackPower: 0
-  attackSpeed: 0
+  attackPower: 10
+  attackSpeed: 1
   maxAttackSpeed: 0
-  attackDistanceThreshold: 0
+  attackDistanceThreshold: 2
   isAttacking: 0
-  attackDelayInMilli: 0
+  attackDelayInMilli: 266
   defense: 0
   isDodging: 0
   currInvincibilityFrames: 0
@@ -607,9 +607,9 @@ MonoBehaviour:
   isReloading: 0
   animator: {fileID: 0}
   rb: {fileID: 0}
-  sound3DPrefab: {fileID: 0}
-  hitSoundEffect: {fileID: 0}
-  hitSoundPitch: 0
+  sound3DPrefab: {fileID: 1719587315714716692, guid: 58873906edcd842929a41e8353bb38b0, type: 3}
+  hitSoundEffect: {fileID: 8300000, guid: 8ddf957b24c9445dc9811f11e3a16a76, type: 3}
+  hitSoundPitch: 3
   healSoundEffect: {fileID: 0}
   baseHealth: 0
   baseAttackPower: 0
@@ -653,7 +653,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 1
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!1 &2594355968516817363
 GameObject:
