@@ -80,7 +80,6 @@ public class EnemyMantaRay : EnemyBase
 
     protected override void Die()
     {
-        Debug.Log("Die 2?");
         animator.StopPlayback();
         animator.Play("Swarm08_Die");
         StartCoroutine(DieCoroutine(animator.GetCurrentAnimatorStateInfo(0).length*2));
