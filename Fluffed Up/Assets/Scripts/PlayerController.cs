@@ -75,6 +75,7 @@ public class PlayerController : CharacterClass
     [Header("Inputs")]
     [SerializeField]
     private InputMap inputs;
+    private bool canMove = true;
 
     [Header("Camera")]
     [SerializeField]
@@ -207,29 +208,31 @@ public class PlayerController : CharacterClass
         #endregion
 
         #region Movement Control
-
-        Vector3 moveDir;
-        if (isDodging)
+        if (canMove)
         {
-            moveDir = GetDodgeDirectionAndRotate();
-            Vector3 newVelocity = new Vector3(moveDir.x, 0, moveDir.z) * moveSpeed * dodgeSkill.GetSkillValue();
-            newVelocity.y = rb.velocity.y;
-            rb.velocity = newVelocity;
-        }
-        else
-        {
-            moveDir = GetCameraRelativeMovement(horizontal, vertical);
-            Vector3 newVelocity = new Vector3(moveDir.x, 0, moveDir.z) * moveSpeed;
-            if (!isGrounded)
+            Vector3 moveDir;
+            if (isDodging)
             {
-                newVelocity *= airSpeedMultiplier;
+                moveDir = GetDodgeDirectionAndRotate();
+                Vector3 newVelocity = new Vector3(moveDir.x, 0, moveDir.z) * moveSpeed * dodgeSkill.GetSkillValue();
+                newVelocity.y = rb.velocity.y;
+                rb.velocity = newVelocity;
             }
-            newVelocity.y = rb.velocity.y;
-            rb.velocity = newVelocity;
+            else
+            {
+                moveDir = GetCameraRelativeMovement(horizontal, vertical);
+                Vector3 newVelocity = new Vector3(moveDir.x, 0, moveDir.z) * moveSpeed;
+                if (!isGrounded)
+                {
+                    newVelocity *= airSpeedMultiplier;
+                }
+                newVelocity.y = rb.velocity.y;
+                rb.velocity = newVelocity;
 
+            }
+
+            isRunning = moveDir != Vector3.zero && isGrounded && !isDodging;
         }
-
-        isRunning = moveDir != Vector3.zero && isGrounded && !isDodging;
 
         #endregion
 
@@ -516,9 +519,11 @@ public class PlayerController : CharacterClass
                 damage -= damage * fleshWound.playerMod.modValue;
             }
         }
-        base.TakeDamage(damage, additionalDelay);
 
-        animator.Play("GetHit");
+        if (health > 0) {
+            base.TakeDamage(damage, additionalDelay);
+            animator.Play("GetHit");
+        }
     }
 
     public void UpdateCoinCounter()
@@ -640,6 +645,7 @@ public class PlayerController : CharacterClass
     protected virtual void Die()
     {
         animator.Play("Die");
+        canMove = false;
     }
 
     public void PlaySlayHitSound()
