@@ -180,7 +180,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Battle endless waves of fluffy but fierce enemies.\r                                                                           "
+  m_text: Survive an endless armada of alien fiends!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1993,8 +1993,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 63.2883, y: 60.366997}
-  m_SizeDelta: {x: 1496.4668, y: 36.0704}
+  m_AnchoredPosition: {x: -374.93002, y: 60.366997}
+  m_SizeDelta: {x: 620.0303, y: 36.0704}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1621028889
 MonoBehaviour:
@@ -2016,7 +2016,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '*Survive mini-bosses to face a final boss.*                                                            '
+  m_text: '*Watch out! Your enemies will get stronger.*
+
+
+    *BUT SO CAN YOU!*                                                            '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2128,7 +2131,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -342, y: -55}
+  m_AnchoredPosition: {x: -342, y: -104.6}
   m_SizeDelta: {x: 685.8864, y: 144}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1638429843
@@ -2151,9 +2154,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "There is no ending but death - each wave provides opportunities to become
-    stronger through\r \ncharacter progressive skills and attributes that can be
-    purchased in the shop using in-game currency"
+  m_text: 'Visit the shop in between waves to purchase valuable upgrades and abilities.*
+
+
+    *Now
+    go out there and FLUFF THEM UP!'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

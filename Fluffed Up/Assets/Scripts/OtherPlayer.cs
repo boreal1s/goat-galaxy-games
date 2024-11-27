@@ -144,7 +144,6 @@ public class OtherPlayer : CharacterClass
 
         // Ignore collision between the projectile and the player
         Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
-        projectile.GetComponent<Projectile>().SetDamage(projectileDamage);
 
         // Set the projectile's direction
         projectile.transform.forward = transform.forward;
