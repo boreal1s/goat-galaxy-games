@@ -13,7 +13,7 @@ public class PlayerController : CharacterClass
     public UnityEvent<float, int> AttackEvent;
     public UnityEvent<float> DamageEvent;
 
-    [Header("Shootin' 'n' Slashin'")]
+    [Header("Shootin'")]
     public GameObject projectilePrefab;       // The projectile prefab to instantiate
     public Transform projectileSpawnPoint;    // Where the projectile will spawn
     public float projectileDamage;
@@ -61,7 +61,6 @@ public class PlayerController : CharacterClass
 
     [Header("Melee attack attibutes")]
     [SerializeField]
-    private float attackComboCooldown;
     private int attackComboMax;
     public int CurrentAttackCounter
     {
@@ -109,7 +108,7 @@ public class PlayerController : CharacterClass
     {
         moveSpeed = 10f;
         rotationSpeed = 360f;
-        jumpForce = 5f;
+        jumpForce = 7f;
         jumpTime = 3f;
         jumpCooldown = 0.5f;
         airSpeedMultiplier = 1f;
@@ -118,7 +117,6 @@ public class PlayerController : CharacterClass
         maxHealth = 100f;
         CurrentAttackCounter = 0;
         attackComboMax = 3;
-        attackComboCooldown = 1f;
         attackSpeed = 1f;
         coinFlushWaitTime = 1f;
         isDodging = false;
@@ -300,6 +298,7 @@ public class PlayerController : CharacterClass
 
         if (inputs.jump && isGrounded && !isJumping && !isDodging)
         {
+            Debug.Log("Jump!");
             isJumping = true;
             Jump(1f);
         }
@@ -526,7 +525,7 @@ public class PlayerController : CharacterClass
         }
 
         if (health > 0) {
-            base.TakeDamage(damage, additionalDelay);
+            base.TakeDamage(damage);
             animator.Play("GetHit");
         }
     }

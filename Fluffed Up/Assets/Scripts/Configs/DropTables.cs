@@ -44,7 +44,6 @@ public class DropTables : MonoBehaviour
     Sprite healthPotionToolbarSprite;
     #endregion
 
-
     #region Weights & Coefficients
     static int commonWeight = 40;
     static int uncommonWeight = 40;
@@ -130,9 +129,9 @@ public class DropTables : MonoBehaviour
         };
 
         // Skills
-        Upgrade blinkSkill = new Upgrade("Blink", "Instantaneously teleport a short distance", UpgradeType.Skill, 200, blinkSkillShopSprite, blinkSkillToolbarSprite, new BlinkSkill(new List<Upgrade>(), blinkAudio));
-        Upgrade dashSkill = new Upgrade("Dash", "A faster way to dodge", UpgradeType.Skill, 100, blinkSkillShopSprite, blinkSkillToolbarSprite, new DashSkill(new List<Upgrade>(), Rarity.Uncommon, SkillType.Dodge, dashAudio));
-        Upgrade dodgeSkill = new Upgrade("Roll", "Swiftly roll out of harms way", UpgradeType.Skill, 55, dodgeSkillShopSprite, dodgeSkillToolbarSprite, new RollSkill(new List<Upgrade>() { blinkSkill, dashSkill }, Rarity.Common, 1.2f, 10, SkillType.Dodge));
+        Upgrade blinkSkill = new Upgrade("Blink", "Instantaneously teleport a short distance (L-shift)", UpgradeType.Skill, 200, blinkSkillShopSprite, blinkSkillToolbarSprite, new BlinkSkill(new List<Upgrade>(), blinkAudio));
+        Upgrade dashSkill = new Upgrade("Dash", "A faster way to dodge (L-shift)", UpgradeType.Skill, 100, blinkSkillShopSprite, blinkSkillToolbarSprite, new DashSkill(new List<Upgrade>(), Rarity.Uncommon, SkillType.Dodge, dashAudio));
+        Upgrade dodgeSkill = new Upgrade("Roll", "Swiftly roll out of harms way (L-shift)", UpgradeType.Skill, 55, dodgeSkillShopSprite, dodgeSkillToolbarSprite, new RollSkill(new List<Upgrade>() { blinkSkill, dashSkill }, Rarity.Common, 1.2f, 10, SkillType.Dodge));
         skills = new WeightedList<Upgrade>()
         {
             { dodgeSkill, commonWeight},
