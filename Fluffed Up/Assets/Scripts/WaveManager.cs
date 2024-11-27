@@ -80,8 +80,8 @@ public class WaveManager : MonoBehaviour
         {
             {"Slime", new(enemyPrefabSlime, 1, 6, 10, 70) },
             {"Turtle", new(enemyPrefabTurtle, 3, 4, 20, 180)},
-            {"MantaRay", new(enemyPrefabMantaRay, 3, 5, 25, 225)},
-            {"Mosquito", new(enemyPrefabMosquito, 4, 6, 15, 200)},
+            {"Mosquito", new(enemyPrefabMosquito, 4, 4, 15, 200)},
+            {"MantaRay", new(enemyPrefabMantaRay, 5, 4, 25, 225)},
             {"BossDog", new(enemyPrefabMiniBossDog, 10, 5, 40, 400)},
             {"BossPenguin", new(enemyPrefabMiniBossPenguin, 20, 4, 60, 600)},
             {"BossCyclopes", new(enemyPrefabBossCyclopes, 40, 10, 80, 1000)}
