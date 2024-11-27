@@ -49,7 +49,8 @@ public class OtherPlayer : CharacterClass
         airSpeedMultiplier = 0.6f;
         attackPower = 25f;
         health = 100f;
-        attackDistanceThreshold = 3f;
+        attackReadyDistanceThreshold = 3f;
+        attackValidDistanceThreshold = 3f;
 
         healthBar = GetComponentInChildren<HealthBar>();
         if (healthBar != null)

@@ -33,6 +33,8 @@ public class WaveManager : MonoBehaviour
     [SerializeField] public GameObject enemyPrefabSlime;
     [SerializeField] public GameObject enemyPrefabTurtle;
     [SerializeField] public GameObject enemyPrefabMiniBossDog;
+    [SerializeField] public GameObject enemyPrefabMantaRay;
+    [SerializeField] public GameObject enemyPrefabMosquito;
     [SerializeField] public GameObject enemyPrefabMiniBossPenguin;
     [SerializeField] public GameObject enemyPrefabBossCyclopes;
     [SerializeField] public GameObject enemySpawnArea;
@@ -78,6 +80,8 @@ public class WaveManager : MonoBehaviour
         {
             {"Slime", new(enemyPrefabSlime, 1, 6, 10, 70) },
             {"Turtle", new(enemyPrefabTurtle, 3, 4, 20, 180)},
+            {"MantaRay", new(enemyPrefabMantaRay, 3, 5, 25, 225)},
+            {"Mosquito", new(enemyPrefabMosquito, 4, 6, 15, 200)},
             {"BossDog", new(enemyPrefabMiniBossDog, 10, 5, 40, 400)},
             {"BossPenguin", new(enemyPrefabMiniBossPenguin, 20, 4, 60, 600)},
             {"BossCyclopes", new(enemyPrefabBossCyclopes, 40, 10, 80, 1000)}
@@ -366,12 +370,12 @@ public class WaveManager : MonoBehaviour
     {
         if (enemy != null && player != null)
         {
-            float distance = Vector3.Distance(enemy.transform.position, player.transform.position);
+            float distance = enemy.GetDistanceToPlayer();
 
             // Hit condition1: Distance smaller than threshold
             if (playerAttacks) // This is for slayer type player only 
             {
-                bool withinDistance = distance <= player.attackDistanceThreshold;
+                bool withinDistance = distance <= player.attackValidDistanceThreshold;
                 bool withinAngle = math.abs(Vector3.Angle(player.transform.forward, enemy.transform.position - player.transform.position)) < 30 ;
                 if (withinDistance && withinAngle)
                 {
@@ -381,9 +385,8 @@ public class WaveManager : MonoBehaviour
             }
             else if (enemy.isAttackInvalid() == false)
             {
-                bool withinDistance = distance <= enemy.attackDistanceThreshold;
                 bool withinAngle = math.abs(Vector3.Angle(enemy.transform.forward, player.transform.position - enemy.transform.position)) < 30 ;
-                if (withinDistance && withinAngle)
+                if (withinAngle)
                 {
                     player.TakeDamage(damage);
                 }

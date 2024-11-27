@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.AI;
 using JetBrains.Annotations;
 using Unity.Mathematics;
+using System;
 
 public class EnemyBossCyclopes : EnemyBase
 {
@@ -15,6 +16,7 @@ public class EnemyBossCyclopes : EnemyBase
     public int fullAttackDurationInMilli;
     public int attackType2DelayInMilli;
     public int attackType2FullDurationInMilli;
+    public float attackType2ValidDistanceThreshold;
     public UnityEvent<float, int> AttackEventType2; // input: damage and attack time delay
     public AudioClip electrocuteSoundEffect;
     public AudioClip biteSoundEffect;
@@ -143,7 +145,7 @@ public class EnemyBossCyclopes : EnemyBase
         isAttacking = true;
         // Reset the attacking state after the attack animation finishes
         StartCoroutine(ResetAttackType2State(attackType2FullDurationInMilli));
-        AttackEvent?.Invoke(math.ceil(attackPower/30), attackType2DelayInMilli); // This is continous type attack
+        AttackEventType2?.Invoke(math.ceil(attackPower/30), attackType2DelayInMilli); // This is continous type attack
         PlaySoundEffectInALoop(electrocuteSoundEffect);
     }
 
@@ -201,21 +203,66 @@ public class EnemyBossCyclopes : EnemyBase
     public override float GetDistanceToPlayer()
     {
         // Measure the distance as if the player and the enemy is on the same plane
-        Vector3 enemyTransform = transform.position;
-        enemyTransform.y = 0;
-        Vector3 playerTransform = player.transform.position;
-        playerTransform.y = 0;
-        float theDistance = Vector3.Distance(enemyTransform, playerTransform);
-        return theDistance;
+        SphereCollider sphere = transform.Find("Root/Body").GetComponent<SphereCollider>();
+        if (sphere != null)
+        {
+            Vector3 enemyTransform = sphere.transform.TransformPoint(sphere.center);
+            Vector3 playerTransform = player.transform.position;            
+
+            if (attackType2Activated == false)
+            {
+                enemyTransform.y = 0;
+                playerTransform.y = 0;
+                return (enemyTransform - playerTransform).magnitude;
+            }
+            else
+            {
+                return (enemyTransform - playerTransform).magnitude - 2;
+            }            
+        }
+        else
+        {
+            return math.INFINITY;
+        }
     }
 
     protected override bool IsPlayerOutOfRange()
     {
-        // Measure the angle as if the player and the enemy is on the same plane
-        Vector3 enemyTransform = transform.position;
-        enemyTransform.y = 0;
-        Vector3 playerTransform = player.transform.position;
-        playerTransform.y = 0;
-        return math.abs(Vector3.Angle(transform.forward, playerTransform - enemyTransform)) > 28 ;
+        // Measure the distance as if the player and the enemy is on the same plane
+        SphereCollider sphere = transform.Find("Root/Body").GetComponent<SphereCollider>();
+        if (sphere != null)
+        {
+            Vector3 enemyTransform = sphere.transform.TransformPoint(sphere.center);
+            enemyTransform.y = 0;
+            Vector3 playerTransform = player.transform.position;
+            playerTransform.y = 0;
+
+            if (math.abs(Vector3.Angle(transform.forward, playerTransform - enemyTransform)) > 28)
+            {
+                return true;
+            } else return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public override bool isAttackInvalid()
+    {
+        if (attackType2Activated)
+        {
+            if (GetDistanceToPlayer() > attackType2ValidDistanceThreshold)
+                return true;
+            else
+                return base.isAttackInvalid();
+        }
+        
+        if (GetDistanceToPlayer() > attackValidDistanceThreshold)
+        {
+            return true;
+        }
+        else
+            return base.isAttackInvalid();
     }
 }

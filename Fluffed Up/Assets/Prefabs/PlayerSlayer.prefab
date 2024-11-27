@@ -4281,7 +4281,8 @@ MonoBehaviour:
   attackPower: 0
   attackSpeed: 0
   maxAttackSpeed: 0
-  attackDistanceThreshold: 5
+  attackValidDistanceThreshold: 4
+  attackReadyDistanceThreshold: 4
   isAttacking: 0
   attackDelayInMilli: 200
   defense: 0

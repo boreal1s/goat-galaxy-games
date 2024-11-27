@@ -13,6 +13,11 @@ public class MainMenu : MonoBehaviour
     {
         SceneManager.LoadScene("Tutorial");
     }
+
+    public void Credits()
+    {
+        SceneManager.LoadScene("EndCreditsScene");
+    }
    
     public void QuitGame()
     {

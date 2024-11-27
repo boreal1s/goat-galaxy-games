@@ -90,12 +90,10 @@ public class EnemyBase : CharacterClass
             switch (enemyState)
             {
                 case EnemyState.Idle:
-                    // Debug.Log("EnemyState: Idle");
                     if (IsEnemyFarFromPlayer() || IsPlayerOutOfRange())
                         enemyState = EnemyState.ChasingPlayer;
                     break;
                 case EnemyState.ChasingPlayer:
-                    // Debug.Log("EnemyState: ChasingPlayer");
                     if (IsEnemyFarFromPlayer())
                     {
                         navMeshAgent.isStopped = false;
@@ -113,6 +111,7 @@ public class EnemyBase : CharacterClass
                     else //TODO: if player is dead, enemy should go to idle. 
                     {
                         navMeshAgent.isStopped = true;
+                        navMeshAgent.velocity = Vector3.zero;
                         enemyState = EnemyState.InitiateAttack;
                     }
                     break;
@@ -131,8 +130,12 @@ public class EnemyBase : CharacterClass
     }
 
     protected bool IsEnemyFarFromPlayer()
-    {
-        return distanceToPlayer > attackDistanceThreshold;
+    {   
+        if (distanceToPlayer > attackReadyDistanceThreshold)
+        {
+            return true;
+        }
+        else return false;
     }
 
     protected virtual bool IsPlayerOutOfRange()
@@ -223,8 +226,9 @@ public class EnemyBase : CharacterClass
         return timePassed.TotalMilliseconds;
     }
 
-    public bool isAttackInvalid()
+    public virtual bool isAttackInvalid()
     {
-        return (enemyState == EnemyState.Dizzy) || (enemyState == EnemyState.Dead);
+        bool enemyUnableToAttack = (enemyState == EnemyState.Dizzy) || (enemyState == EnemyState.Dead);
+        return enemyUnableToAttack;
     }
 }
