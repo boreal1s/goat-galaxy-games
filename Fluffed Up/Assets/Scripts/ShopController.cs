@@ -125,7 +125,7 @@ public class ShopController: MonoBehaviour
 
             if (player != null)
                 player.enabled = false;
-\
+
             if (virtualCameras != null)
             {
                 virtualCameras.SetActive(false);
