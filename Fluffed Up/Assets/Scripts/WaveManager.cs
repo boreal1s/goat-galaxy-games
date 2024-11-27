@@ -386,10 +386,6 @@ public class WaveManager : MonoBehaviour
                 {
                     player.TakeDamage(damage, 0);
                 }
-                else
-                {
-                    Debug.LogError("Out of range");
-                }
             }
         }
     }
