@@ -289,6 +289,19 @@ Transform:
   m_Father: {fileID: 5066869506183214641}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &4920103309401412713
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5066869506182785547}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.47
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5066869506182785549
 GameObject:
   m_ObjectHideFlags: 0
@@ -430,7 +443,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5066869506183214639}
   - component: {fileID: 5066869506192300495}
-  - component: {fileID: 8686578335799673129}
   - component: {fileID: 8686578335799673130}
   - component: {fileID: 8686578335799673135}
   - component: {fileID: 2924699593290023753}
@@ -451,7 +463,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 13.035458, y: -1.7020065, z: 38.175278}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5066869506183214637}
   - {fileID: 5066869506183214641}
@@ -481,19 +493,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!135 &8686578335799673129
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5066869506182785551}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.6
-  m_Center: {x: 0, y: 1.48, z: 0}
 --- !u!114 &8686578335799673130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -515,7 +514,8 @@ MonoBehaviour:
   attackPower: 30
   attackSpeed: 1
   maxAttackSpeed: 0
-  attackDistanceThreshold: 2.5
+  attackValidDistanceThreshold: 1.5
+  attackReadyDistanceThreshold: 2.5
   isAttacking: 0
   attackDelayInMilli: 500
   defense: 0
@@ -562,6 +562,7 @@ MonoBehaviour:
   fullAttackDurationInMilli: 750
   attackType2DelayInMilli: 48
   attackType2FullDurationInMilli: 50
+  attackType2ValidDistanceThreshold: 100
   AttackEventType2:
     m_PersistentCalls:
       m_Calls: []
@@ -582,7 +583,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 2.5
+  m_StoppingDistance: 2
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -1882,7 +1883,7 @@ GameObject:
   - component: {fileID: 8686578335631774892}
   - component: {fileID: 8686578335631774882}
   - component: {fileID: 8686578335631774883}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1958,7 +1959,7 @@ GameObject:
   - component: {fileID: 8686578335758656851}
   - component: {fileID: 8686578335758656849}
   - component: {fileID: 8686578335758656850}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2033,7 +2034,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8686578335850109156}
   - component: {fileID: 8686578335850109157}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Ease Health Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2124,7 +2125,7 @@ GameObject:
   - component: {fileID: 8686578336197616378}
   - component: {fileID: 8686578336197616379}
   - component: {fileID: 8686578336197616377}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Health Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2193,7 +2194,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8686578336824374570}
   - component: {fileID: 8686578336824374569}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Health Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2284,7 +2285,7 @@ GameObject:
   - component: {fileID: 8686578336849328146}
   - component: {fileID: 8686578336849328147}
   - component: {fileID: 8686578336849328156}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Canvas (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2385,7 +2386,7 @@ GameObject:
   - component: {fileID: 8686578337389633240}
   - component: {fileID: 8686578337389633246}
   - component: {fileID: 8686578337389633247}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
