@@ -17,6 +17,228 @@ public class DropTables : MonoBehaviour
 
     ArrayList statUpgrades = new ArrayList()
     {
+<<<<<<< Updated upstream
         new StatUpgrade("Attack Power", "Increase attack power by 10", new ArrayList(), Upgrade.UpgradeType.StatUpgrade, 10, 1f, 10f)
     };
+=======
+        #region Set Artwork
+        attackPowerShopSprite = Resources.Load<Sprite>("Skill Images/02_Sword.png");
+        attackPowerToolbarSprite = Resources.Load<Sprite>("Skill Images/02_Sword.png");
+        healthIncreaseShopSprite = Resources.Load<Sprite>("Skill Images/15_Heal_potion.png");
+        healthIncreaseToolbarSprite = Resources.Load<Sprite>("Skill Images/15_Heal_potion.png");
+        defenseUpgradeShopSprite = Resources.Load<Sprite>("Skill Images/01_plate_chest.png");
+        defenseUpgradeToolbarSprite = Resources.Load<Sprite>("Skill Images/01_plate_chest.png");
+        moveSpeedShopSprite = Resources.Load<Sprite>("Skill Images/05_plate_boots.png");
+        moveSpeedUpgradeToolbarSprite = Resources.Load<Sprite>("Skill Images/05_plate_boots.png");
+        attackSpeedUpgradeShopSprite = Resources.Load<Sprite>("Skill Images/02_Sword.png");
+        attackSpeedUpgradeToolbarSprite = Resources.Load<Sprite>("Skill Images/02_Sword.png");
+        dodgeSkillShopSprite = Resources.Load<Sprite>("Skill Images/05_plate_boots.png");
+        dodgeSkillToolbarSprite = Resources.Load<Sprite>("Skill Images/05_plate_boots.png");
+        blinkSkillShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        blinkSkillToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        fleshWoundModShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        fleshWoundModToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        restockModShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        restockModToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        healthPotionShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        healthPotionToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        #endregion
+
+        #region Set Sound Effects
+        blinkAudio = Resources.Load<AudioClip>("Sounds/teleport-90137");
+        dashAudio = Resources.Load<AudioClip>("Sounds/JumpGrunt");
+        #endregion
+
+        upgradeTypeTable = new WeightedList<UpgradeType>
+        {
+            { UpgradeType.Skill, skillWeight },
+            { UpgradeType.StatUpgrade, statUpgradeWeight },
+            { UpgradeType.PlayerModification, playerModWeight },
+            { UpgradeType.GameModification, gameModWeight }
+        };
+        Debug.Log("Upgrade type table populated");
+
+        // Stat Upgrades
+        Upgrade attackPower = new Upgrade("Attack Power", "Increase attack power by 10", UpgradeType.StatUpgrade, 20, attackPowerShopSprite, attackPowerToolbarSprite, new StatUpgrade(10f, StatType.AttackPower));
+        Upgrade healthIncrease = new Upgrade("Max Health Increase", "Increase max health by 20", UpgradeType.StatUpgrade, 20, healthIncreaseShopSprite, healthIncreaseToolbarSprite, new StatUpgrade(20f, StatType.Health));
+        Upgrade defenseUpgrade = new Upgrade("Defense Up!", "Become a little tougher", UpgradeType.StatUpgrade, 20, defenseUpgradeShopSprite, defenseUpgradeToolbarSprite, new StatUpgrade(2f, StatType.Defense));
+        Upgrade moveSpeedUpgrade = new Upgrade("Move Speed Increase", "Zoooooom!", UpgradeType.StatUpgrade, 20, moveSpeedShopSprite, moveSpeedUpgradeToolbarSprite, new StatUpgrade(2f, StatType.MoveSpeed));
+        Upgrade attackSpeedUpgrade = new Upgrade("Attack Speed Increase", "Increase attack speed by 7%", UpgradeType.StatUpgrade, 20, attackSpeedUpgradeShopSprite, attackSpeedUpgradeToolbarSprite, new StatUpgrade(0.07f, StatType.AttackSpeed));
+        statUpgrades = new WeightedList<Upgrade>()
+        {
+            {attackPower, uncommonWeight},
+            {healthIncrease, uncommonWeight},
+            {defenseUpgrade, uncommonWeight},
+            {moveSpeedUpgrade, uncommonWeight},
+            {attackSpeedUpgrade, uncommonWeight},
+        };
+
+        // Skills
+        Upgrade blinkSkill = new Upgrade("Blink", "Instantaneously teleport a short distance (L-shift)", UpgradeType.Skill, 200, blinkSkillShopSprite, blinkSkillToolbarSprite, new BlinkSkill(new List<Upgrade>(), blinkAudio));
+        Upgrade dashSkill = new Upgrade("Dash", "A faster way to dodge (L-shift)", UpgradeType.Skill, 100, blinkSkillShopSprite, blinkSkillToolbarSprite, new DashSkill(new List<Upgrade>(), Rarity.Uncommon, SkillType.Dodge, dashAudio));
+        Upgrade dodgeSkill = new Upgrade("Roll", "Swiftly roll out of harms way (L-shift)", UpgradeType.Skill, 55, dodgeSkillShopSprite, dodgeSkillToolbarSprite, new RollSkill(new List<Upgrade>() { blinkSkill, dashSkill }, Rarity.Common, 1.2f, 10, SkillType.Dodge));
+        skills = new WeightedList<Upgrade>()
+        {
+            { dodgeSkill, commonWeight},
+        };
+
+        // Player Modifications
+        Upgrade fleshWoundMod = new Upgrade("Flesh Wound", "Occassionally negate a significant amount of damage.", UpgradeType.PlayerModification, 175, fleshWoundModShopSprite, fleshWoundModToolbarSprite, new PlayerModification(new List<Upgrade>(), Rarity.Rare, 0.80f, 0.1f));
+        playerModifications = new WeightedList<Upgrade>()
+        {
+            {fleshWoundMod, rareWeight},
+        };
+
+        // Game Modifications
+        Upgrade restockMod = new Upgrade("Restock", "The shop now restocks on purchase.", UpgradeType.GameModification, 120, restockModShopSprite, restockModToolbarSprite, new GameModification(new List<Upgrade>(), Rarity.Rare, 1f));
+        gameModifications = new WeightedList<Upgrade>()
+        {
+            {restockMod, rareWeight},
+        };
+
+        // Consumables
+        Upgrade healthPotion = new Upgrade("Health Potion", "Heal a small amount of missing health.", UpgradeType.Consumable, 15, healthPotionShopSprite, healthPotionToolbarSprite, new Consumable(25f, ConsumableType.Health));
+        consumables = new WeightedList<Upgrade>()
+        {
+            {healthPotion, commonWeight},
+        };
+
+        availableUpgrades = new Dictionary<UpgradeType, int>()
+        {
+            { UpgradeType.StatUpgrade, statUpgrades.Count},
+            { UpgradeType.Skill, skills.Count},
+            { UpgradeType.PlayerModification, playerModifications.Count},
+            { UpgradeType.GameModification, gameModifications.Count},
+            { UpgradeType.Consumable, consumables.Count},
+        };
+    }
+
+    public UpgradeType getRandomUpgradeType()
+    {
+        Debug.Log("Getting random type");
+        UpgradeType type = upgradeTypeTable.Next();
+        Debug.Log($"Got random type {type}");
+        if (availableUpgrades[type] < 1)
+        {
+            type = UpgradeType.StatUpgrade;
+        }
+        return type;
+    }
+
+    public Upgrade getRandomUpgrade(UpgradeType type)
+    {
+        while (availableUpgrades[type] == 0)
+        {
+            type = getRandomUpgradeType(); // Some types will never be empty so we shouldn't get stuck in an infinite loop
+        }
+
+        Debug.Log($"Got random type: {type}");
+        Upgrade upgrade;
+
+        switch (type)
+        {
+            case UpgradeType.StatUpgrade:
+                upgrade = statUpgrades.Next();
+                break;
+            case UpgradeType.Skill:
+                upgrade = skills.Next();
+                skills.RemoveAt(skills.IndexOf(upgrade));
+                availableUpgrades[UpgradeType.Skill] -= 1;
+                break;
+            case UpgradeType.PlayerModification:
+                upgrade = playerModifications.Next();
+                playerModifications.RemoveAt(playerModifications.IndexOf(upgrade));
+                availableUpgrades[UpgradeType.PlayerModification] -= 1;
+                break;
+            case UpgradeType.GameModification:
+                upgrade = gameModifications.Next();
+                gameModifications.RemoveAt(gameModifications.IndexOf(upgrade));
+                availableUpgrades[UpgradeType.GameModification] -= 1;
+                break;
+            case UpgradeType.Consumable:
+                upgrade = consumables.Next();
+                break;
+            default:
+                Debug.Log("Uhm, this is awkward. getRandomWithReplacement was given an invalid argument.");
+                return null;
+        }
+
+        return upgrade;
+    }
+
+    public void putBack(Upgrade upgrade)
+    {
+
+        switch (upgrade.upgradeType)
+        {
+            case UpgradeType.Skill:
+                skills.Add(upgrade, weightMap[upgrade.skill.GetRarity()]);
+                availableUpgrades[UpgradeType.Skill] += 1;
+                break;
+            case UpgradeType.PlayerModification:
+                playerModifications.Add(upgrade, weightMap[upgrade.playerMod.rarity]);
+                availableUpgrades[UpgradeType.PlayerModification] += 1;
+                break;
+            case UpgradeType.GameModification:
+                gameModifications.Add(upgrade, weightMap[upgrade.gameMod.rarity]);
+                availableUpgrades[UpgradeType.GameModification] += 1;
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void purchase(Upgrade upgrade)
+    {
+        List<Upgrade> followingUpgrades;
+        switch (upgrade.upgradeType)
+        {
+            case UpgradeType.StatUpgrade:
+                statUpgrades[statUpgrades.IndexOf(upgrade)].cost = (int)Math.Round(statUpgrades[statUpgrades.IndexOf(upgrade)].cost * statUpgradeIncreaseFactor);
+                break;
+            case UpgradeType.Skill:
+                followingUpgrades = upgrade.skill.GetFollowingUprages();
+                for (int i = 0; i < followingUpgrades.Count; i++)
+                {
+                    skills.Add(followingUpgrades[i], weightMap[followingUpgrades[i].skill.GetRarity()]);
+                    availableUpgrades[upgrade.upgradeType] += 1;
+                }
+                break;
+            case UpgradeType.PlayerModification:
+                followingUpgrades = upgrade.playerMod.followingMods;
+                for (int i = 0; i < followingUpgrades.Count; i++)
+                {
+                    playerModifications.Add(followingUpgrades[i], weightMap[followingUpgrades[i].playerMod.rarity]);
+                    availableUpgrades[upgrade.upgradeType] += 1;
+                }
+                break;
+            case UpgradeType.GameModification:
+                followingUpgrades = upgrade.gameMod.followingMods;
+                for (int i = 0; i < followingUpgrades.Count; i++)
+                {
+                    gameModifications.Add(followingUpgrades[i], weightMap[followingUpgrades[i].gameMod.rarity]);
+                    availableUpgrades[upgrade.upgradeType] += 1;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void removeSkillSiblings(SkillType siblingType, List<Upgrade> excludeList)
+    {
+        Debug.Log("Removing sibling skills");
+        int iMax = skills.Count;
+        for (int i = 0; i < iMax; i++)
+        {
+            if (skills[i].skill.GetSkillType() == siblingType && !excludeList.Contains(skills[i]))
+            {
+                skills.RemoveAt(i);
+                availableUpgrades[UpgradeType.Skill] -= 1;
+                i--;
+                iMax -= 1;
+            }
+        }
+    }
+>>>>>>> Stashed changes
 }
