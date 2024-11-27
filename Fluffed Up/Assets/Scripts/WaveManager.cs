@@ -148,14 +148,6 @@ public class WaveManager : MonoBehaviour
     {
         Debug.Log("Computing Onslaught");
 
-        if (currentWave == 0)
-        {
-            nextEnemyQueue.Clear();
-            nextEnemyQueue = new Queue<string>(new List<string>() { "Mosquito", "MantaRay" });
-            Debug.Log("Onslaught Computed");
-            yield break;
-        }
-
         if (currentWave + 1 == 3)
         {
             nextEnemyQueue.Clear();
