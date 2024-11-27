@@ -50,10 +50,11 @@ public class ThirdPersonCameraController : MonoBehaviour
         {
             Debug.Log(playerSettings.SENSITIVITY);
             Debug.Log(playerSettings.FINE_SENSITIVITY);
-            yaw += isAiming ? playerSettings.FINE_SENSITIVITY * -Input.GetAxis("Mouse Y") : playerSettings.SENSITIVITY * -Input.GetAxis("Mouse Y");
-            pitch += isAiming ? playerSettings.FINE_SENSITIVITY * Input.GetAxis("Mouse X") : playerSettings.SENSITIVITY * Input.GetAxis("Mouse X");
+            pitch += isAiming ? playerSettings.FINE_SENSITIVITY * -Input.GetAxis("Mouse Y") : playerSettings.SENSITIVITY * -Input.GetAxis("Mouse Y");
+            yaw += isAiming ? playerSettings.FINE_SENSITIVITY * Input.GetAxis("Mouse X") : playerSettings.SENSITIVITY * Input.GetAxis("Mouse X");
+            pitch = Mathf.Clamp(pitch, -90f, 75f);
 
-            followTarget.transform.eulerAngles = new Vector3(yaw, pitch, 0f);
+            followTarget.transform.eulerAngles = new Vector3(pitch, yaw, 0f);
 
             #region Aim mode control
             if (inputs.aim)

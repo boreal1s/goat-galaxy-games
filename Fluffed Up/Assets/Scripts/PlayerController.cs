@@ -1,13 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Xml;
+using UnityEngine.UIElements;
 
 public class PlayerController : CharacterClass
 {
@@ -19,6 +17,7 @@ public class PlayerController : CharacterClass
     public GameObject projectilePrefab;       // The projectile prefab to instantiate
     public Transform projectileSpawnPoint;    // Where the projectile will spawn
     public float projectileDamage;
+    private float projectileSpeed = 300f;
     private LayerMask aimLayerMask; // Invertered layer mask
     #region Coin Attributes
     public bool isShopping;
@@ -131,21 +130,21 @@ public class PlayerController : CharacterClass
 
         if (SelectChar.characterID == 1) // If the shooter character is selected
         {
-            ammoIndicators = new Dictionary<int, Image>()
+            ammoIndicators = new Dictionary<int, UnityEngine.UI.Image>()
             {
-                { 1, GameObject.Find("Ammo1").GetComponent<Image>() },
-                { 2, GameObject.Find("Ammo2").GetComponent<Image>() },
-                { 3, GameObject.Find("Ammo3").GetComponent<Image>() },
-                { 4, GameObject.Find("Ammo4").GetComponent<Image>() },
-                { 5, GameObject.Find("Ammo5").GetComponent<Image>() },
-                { 6, GameObject.Find("Ammo6").GetComponent<Image>() },
-                { 7, GameObject.Find("Ammo7").GetComponent<Image>() },
-                { 8, GameObject.Find("Ammo8").GetComponent<Image>() },
-                { 9, GameObject.Find("Ammo9").GetComponent<Image>() },
-                { 10, GameObject.Find("Ammo10").GetComponent<Image>() },
-                { 11, GameObject.Find("Ammo11").GetComponent<Image>() },
-                { 12, GameObject.Find("Ammo12").GetComponent<Image>() },
-                { 13, GameObject.Find("Ammo13").GetComponent<Image>() },
+                { 1, GameObject.Find("Ammo1").GetComponent<UnityEngine.UI.Image>() },
+                { 2, GameObject.Find("Ammo2").GetComponent<UnityEngine.UI.Image>() },
+                { 3, GameObject.Find("Ammo3").GetComponent<UnityEngine.UI.Image>() },
+                { 4, GameObject.Find("Ammo4").GetComponent<UnityEngine.UI.Image>() },
+                { 5, GameObject.Find("Ammo5").GetComponent<UnityEngine.UI.Image>() },
+                { 6, GameObject.Find("Ammo6").GetComponent<UnityEngine.UI.Image>() },
+                { 7, GameObject.Find("Ammo7").GetComponent<UnityEngine.UI.Image>() },
+                { 8, GameObject.Find("Ammo8").GetComponent<UnityEngine.UI.Image>() },
+                { 9, GameObject.Find("Ammo9").GetComponent<UnityEngine.UI.Image>() },
+                { 10, GameObject.Find("Ammo10").GetComponent<UnityEngine.UI.Image>() },
+                { 11, GameObject.Find("Ammo11").GetComponent<UnityEngine.UI.Image>() },
+                { 12, GameObject.Find("Ammo12").GetComponent<UnityEngine.UI.Image>() },
+                { 13, GameObject.Find("Ammo13").GetComponent<UnityEngine.UI.Image>() },
             };
         }
 
@@ -379,51 +378,50 @@ public class PlayerController : CharacterClass
         Debug.Log("Shoot() method is being called");
         PlaySoundEffect(shootingSound);
 
-        Vector3 aimDirection = GetAimDirection() - projectileSpawnPoint.transform.position;
-        Debug.DrawLine(projectileSpawnPoint.transform.position, 1000f * aimDirection, Color.green, 2f);
+        Vector3 aimPoint = GetAimPoint();
+        Vector3 aimDirection = aimPoint - projectileSpawnPoint.transform.position;
+
+        if (Physics.Raycast(projectileSpawnPoint.transform.position, aimDirection.normalized, out RaycastHit raycastHit, aimLayerMask))
+        {
+            StartCoroutine(SimulateBullet(raycastHit.point, projectileSpawnPoint.transform.position));
+        }
 
         // Instantiate the projectile at the spawn point
-        GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.transform.position, Quaternion.LookRotation(aimDirection, Vector3.up));
-        //projectile.transform.forward = aimDirection;
-
-        // Ignore collision between the projectile and the player
-        // Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
-        projectile.GetComponent<Projectile>().SetDamage(projectileDamage);
+        Instantiate(projectilePrefab, projectileSpawnPoint.transform.position, Quaternion.LookRotation(aimDirection, Vector3.up));
 
         ammoIndicators[currAmmo].canvasRenderer.SetAlpha(0.2f);
         currAmmo -= 1;
-
     }
 
-    private Vector3 GetAimDirection()
+    private Vector3 GetAimPoint()
     {
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit raycastHit, aimLayerMask))
         {
             Debug.DrawLine(Camera.main.transform.position, raycastHit.point, Color.blue, 2f, false);
-            return raycastHit.point;
+            return raycastHit.point; // Adds camera forward such that the aim point stops inside the target 
         }
         Debug.DrawLine(Camera.main.transform.position, Camera.main.transform.forward * 10000f, Color.red, 2f, false);
         return Camera.main.transform.forward * 10000f;
     }
 
-    //private Vector3 GetMousePositionInWorld()
-    //{
-    //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-    //    if(Physics.Raycast(ray, out RaycastHit raycastHit))
-    //    {
-    //        if (Physics.Raycast(projectileSpawnPoint.position, raycastHit.point, out RaycastHit target)) {
-    //            return target.point;
-    //        }
-    //        return Vector3.zero;
-    //    }
-    //    return Vector3.zero;
-    //}
+    private IEnumerator SimulateBullet(Vector3 hitPosition, Vector3 shotPosition)
+    {
+        yield return new WaitForSeconds(Math.Abs(Vector3.Distance(shotPosition, hitPosition)) / projectileSpeed);
+        Debug.DrawLine(shotPosition, hitPosition, Color.green, 2f);
+        if (Physics.Raycast(shotPosition, hitPosition - shotPosition, out RaycastHit raycastHit, aimLayerMask))
+        {
+            if (LayerMask.LayerToName(raycastHit.rigidbody.gameObject.layer) == "Enemy")
+            {
+                raycastHit.rigidbody.gameObject.GetComponent<EnemyBase>().TakeDamage(projectileDamage, 0);
+            }
+        }
+    }
 
     public IEnumerator WaitToReload(float duration)
     {
         isReloading = true;
         yield return new WaitForSeconds(duration);
-        foreach (KeyValuePair<int, Image> ammo in ammoIndicators)
+        foreach (KeyValuePair<int, UnityEngine.UI.Image> ammo in ammoIndicators)
         {
             ammo.Value.canvasRenderer.SetAlpha(1f);
         }

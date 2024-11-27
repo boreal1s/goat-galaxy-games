@@ -25,21 +25,21 @@ public class Projectile : MonoBehaviour
         Destroy(gameObject, 5f);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        // Ignore collision with the player
-        if (other.CompareTag("Player"))
-            return;
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    // Ignore collision with the player
+    //    if (other.CompareTag("Player"))
+    //        return;
 
-        // Check if the projectile hit an enemy
-        EnemyBase enemy = other.GetComponent<EnemyBase>();
-        if (enemy != null)
-        {
-            enemy.TakeDamage(damage, enemyStunDelayInMilli);
-        }
+    //    // Check if the projectile hit an enemy
+    //    EnemyBase enemy = other.GetComponent<EnemyBase>();
+    //    if (enemy != null)
+    //    {
+    //        enemy.TakeDamage(damage, enemyStunDelayInMilli);
+    //    }
 
-        Destroy(gameObject); // Destroy the projectile after colliding with anything
-    }
+    //    Destroy(gameObject); // Destroy the projectile after colliding with anything
+    //}
 
     public float GetSpeed()
     {
