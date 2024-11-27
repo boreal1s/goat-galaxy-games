@@ -622,10 +622,10 @@ MonoBehaviour:
   player: {fileID: 0}
   actionDelayDefaultInMilli: 0
   itemDrops: []
-  goldValueMin: 0
-  goldValueMinBase: 0
-  goldValueMax: 0
-  goldValueMaxBase: 0
+  goldValueMin: 7
+  goldValueMinBase: 7
+  goldValueMax: 12
+  goldValueMaxBase: 12
   FloatingTextPrefab: {fileID: 7094480470114473468, guid: 349e3df807dc37045b275eaffd38a36f, type: 3}
 --- !u!135 &1370467398586417932
 SphereCollider:
