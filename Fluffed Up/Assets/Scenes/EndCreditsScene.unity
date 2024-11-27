@@ -672,7 +672,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -211.4, y: -2806}
+  m_AnchoredPosition: {x: -164, y: -4844}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1649875385
@@ -695,104 +695,26 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<size=250>Fluffed UP</size>
-
-
-
-
-
-
-
-
-
-
-    <size=120>player actions</size>
-
-
-    Sha
-    Jackson
-
-    Danh Le
-
-
-    <size=120>enemy aI</size>
-
-
-    Taesung Heo
-
-    Danh
-    Le
-
-
-    <size=120>Item Shop and skills</size>
-
-
-    Sha Jackson
-
-    June Kim
-
-
-    <size=120>Game
-    UI</size>
-
-
-    June Kim
-
-    Sahar Nikkhah
-
-    Danh Le
-
-    Sha Jackson
-
-
-    <size=120>music/sfx</size>
-
-
-    Taesung
-    Heo
-
-    June Kim
-
-
-    <size=120>Environment</size>
-
-
-    Danh Le
-
-    Sahar
-    Nikkhah
-
-    Taesung Heo
-
-
-    <size=120>Mini Map</size>
-
-
-    Sahar Nikkhah
-
-
-    <size=120>Playtested
-    by</size>
-
-
-    Friends and Family
-
-
-    <size=120>Special Thanks</size>
-
-
-    Matthew
-    Weatherley Redington (TA)
-
-
-
-
-    <size=120>Thank you for playing!</size>
-
-
-
-
-'
+  m_text: "<size=250>Fluffed UP</size>\n\n\n\n\n\n\n\n\n\n<size=120>player actions</size>\n\nSha
+    Jackson\nDanh Le\n\n<size=120>enemy aI</size>\n\nTaesung Heo\nDanh Le\n\n<size=120>Item
+    Shop and skills</size>\n\nSha Jackson\nJune Kim\n\n<size=120>Game UI</size>\n\nJune
+    Kim\nSahar Nikkhah\nDanh Le\nSha Jackson\n\n<size=120>music/sfx</size>\n\nTaesung
+    Heo\nJune Kim\n\n<size=120>Environment</size>\n\nDanh Le\nSahar Nikkhah\nTaesung
+    Heo\n\n<size=120>Mini Map</size>\n\nSahar Nikkhah\n\n<size=120>gameplay loop</size>\r\n\r\nTaesung
+    Heo\r\nSha Jackson\r\n\n<size=120>Playtested by</size>\n\nFriends and Family\n\n<size=120>Special
+    Thanks</size>\n\nMatthew Weatherley Redington (TA)\n\n\n\n<size=120>Thank you
+    for playing!</size>\n\n\n\n\n\n\n<size=120>Credits</size>\n\nDogKnight PBR Polyart\n
+    by Dungeon Mason\r\n\r\nRPG Monster Duo PBR Polyart\n by Dungeon Mason\r\n\r\nMonster
+    Minion Survivor PBR Polyart\n by Dungeon Mason\r\n\r\nKaimira Weighted List by
+    cdanek\r\n\r\nKenney Crosshair Pack\r\n\r\nLowPoly Environment Pack by k0rveen\r\n\r\nPower
+    Ups Pack by TenKniKo\r\n\r\nLowPoly Medieval Market by VanillaArt\r\n\r\nReal
+    Stars Skybox Lite by Geoff Dallimore\r\n\r\nPlanets and nebula background\n by
+    PixelChoice\r\n\r\nAtom Rocket Model by Axinova\r\n\r\nLowpoly Forest Pack Winter\n
+    by Onerat Pty Ltd\r\n\r\nLowPoly Simple Nature Pack\n by Just Create\r\n\r\nSound
+    effects from Pixabay.com\r\n\r\nShooting Sound by B.G.M\r\n\r\nRPG Essentials
+    Sound Effects\n by leohpaz\r\n\r\nGame icons by game-icons.net\r\n\r\nAnimations
+    from Mixamo.com\r\n\r\nSome fantastic tutorials\n by @CodeMonkeyUnity\n @davegamedevelopment\n
+    @NeetCode\r\n\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 04cd902ea410945dda52e57833f8bf71, type: 2}
   m_sharedMaterial: {fileID: -6894752838517917465, guid: 04cd902ea410945dda52e57833f8bf71, type: 2}
