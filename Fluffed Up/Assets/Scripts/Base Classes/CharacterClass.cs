@@ -69,7 +69,7 @@ public class CharacterClass : MonoBehaviour
     protected float reloadTime = 2f;
     protected float shotTime = 0.4f;
     public bool isReloading;
-    protected Dictionary<int, Image> ammoIndicators;
+    protected Dictionary<int, UnityEngine.UI.Image> ammoIndicators;
     #endregion
 
     // Character animator and rigidbody
