@@ -1,6 +1,7 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
@@ -9,7 +10,6 @@ public class ThirdPersonCameraController : MonoBehaviour
 {
     [Header("References")]
 
-    [SerializeField]
     private PlayerSettings playerSettings;
 
     [SerializeField]
@@ -33,6 +33,8 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     private void Start()
     {
+        playerSettings = FindObjectOfType<PlayerSettings>();
+
         virtCamera = GameObject.Find("PlayerFollowCamera").GetComponent<CinemachineVirtualCamera>();
         aimCamera = GameObject.Find("PlayerAimCamera").GetComponent<CinemachineVirtualCamera>();
         followTarget = GameObject.Find("CameraRoot");
@@ -48,8 +50,6 @@ public class ThirdPersonCameraController : MonoBehaviour
     {
         if (!isShopping)
         {
-            Debug.Log(playerSettings.SENSITIVITY);
-            Debug.Log(playerSettings.FINE_SENSITIVITY);
             pitch += isAiming ? playerSettings.FINE_SENSITIVITY * -Input.GetAxis("Mouse Y") : playerSettings.SENSITIVITY * -Input.GetAxis("Mouse Y");
             yaw += isAiming ? playerSettings.FINE_SENSITIVITY * Input.GetAxis("Mouse X") : playerSettings.SENSITIVITY * Input.GetAxis("Mouse X");
             pitch = Mathf.Clamp(pitch, -90f, 75f);
