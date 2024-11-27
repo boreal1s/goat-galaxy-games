@@ -118,7 +118,7 @@ public class DropTables : MonoBehaviour
         Upgrade attackPower = new Upgrade("Attack Power", "Increase attack power by 10", UpgradeType.StatUpgrade, 20, attackPowerShopSprite, attackPowerToolbarSprite, new StatUpgrade(10f, StatType.AttackPower));
         Upgrade healthIncrease = new Upgrade("Max Health Increase", "Increase max health by 20", UpgradeType.StatUpgrade, 20, healthIncreaseShopSprite, healthIncreaseToolbarSprite, new StatUpgrade(20f, StatType.Health));
         Upgrade defenseUpgrade = new Upgrade("Defense Up!", "Become a little tougher", UpgradeType.StatUpgrade, 20, defenseUpgradeShopSprite, defenseUpgradeToolbarSprite, new StatUpgrade(2f, StatType.Defense));
-        Upgrade moveSpeedUpgrade = new Upgrade("Move Speed Increase", "Zoooooom!", UpgradeType.StatUpgrade, 20, moveSpeedShopSprite, moveSpeedUpgradeToolbarSprite, new StatUpgrade(2.5f, StatType.MoveSpeed));
+        Upgrade moveSpeedUpgrade = new Upgrade("Move Speed Increase", "Zoooooom!", UpgradeType.StatUpgrade, 20, moveSpeedShopSprite, moveSpeedUpgradeToolbarSprite, new StatUpgrade(2f, StatType.MoveSpeed));
         Upgrade attackSpeedUpgrade = new Upgrade("Attack Speed Increase", "Increase attack speed by 7%", UpgradeType.StatUpgrade, 20, attackSpeedUpgradeShopSprite, attackSpeedUpgradeToolbarSprite, new StatUpgrade(0.07f, StatType.AttackSpeed));
         statUpgrades = new WeightedList<Upgrade>()
         {
@@ -198,17 +198,17 @@ public class DropTables : MonoBehaviour
                 break;
             case UpgradeType.Skill:
                 upgrade = skills.Next();
-                skills.Remove(upgrade);
+                skills.RemoveAt(skills.IndexOf(upgrade));
                 availableUpgrades[UpgradeType.Skill] -= 1;
                 break;
             case UpgradeType.PlayerModification:
                 upgrade = playerModifications.Next();
-                skills.Remove(upgrade);
+                playerModifications.RemoveAt(playerModifications.IndexOf(upgrade));
                 availableUpgrades[UpgradeType.PlayerModification] -= 1;
                 break;
             case UpgradeType.GameModification:
                 upgrade = gameModifications.Next();
-                skills.Remove(upgrade);
+                gameModifications.RemoveAt(gameModifications.IndexOf(upgrade));
                 availableUpgrades[UpgradeType.GameModification] -= 1;
                 break;
             case UpgradeType.Consumable:

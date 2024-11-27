@@ -175,7 +175,7 @@ public class WaveManager : MonoBehaviour
         if (currentWave + 1 == 10)
         {
             nextEnemyQueue.Clear();
-            nextEnemyQueue = new Queue<string>( new List<string>(){"BossCyclopes", "BossDog", "BossPenguine"});
+            nextEnemyQueue = new Queue<string>( new List<string>(){"BossCyclopes", "BossDog", "BossPenguin"});
             Debug.Log("Onslaught Computed");
             yield break;
         }
@@ -288,7 +288,7 @@ public class WaveManager : MonoBehaviour
     private IEnumerator EnemyGroupHandler(Queue<string> enemyQueue)
     {
         enemiesAreSpawning = true;
-        float secondsToWait = 3f;
+        float secondsToWait = 4f;
         while (enemyQueue.Count > 0)
         {
             List<string> enemyIds = new List<string>();
@@ -301,7 +301,6 @@ public class WaveManager : MonoBehaviour
 
             EnemyLoader(enemyIds);
             yield return new WaitForSeconds(secondsToWait);
-            secondsToWait = Mathf.Min(secondsToWait + 1f, 12f);
         }
         enemiesAreSpawning = false;
     }
