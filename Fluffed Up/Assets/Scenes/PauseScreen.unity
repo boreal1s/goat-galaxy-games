@@ -426,8 +426,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Quit to Menu
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 04cd902ea410945dda52e57833f8bf71, type: 2}
+  m_sharedMaterial: {fileID: -6894752838517917465, guid: 04cd902ea410945dda52e57833f8bf71, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -824,8 +824,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Resume Game
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 04cd902ea410945dda52e57833f8bf71, type: 2}
+  m_sharedMaterial: {fileID: -6894752838517917465, guid: 04cd902ea410945dda52e57833f8bf71, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1093,8 +1093,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Settings
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 04cd902ea410945dda52e57833f8bf71, type: 2}
+  m_sharedMaterial: {fileID: -6894752838517917465, guid: 04cd902ea410945dda52e57833f8bf71, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1228,8 +1228,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Restart Level
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 04cd902ea410945dda52e57833f8bf71, type: 2}
+  m_sharedMaterial: {fileID: -6894752838517917465, guid: 04cd902ea410945dda52e57833f8bf71, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1447,6 +1447,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14bfc6083af621e479fa40ff3ed5b3ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pauseScreenUI: {fileID: 0}
 --- !u!4 &1488073325
 Transform:
   m_ObjectHideFlags: 0
