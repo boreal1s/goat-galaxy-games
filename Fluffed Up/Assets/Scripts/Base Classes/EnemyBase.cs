@@ -175,7 +175,7 @@ public class EnemyBase : CharacterClass
     protected override void Die()
     {
         enemyState = EnemyState.Dead;
-        
+        DisableColliders();
         int coinDrop = UnityEngine.Random.Range(goldValueMin, goldValueMax);
         playerController.UpdateCoins(coinDrop);
 
@@ -202,6 +202,11 @@ public class EnemyBase : CharacterClass
         OnEnemyDeath?.Invoke();
 
         // game object will be destroyed by DieCoroutine
+    }
+
+    protected void DisableColliders()
+    {
+        Destroy(GetComponent<SphereCollider>());
     }
 
     protected void markLastActionTimeStamp(int additionalMilliToAdd = 0)
