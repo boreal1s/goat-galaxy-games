@@ -1,6 +1,7 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
@@ -9,7 +10,6 @@ public class ThirdPersonCameraController : MonoBehaviour
 {
     [Header("References")]
 
-    [SerializeField]
     private PlayerSettings playerSettings;
 
     [SerializeField]
@@ -33,6 +33,8 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     private void Start()
     {
+        playerSettings = FindObjectOfType<PlayerSettings>();
+
         virtCamera = GameObject.Find("PlayerFollowCamera").GetComponent<CinemachineVirtualCamera>();
         aimCamera = GameObject.Find("PlayerAimCamera").GetComponent<CinemachineVirtualCamera>();
         followTarget = GameObject.Find("CameraRoot");
