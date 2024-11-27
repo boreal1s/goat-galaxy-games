@@ -144,7 +144,6 @@ public class OtherPlayer : CharacterClass
 
         // Ignore collision between the projectile and the player
         Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
-        projectile.GetComponent<Projectile>().SetDamage(projectileDamage);
 
         // Set the projectile's direction
         projectile.transform.forward = transform.forward;
@@ -176,9 +175,9 @@ public class OtherPlayer : CharacterClass
         Debug.Log($"Collected: {item.itemName}");
     }
 
-    public override void TakeDamage(float damage, int additionalDelay)
+    public override void TakeDamage(float damage)
     {
-        base.TakeDamage(damage, additionalDelay);
+        base.TakeDamage(damage);
 
         animator.Play("GetHit");
     }

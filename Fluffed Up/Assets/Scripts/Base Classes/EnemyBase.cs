@@ -159,10 +159,10 @@ public class EnemyBase : CharacterClass
         AttackEvent?.Invoke(attackPower, attackDelayInMilli);
     }
 
-    public override void TakeDamage(float damage, int additionalDelay)
+    public override void TakeDamage(float damage)
     {
         navMeshAgent.SetDestination(transform.position);
-        base.TakeDamage(damage, additionalDelay);
+        base.TakeDamage(damage);
 
         if (FloatingTextPrefab) {
             ShowFloatingText(damage);

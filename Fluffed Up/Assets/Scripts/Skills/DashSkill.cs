@@ -21,7 +21,7 @@ public class DashSkill : ISkill
         this.dashSound = ds;
         this.rarity = rarity;
         cooldown = 1.8f;
-        moveDistancePerFrame = 2.5f;
+        moveDistancePerFrame = 4f;
         duration = 0.1f;
     }
 

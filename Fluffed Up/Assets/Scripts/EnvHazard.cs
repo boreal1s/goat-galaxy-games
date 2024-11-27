@@ -17,7 +17,7 @@ public class EnvHazard : MonoBehaviour
             PlayerController player = other.GetComponent<PlayerController>();
             if (player != null)
             {
-                player.TakeDamage(damage, 0); // Deal damage to the player
+                player.TakeDamage(damage); // Deal damage to the player
                 StartCoroutine(DamageCooldown()); // Start cooldown
             }
         }

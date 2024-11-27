@@ -59,10 +59,9 @@ public class EnemySlimeAndTurtle : EnemyBase
         base.Attack();
     }
 
-    public override void TakeDamage(float damage, int additionalDelay)
+    public override void TakeDamage(float damage)
     {
-        additionalDelayInMilli = (double)additionalDelay;
-        base.TakeDamage(damage, additionalDelay);
+        base.TakeDamage(damage);
         markLastActionTimeStamp();
         if (health > 0)
         {

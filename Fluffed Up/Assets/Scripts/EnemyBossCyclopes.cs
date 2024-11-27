@@ -155,10 +155,9 @@ public class EnemyBossCyclopes : EnemyBase
         isAttacking = false; // Reset attacking state after the action is done
     }
 
-    public override void TakeDamage(float damage, int additionalDelay)
+    public override void TakeDamage(float damage)
     {
-        additionalDelayInMilli = (double)additionalDelay;
-        base.TakeDamage(damage, additionalDelay);
+        base.TakeDamage(damage);
         animator.SetBool("isMoving", false);
         if (health > maxHealth/2)
         {
