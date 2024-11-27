@@ -41,29 +41,6 @@ public class Projectile : MonoBehaviour
     //    Destroy(gameObject); // Destroy the projectile after colliding with anything
     //}
 
-    private EnemyBase GetEnemyBase(Collider obj)
-    {
-        // Check if the object itself has the EnemyBase component
-        if (obj.GetComponent<EnemyBase>() != null)
-        {
-            return obj.GetComponent<EnemyBase>();
-        }
-
-        // Traverse up the hierarchy to check its parent objects
-        Transform current = obj.transform;
-        while (current.parent != null)
-        {
-            current = current.parent;
-            if (current.GetComponent<EnemyBase>() != null)
-            {
-                return current.GetComponent<EnemyBase>();
-            }
-        }
-
-        // No EnemyBase component found in the hierarchy
-        return null;
-    }
-
     public float GetSpeed()
     {
         return speed;
