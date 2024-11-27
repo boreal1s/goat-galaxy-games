@@ -410,7 +410,8 @@ public class PlayerController : CharacterClass
         Debug.DrawLine(shotPosition, hitPosition, Color.green, 2f);
         if (Physics.Raycast(shotPosition, hitPosition - shotPosition, out RaycastHit raycastHit, aimLayerMask))
         {
-            if (LayerMask.LayerToName(raycastHit.rigidbody.gameObject.layer) == "Enemy")
+            Rigidbody targetRB = raycastHit.rigidbody;
+            if (raycastHit.rigidbody != null && LayerMask.LayerToName(raycastHit.rigidbody.gameObject.layer) == "Enemy")
             {
                 raycastHit.rigidbody.gameObject.GetComponent<EnemyBase>().TakeDamage(projectileDamage, 0);
             }
