@@ -77,16 +77,16 @@ public class DropTables : MonoBehaviour
     void Awake()
     {
         #region Set Artwork
-        attackPowerShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
-        attackPowerToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
-        healthIncreaseShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
-        healthIncreaseToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
-        defenseUpgradeShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
-        defenseUpgradeToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
-        moveSpeedShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
-        moveSpeedUpgradeToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
-        attackSpeedUpgradeShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
-        attackSpeedUpgradeToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
+        attackPowerShopSprite = Resources.Load<Sprite>("Skill Images/02_Sword.png");
+        attackPowerToolbarSprite = Resources.Load<Sprite>("Skill Images/02_Sword.png");
+        healthIncreaseShopSprite = Resources.Load<Sprite>("Skill Images/15_Heal_potion.png");
+        healthIncreaseToolbarSprite = Resources.Load<Sprite>("Skill Images/15_Heal_potion.png");
+        defenseUpgradeShopSprite = Resources.Load<Sprite>("Skill Images/01_plate_chest.png");
+        defenseUpgradeToolbarSprite = Resources.Load<Sprite>("Skill Images/01_plate_chest.png");
+        moveSpeedShopSprite = Resources.Load<Sprite>("Skill Images/05_plate_boots.png");
+        moveSpeedUpgradeToolbarSprite = Resources.Load<Sprite>("Skill Images/05_plate_boots.png");
+        attackSpeedUpgradeShopSprite = Resources.Load<Sprite>("Skill Images/08_Mage_Staff.png");
+        attackSpeedUpgradeToolbarSprite = Resources.Load<Sprite>("Skill Images/08_Mage_Staff.png");
         dodgeSkillShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
         dodgeSkillToolbarSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
         blinkSkillShopSprite = Resources.Load<Sprite>("Skill Images/slay-the-spire-strike.png");
@@ -223,7 +223,7 @@ public class DropTables : MonoBehaviour
 
     public void putBack(Upgrade upgrade)
     {
-       
+
         switch (upgrade.upgradeType)
         {
             case UpgradeType.Skill:
@@ -249,7 +249,7 @@ public class DropTables : MonoBehaviour
         switch (upgrade.upgradeType)
         {
             case UpgradeType.StatUpgrade:
-                statUpgrades[statUpgrades.IndexOf(upgrade)].cost = (int) Math.Round(statUpgrades[statUpgrades.IndexOf(upgrade)].cost * statUpgradeIncreaseFactor);
+                statUpgrades[statUpgrades.IndexOf(upgrade)].cost = (int)Math.Round(statUpgrades[statUpgrades.IndexOf(upgrade)].cost * statUpgradeIncreaseFactor);
                 break;
             case UpgradeType.Skill:
                 followingUpgrades = upgrade.skill.GetFollowingUprages();
